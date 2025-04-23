@@ -1,16 +1,13 @@
-﻿namespace ProjetV1.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+public class Utilisateur
 {
-    public class Utilisateur
-    {
-        public int Id { get; set; }
-        public String Nom { get; set; }
-        public String Prenom { get; set; }
-        public String email { get; set; }
-        public String phone { get; set; }
-        public String MotDePasse { get; set; } // on devra le hasher
-
-        public String Role { get; set; } // admin ou client
-
-        public ICollection<Ticket> Ticket { get; set; }
-    }
+    public int Id { get; set; } 
+    public string Nom { get; set; }
+    public string Prenom { get; set; }
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
+    [Required]
+    public string MotDePasse { get; set; }
 }
