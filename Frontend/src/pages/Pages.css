@@ -1,0 +1,312 @@
+.analytics-page {
+	flex: 1; /* Equivalent to flex-1 */
+	overflow: auto; /* Equivalent to overflow-auto */
+	position: relative; /* Equivalent to relative */
+	z-index: 10; /* Equivalent to z-10 */
+	background-color: #111827; /* Equivalent to bg-gray-900 */
+}
+
+.analytics-main {
+	max-width: 112rem; /* Equivalent to max-w-7xl */
+	margin: 0 auto; /* Equivalent to mx-auto */
+	padding: 1.5rem 1rem; /* Equivalent to py-6 px-4 */
+}
+
+@media (min-width: 1024px) {
+	.analytics-main {
+		padding-left: 2rem; /* Equivalent to lg:px-8 */
+		padding-right: 2rem;
+	}
+}
+
+.analytics-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 2rem; /* Equivalent to gap-8 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+
+@media (min-width: 1024px) {
+	.analytics-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to lg:grid-cols-2 */
+	}
+}
+
+.orders-page {
+	flex: 1; /* Equivalent to flex-1 */
+	position: relative; /* Equivalent to relative */
+	z-index: 10; /* Equivalent to z-10 */
+	overflow: auto; /* Equivalent to overflow-auto */
+}
+
+.orders-main {
+	max-width: 112rem; /* Equivalent to max-w-7xl */
+	margin: 0 auto; /* Equivalent to mx-auto */
+	padding: 1.5rem 1rem; /* Equivalent to py-6 px-4 */
+}
+
+@media (min-width: 1024px) {
+	.orders-main {
+		padding-left: 2rem; /* Equivalent to lg:px-8 */
+		padding-right: 2rem;
+	}
+}
+
+.orders-stats-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 1.25rem; /* Equivalent to gap-5 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+
+@media (min-width: 640px) {
+	.orders-stats-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to sm:grid-cols-2 */
+	}
+}
+
+@media (min-width: 1024px) {
+	.orders-stats-grid {
+		grid-template-columns: repeat(4, 1fr); /* Equivalent to lg:grid-cols-4 */
+	}
+}
+
+.orders-charts-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 2rem; /* Equivalent to gap-8 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+
+@media (min-width: 1024px) {
+	.orders-charts-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to lg:grid-cols-2 */
+	}
+}
+
+.overview-page {
+	flex: 1; /* Equivalent to flex-1 */
+	overflow: auto; /* Equivalent to overflow-auto */
+	position: relative; /* Equivalent to relative */
+	z-index: 10; /* Equivalent to z-10 */
+}
+
+.overview-main {
+	max-width: 112rem; /* Equivalent to max-w-7xl */
+	margin: 0 auto; /* Equivalent to mx-auto */
+	padding: 1.5rem 1rem; /* Equivalent to py-6 px-4 */
+}
+
+@media (min-width: 1024px) {
+	.overview-main {
+		padding-left: 2rem; /* Equivalent to lg:px-8 */
+		padding-right: 2rem;
+	}
+}
+
+.overview-stats-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 1.25rem; /* Equivalent to gap-5 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+
+@media (min-width: 640px) {
+	.overview-stats-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to sm:grid-cols-2 */
+	}
+}
+
+@media (min-width: 1024px) {
+	.overview-stats-grid {
+		grid-template-columns: repeat(4, 1fr); /* Equivalent to lg:grid-cols-4 */
+	}
+}
+
+.overview-charts-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 2rem; /* Equivalent to gap-8 */
+}
+
+@media (min-width: 1024px) {
+	.overview-charts-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to lg:grid-cols-2 */
+	}
+}
+
+.products-page {
+	flex: 1; /* Equivalent to flex-1 */
+	overflow: auto; /* Equivalent to overflow-auto */
+	position: relative; /* Equivalent to relative */
+	z-index: 10; /* Equivalent to z-10 */
+}
+
+.products-main {
+	max-width: 112rem; /* Equivalent to max-w-7xl */
+	margin: 0 auto; /* Equivalent to mx-auto */
+	padding: 1.5rem 1rem; /* Equivalent to py-6 px-4 */
+}
+
+@media (min-width: 1024px) {
+	.products-main {
+		padding-left: 2rem; /* Equivalent to lg:px-8 */
+		padding-right: 2rem;
+	}
+}
+
+.products-stats-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 1.25rem; /* Equivalent to gap-5 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+
+@media (min-width: 640px) {
+	.products-stats-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to sm:grid-cols-2 */
+	}
+}
+
+@media (min-width: 1024px) {
+	.products-stats-grid {
+		grid-template-columns: repeat(4, 1fr); /* Equivalent to lg:grid-cols-4 */
+	}
+}
+
+.products-charts-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 2rem; /* Equivalent to gap-8 */
+}
+
+@media (min-width: 1024px) {
+	.products-charts-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to lg:grid-cols-2 */
+	}
+}
+
+.sales-page {
+	flex: 1; /* Equivalent to flex-1 */
+	overflow: auto; /* Equivalent to overflow-auto */
+	position: relative; /* Equivalent to relative */
+	z-index: 10; /* Equivalent to z-10 */
+}
+
+.sales-main {
+	max-width: 112rem; /* Equivalent to max-w-7xl */
+	margin: 0 auto; /* Equivalent to mx-auto */
+	padding: 1.5rem 1rem; /* Equivalent to py-6 px-4 */
+}
+
+@media (min-width: 1024px) {
+	.sales-main {
+		padding-left: 2rem; /* Equivalent to lg:px-8 */
+		padding-right: 2rem;
+	}
+}
+
+.sales-stats-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 1.25rem; /* Equivalent to gap-5 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+
+@media (min-width: 640px) {
+	.sales-stats-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to sm:grid-cols-2 */
+	}
+}
+
+@media (min-width: 1024px) {
+	.sales-stats-grid {
+		grid-template-columns: repeat(4, 1fr); /* Equivalent to lg:grid-cols-4 */
+	}
+}
+
+.sales-charts-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 2rem; /* Equivalent to gap-8 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+
+@media (min-width: 1024px) {
+	.sales-charts-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to lg:grid-cols-2 */
+	}
+}
+
+.settings-page {
+	flex: 1; /* Equivalent to flex-1 */
+	overflow: auto; /* Equivalent to overflow-auto */
+	position: relative; /* Equivalent to relative */
+	z-index: 10; /* Equivalent to z-10 */
+	background-color: #111827; /* Equivalent to bg-gray-900 */
+}
+
+.settings-main {
+	max-width: 64rem; /* Equivalent to max-w-4xl */
+	margin: 0 auto; /* Equivalent to mx-auto */
+	padding: 1.5rem 1rem; /* Equivalent to py-6 px-4 */
+}
+
+@media (min-width: 1024px) {
+	.settings-main {
+		padding-left: 2rem; /* Equivalent to lg:px-8 */
+		padding-right: 2rem;
+	}
+}
+
+.users-page {
+	flex: 1; /* Equivalent to flex-1 */
+	overflow: auto; /* Equivalent to overflow-auto */
+	position: relative; /* Equivalent to relative */
+	z-index: 10; /* Equivalent to z-10 */
+}
+
+.users-main {
+	max-width: 112rem; /* Equivalent to max-w-7xl */
+	margin: 0 auto; /* Equivalent to mx-auto */
+	padding: 1.5rem 1rem; /* Equivalent to py-6 px-4 */
+}
+
+@media (min-width: 1024px) {
+	.users-main {
+		padding-left: 2rem; /* Equivalent to lg:px-8 */
+		padding-right: 2rem;
+	}
+}
+
+.users-stats-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 1.25rem; /* Equivalent to gap-5 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+}
+
+@media (min-width: 640px) {
+	.users-stats-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to sm:grid-cols-2 */
+	}
+}
+
+@media (min-width: 1024px) {
+	.users-stats-grid {
+		grid-template-columns: repeat(4, 1fr); /* Equivalent to lg:grid-cols-4 */
+	}
+}
+
+.users-charts-grid {
+	display: grid; /* Equivalent to grid */
+	grid-template-columns: 1fr; /* Equivalent to grid-cols-1 */
+	gap: 1.5rem; /* Equivalent to gap-6 */
+	margin-top: 2rem; /* Equivalent to mt-8 */
+}
+
+@media (min-width: 1024px) {
+	.users-charts-grid {
+		grid-template-columns: repeat(2, 1fr); /* Equivalent to lg:grid-cols-2 */
+	}
+}
