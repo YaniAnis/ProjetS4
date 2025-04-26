@@ -7,12 +7,13 @@ import { AlertTriangle, DollarSign, Package, TrendingUp } from "lucide-react";
 import CategoryDistributionChart from "../components/overview/CategoryDistributionChart";
 import SalesTrendChart from "../components/products/SalesTrendChart";
 import ProductsTable from "../components/products/ProductsTable";
+import AddMatch from "../components/products/AddMatch";
 import "./Pages.css";
 
 const MatchPage = () => {
 	return (
 		<div className='products-page'>
-			<Header title='Products' />
+			<Header title='Matches' />
 
 			<main className='products-main'>
 				{/* STATS */}
@@ -22,11 +23,14 @@ const MatchPage = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
 				>
-					<StatCard name='Total Products' icon={Package} value={1234} color='#6366F1' />
-					<StatCard name='Top Selling' icon={TrendingUp} value={89} color='#10B981' />
-					<StatCard name='Low Stock' icon={AlertTriangle} value={23} color='#F59E0B' />
-					<StatCard name='Total Revenue' icon={DollarSign} value={"$543,210"} color='#EF4444' />
+					<StatCard name='Total Matches' icon={Package} value={45} color='#6366F1' />
+					<StatCard name='Upcoming Matches' icon={TrendingUp} value={12} color='#10B981' />
+					<StatCard name='Completed Matches' icon={AlertTriangle} value={33} color='#F59E0B' />
+					<StatCard name='Total Revenue' icon={DollarSign} value={"$123,456"} color='#EF4444' />
 				</motion.div>
+
+				{/* Add Match Form */}
+				<AddMatch />
 
 				<ProductsTable />
 
