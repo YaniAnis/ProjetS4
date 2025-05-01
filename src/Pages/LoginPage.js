@@ -13,15 +13,51 @@ function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Ici vous pourriez ajouter la logique d'authentification
-    if (isLogin) {
-      console.log("Login", { email, password, rememberMe })
-    } else {
-      console.log("Register", { firstName, lastName, email, password, confirmPassword })
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    const endpoint = isLogin ? "http://localhost:8000/api/login" : "http://localhost:8000/api/register";
+  
+    const payload = isLogin
+      ? { email, password }
+      : {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          password,
+          password_confirmation: confirmPassword,
+        };
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        console.error("Erreur :", data.message || "Erreur inconnue");
+        alert(data.message || "Échec de l'opération");
+        return;
+      }
+  
+      alert(data.message || (isLogin ? "Connexion réussie" : "Inscription réussie"));
+      console.log("Réponse :", data);
+  
+      if (isLogin) {
+        // rediriger vers une page après connexion si besoin
+      }
+  
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      alert("Une erreur réseau est survenue.");
     }
-  }
+  };
+  
 
   return (
     <div className="page-container">
