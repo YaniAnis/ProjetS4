@@ -1,0 +1,227 @@
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .navbar-logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  
+  .navbar-logo-icon {
+    color: #16a34a;
+  }
+  
+  .navbar-logo-text {
+    margin-left: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #166534;
+  }
+  
+  .navbar-links {
+    display: none;
+  }
+  
+  .navbar-link {
+    margin: 0 1rem;
+    color: #166534;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  
+  .navbar-link:hover {
+    color: #16a34a;
+  }
+  
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar-icon-button {
+    background: none;
+    border: none;
+    color: #166534;
+    margin-left: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+  
+  /* Nouveau style pour le bouton de connexion */
+  .login-button {
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    padding-block: 0.5rem;
+    padding-inline: 1.25rem;
+    background-color: rgb(13, 69, 29);
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffff;
+    gap: 10px;
+    font-weight: bold;
+    border: 3px solid #ffffff4d;
+    outline: none;
+    overflow: hidden;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-left: 1rem;
+  }
+  
+  .login-icon {
+    width: 24px;
+    height: 24px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .login-button:hover {
+    transform: scale(1.05);
+    border-color: #fff9;
+  }
+  
+  .login-button:hover .login-icon {
+    transform: translate(4px);
+  }
+  
+  .login-button:hover::before {
+    animation: shine 1.5s ease-out infinite;
+  }
+  
+  .login-button::before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100%;
+    background-image: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0) 70%
+    );
+    top: 0;
+    left: -100px;
+    opacity: 0.6;
+  }
+  
+  @keyframes shine {
+    0% {
+      left: -100px;
+    }
+  
+    60% {
+      left: 100%;
+    }
+  
+    to {
+      left: 100%;
+    }
+  }
+  
+  .navbar-button {
+    display: none;
+    background-color: #12b04c;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 1rem;
+    transition: background-color 0.2s;
+  }
+  
+  .navbar-button:hover {
+    background-color: #15803d;
+  }
+  
+  .navbar-menu-button {
+    background: none;
+    border: none;
+    color: #166534;
+    margin-left: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .navbar-mobile-menu {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: #fff;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .navbar-mobile-link {
+    padding: 0.75rem 0;
+    color: #166534;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  
+  .navbar-mobile-link:hover {
+    color: #16a34a;
+  }
+  
+  .login-button.mobile {
+    margin: 1rem 0 0;
+    align-self: center;
+  }
+  
+  .navbar-mobile-button {
+    background-color: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+  }
+  
+  .navbar-mobile-button:hover {
+    background-color: #15803d;
+  }
+  
+  @media (min-width: 768px) {
+    .navbar-links {
+      display: flex;
+    }
+  
+    .login-button {
+      display: flex;
+    }
+  
+    .navbar-menu-button {
+      display: none;
+    }
+  }
+  
+  
