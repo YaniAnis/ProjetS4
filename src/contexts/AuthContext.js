@@ -3,14 +3,31 @@ import React, { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // Try to load user from localStorage on refresh
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const login = async (email, password) => {
-    if (email === 'test@example.com' && password === 'password') {
-      setUser({ email });
-      return { success: true };
+    try {
+      const response = await fetch('http://localhost:8000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const result = await response.json();
+      if (response.ok && result.token) {
+        setUser(result.user);
+        localStorage.setItem('user', JSON.stringify(result.user));
+        localStorage.setItem('token', result.token);
+        return { success: true };
+      } else {
+        return { success: false, message: result.message || 'Login failed.' };
+      }
+    } catch (err) {
+      return { success: false, message: 'Network error' };
     }
-    return { success: false, message: 'Invalid credentials' };
   };
 
   const register = async (data) => {
@@ -33,6 +50,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
   return (
