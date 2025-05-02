@@ -14,7 +14,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (data) => {
-    return { success: true };
+    try {
+      const response = await fetch('http://localhost:8000/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        return { success: true, ...result };
+      } else {
+        return { success: false, message: result.message || Object.values(result.errors || {}).join(' ') };
+      }
+    } catch (err) {
+      return { success: false, message: 'Network error' };
+    }
   };
 
   const logout = () => {

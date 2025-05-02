@@ -12,6 +12,20 @@ Route::get('/test-db', function () {
     }
 });
 
+Route::get('/test-insert', function () {
+    try {
+        $user = \App\Models\User::create([
+            'name' => 'Test User',
+            'email' => 'testuser@example.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+        ]);
+
+        return $user ? '✅ User inserted successfully!' : '❌ Failed to insert user.';
+    } catch (\Exception $e) {
+        return '❌ Error: ' . $e->getMessage();
+    }
+});
+
 Route::get('/', function () {
     return view('welcome'); // Ensure a 'welcome.blade.php' exists in the resources/views directory
 });

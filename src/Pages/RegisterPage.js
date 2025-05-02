@@ -27,7 +27,7 @@ const RegisterPage = () => {
     setError('');
 
     try {
-      console.log('Attempting registration with:', { name, email, password }); // Debugging log
+      console.log('Attempting registration with:', { name, email }); // Debugging log
       const result = await register({
         name,
         email,
@@ -37,6 +37,7 @@ const RegisterPage = () => {
       console.log('Registration result:', result); // Debugging log
       
       if (result.success) {
+        console.log('Navigating to home page...');
         navigate('/');
       } else {
         setError(result.message || 'Registration failed. Please try again.');
