@@ -12,3 +12,7 @@ Route::get('/test-db', function () {
     }
 });
 
+Route::get('/', function () {
+    return view('welcome'); // Ensure a 'welcome.blade.php' exists in the resources/views directory
+});
+
