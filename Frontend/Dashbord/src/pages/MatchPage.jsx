@@ -5,9 +5,9 @@ import StatCard from "../components/common/StatCard";
 
 import { AlertTriangle, DollarSign, Package, TrendingUp } from "lucide-react";
 import CategoryDistributionChart from "../components/overview/CategoryDistributionChart";
-import SalesTrendChart from "../components/products/SalesTrendChart";
-import ProductsTable from "../components/products/ProductsTable";
-import AddMatch from "../components/products/AddMatch";
+import SalesTrendChart from "../components/Matches/SalesTrendChart";
+import ProductsTable from "../components/Matches/ProductsTable";
+import AddMatch from "../components/Matches/AddMatch";
 import "./Pages.css";
 
 const MatchPage = () => {

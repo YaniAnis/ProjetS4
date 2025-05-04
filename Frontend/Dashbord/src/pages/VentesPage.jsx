@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
 import { CreditCard, DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
-import SalesOverviewChart from "../components/sales/SalesOverviewChart";
-import SalesByCategoryChart from "../components/sales/SalesByCategoryChart";
-import DailySalesTrend from "../components/sales/DailySalesTrend";
+import SalesOverviewChart from "../components/Ventes/SalesOverviewChart";
+import SalesByCategoryChart from "../components/Ventes/SalesByCategoryChart";
+import DailySalesTrend from "../components/Ventes/DailySalesTrend";
 import "./Pages.css";
 
 const salesStats = {

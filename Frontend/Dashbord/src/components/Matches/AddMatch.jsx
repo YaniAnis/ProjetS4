@@ -18,15 +18,19 @@ const AddMatch = () => {
         // Add more stadiums
     ];
 
+    // Update formData to include 8 zones (A-H), each with price and places
+    const initialZones = {};
+    'ABCDEFGH'.split('').forEach(zone => {
+        initialZones[`zone${zone}Price`] = '';
+        initialZones[`zone${zone}Places`] = '';
+    });
+
     const [formData, setFormData] = useState({
         team1: null,
         team2: null,
         stadium: null,
         dateTime: '',
-        zoneA: '',
-        zoneB: '',
-        zoneC: '',
-        zoneD: '',
+        ...initialZones,
     });
 
     const handleSubmit = (e) => {
@@ -128,31 +132,57 @@ const AddMatch = () => {
                 </div>
                 <div className="md:col-span-2">
                     <h3 className="text-lg font-medium text-gray-300 mb-4">Ticket Pricing Zones</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {['A', 'B', 'C', 'D'].map((zone) => (
-                            <div key={zone} className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-400">
-                                    Zone {zone}
-                                </label>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                                        $
-                                    </span>
-                                    <input
-                                        type="number"
-                                        value={formData[`zone${zone}`]}
-                                        onChange={(e) => 
-                                            setFormData({ 
-                                                ...formData, 
-                                                [`zone${zone}`]: e.target.value 
-                                            })
-                                        }
-                                        placeholder="0.00"
-                                        className="w-full bg-gray-700 text-white rounded-lg border-gray-600 pl-8 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    />
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        {'ABCDEFGH'.split('').map((zone, idx, arr) => {
+                            const isVIP = idx === arr.length - 1;
+                            return (
+                                <div key={zone} className="space-y-2 bg-gray-700 rounded-lg p-3">
+                                    <label
+                                        className={`block text-sm font-medium mb-1 ${
+                                            isVIP ? 'text-yellow-400' : 'text-gray-400'
+                                        }`}
+                                    >
+                                        {isVIP ? 'VIP' : `Zone ${zone}`}
+                                    </label>
+                                    <div className="relative mb-2">
+                                        <span className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${isVIP ? 'text-yellow-400' : 'text-gray-400'}`}>
+                                            $
+                                        </span>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            value={formData[`zone${zone}Price`]}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    [`zone${zone}Price`]: e.target.value
+                                                })
+                                            }
+                                            placeholder="Price"
+                                            className="w-full bg-gray-800 text-white rounded-lg border-gray-600 pl-8 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                    </div>
+                                    <div className="relative">
+                                        <span className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${isVIP ? 'text-yellow-400' : 'text-gray-400'}`}>
+                                            #
+                                        </span>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            value={formData[`zone${zone}Places`]}
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    [`zone${zone}Places`]: e.target.value
+                                                })
+                                            }
+                                            placeholder="Number of places"
+                                            className="w-full bg-gray-800 text-white rounded-lg border-gray-600 pl-8 p-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 
