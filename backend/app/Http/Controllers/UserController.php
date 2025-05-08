@@ -1,18 +1,43 @@
-<<<<<<< HEAD
 <?php
 
-=======
->>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Log; // Ensure the Log facade is imported
 
 class UserController extends Controller
 {
-<<<<<<< HEAD
     public function index()
     {
-        return response()->json(User::all());
+        Log::info('index method called'); // Debugging log
+        $users = User::select('id', 'name', 'email', 'role', 'created_at')->get();
+        return response()->json($users);
+    }
+
+    public function getUserStats()
+    {
+        Log::info('getUserStats method called'); // Debugging log
+
+        $totalUsers = User::count();
+        $newUsersToday = User::whereDate('created_at', now()->toDateString())->count();
+
+        // Only count active users if the column exists
+        $activeUsers = 0;
+        if (\Schema::hasColumn('users', 'last_activity')) {
+            $activeUsers = User::whereNotNull('last_activity')
+                ->where('last_activity', '>=', now()->subDays(7))
+                ->count();
+        }
+
+        // Churn rate logic (set to 0% if you don't have soft deletes)
+        $churnRate = '0%';
+
+        return response()->json([
+            'totalUsers' => $totalUsers,
+            'newUsersToday' => $newUsersToday,
+            'activeUsers' => $activeUsers,
+            'churnRate' => $churnRate,
+        ]);
     }
 
     public function destroy($id)
@@ -23,24 +48,5 @@ class UserController extends Controller
         }
         $user->delete();
         return response()->json(['message' => 'User deleted successfully.']);
-=======
-    public function getUsers()
-    {
-        \Log::info('getUsers method called'); // Debugging log
-        $users = User::select('id', 'name', 'email', 'created_at')->get();
-        return response()->json($users);
-    }
-
-    public function getUserStats()
-    {
-        \Log::info('getUserStats method called'); // Debugging log
-        $totalUsers = User::count();
-        $newUsersToday = User::whereDate('created_at', now()->toDateString())->count();
-
-        return response()->json([
-            'totalUsers' => $totalUsers,
-            'newUsersToday' => $newUsersToday,
-        ]);
->>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
     }
 }

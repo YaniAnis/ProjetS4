@@ -1,16 +1,11 @@
-<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-=======
-import { useState } from "react";
->>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
 import { Search } from "lucide-react";
 import "./UsersTable.css";
 
-<<<<<<< HEAD
 const UsersTable = () => {
 	const [searchTerm, setSearchTerm] = useState("");
-	const [users, setUsers] = useState([]);
+	const [users, setUsers] = useState([]); // always an array
 	const [filteredUsers, setFilteredUsers] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -19,41 +14,32 @@ const UsersTable = () => {
 		const fetchUsers = async () => {
 			try {
 				const response = await fetch("http://localhost:8000/api/users");
+				if (!response.ok) throw new Error("Network response was not ok");
 				const data = await response.json();
-				console.log("Fetched users:", data); // Debug: see what the API returns
-
-				const usersArray = Array.isArray(data) ? data : data.data || [];
+				const usersArray = Array.isArray(data) ? data : (data && data.data ? data.data : []);
 				setUsers(usersArray);
 				setFilteredUsers(usersArray);
 			} catch (error) {
 				console.error("Failed to fetch users:", error);
-				setError("Failed to load users.");
+				setUsers([]); // ensure users is always an array
+				setFilteredUsers([]);
+				setError("Failed to load users. Backend may be down.");
 			} finally {
 				setLoading(false);
 			}
 		};
 		fetchUsers();
 	}, []);
-=======
-const UsersTable = ({ users, onSearch }) => {
-	console.log("UsersTable received users:", users); // Debugging log
-
-	const [searchTerm, setSearchTerm] = useState("");
->>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
 
 	const handleInputChange = (e) => {
 		const term = e.target.value;
 		setSearchTerm(term);
-<<<<<<< HEAD
-		const filtered = users.filter(
+		const filtered = (users || []).filter(
 			(user) =>
-				(user.name || "").toLowerCase().includes(term) ||
-				(user.email || "").toLowerCase().includes(term)
+				(user.name || "").toLowerCase().includes(term.toLowerCase()) ||
+				(user.email || "").toLowerCase().includes(term.toLowerCase())
 		);
 		setFilteredUsers(filtered);
-=======
-		onSearch(term); // Call the search handler passed from UtilisateurPage
->>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
 	};
 
 	const handleDelete = async (userId) => {
@@ -103,10 +89,11 @@ const UsersTable = ({ users, onSearch }) => {
 						<tr>
 							<th>Nom</th>
 							<th>Email</th>
-							<th>Date de Création</th>
+								<th>Role</th>
+							<th>Status</th>
+							<th>Action</th>
 						</tr>
 					</thead>
-<<<<<<< HEAD
 
 					<tbody className='users-table-body'>
 						{filteredUsers.length === 0 ? (
@@ -133,7 +120,9 @@ const UsersTable = ({ users, onSearch }) => {
 									</td>
 									<td className='users-table-cell'>{user.email}</td>
 									<td className='users-table-cell'>
-										<span className='users-table-role'>{user.role}</span>
+										<span className='users-table-role'>
+											{(user.role || '').toLowerCase() === 'admin' ? 'Admin' : 'User'}
+										</span>
 									</td>
 									<td className='users-table-cell'>
 										<span className={`users-table-status users-table-status-active`}>
@@ -151,16 +140,6 @@ const UsersTable = ({ users, onSearch }) => {
 								</motion.tr>
 							))
 						)}
-=======
-					<tbody>
-						{users.map((user) => (
-							<tr key={user.id}>
-								<td>{user.name}</td>
-								<td>{user.email}</td>
-								<td>{new Date(user.created_at).toLocaleDateString()}</td>
-							</tr>
-						))}
->>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
 					</tbody>
 				</table>
 			</div>

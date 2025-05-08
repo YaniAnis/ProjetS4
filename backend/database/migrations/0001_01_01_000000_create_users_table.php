@@ -17,12 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-<<<<<<< HEAD
             $table->string('role')->default('User');
-=======
             $table->timestamp('last_activity')->nullable();
             $table->rememberToken();
->>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
             $table->timestamps();
         });
 

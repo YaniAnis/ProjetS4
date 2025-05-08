@@ -23,7 +23,7 @@ function App() {
 					<Route path='/matches' element={<MatchPage />} />
 					<Route path='/users' element={<UtilisateurPage />} />
 					<Route path='/ventes' element={<VentesPage />} />
-					<Route path='/commande' element={<CommandePage />} />SyntaxError: The requested module '/src/components/matches/AddMatch.jsx?t=1746388208837' does not provide an export named 'AddMatch' (at MatchPage.jsx:10:10)
+					<Route path='/commande' element={<CommandePage />} />
 					<Route path='/parametre' element={<ParametrePage />} />
 				</Routes>
 			
