@@ -12,7 +12,7 @@ import UserDemographicsChart from "../components/users/UserDemographicsChart";
 import "./Pages.css";
 
 const UtilisateurPage = () => {
-<<<<<<< HEAD
+
 	const [users, setUsers] = useState([]);
 
 	useEffect(() => {
@@ -45,14 +45,14 @@ const UtilisateurPage = () => {
 		u => u.deleted_at
 	).length;
 	const churnRate = totalUsers > 0 ? ((deletedUsers / totalUsers) * 100).toFixed(1) + "%" : "0%";
-=======
+
 	const [userStats, setUserStats] = useState({
 		totalUsers: 0,
 		newUsersToday: 0,
 		activeUsers: 0,
 		churnRate: "0%",
 	});
-	const [users, setUsers] = useState([]);
+	
 	const [filteredUsers, setFilteredUsers] = useState([]);
 
 	useEffect(() => {
@@ -83,8 +83,6 @@ const UtilisateurPage = () => {
 		);
 		setFilteredUsers(filtered);
 	};
->>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
-
 	return (
 		<div className='users-page'>
 			<Header title='Utilisateur' />
