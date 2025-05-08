@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Log; // Ensure the Log facade is imported
+use Illuminate\Support\Facades\Schema; // Import the Schema facade
 
 class UserController extends Controller
 {
@@ -23,7 +24,7 @@ class UserController extends Controller
 
         // Only count active users if the column exists
         $activeUsers = 0;
-        if (\Schema::hasColumn('users', 'last_activity')) {
+        if (Schema::hasColumn('users', 'last_activity')) {
             $activeUsers = User::whereNotNull('last_activity')
                 ->where('last_activity', '>=', now()->subDays(7))
                 ->count();
