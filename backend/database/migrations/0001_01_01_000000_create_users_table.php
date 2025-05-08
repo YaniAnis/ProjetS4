@@ -1,5 +1,6 @@
 <?php
 
+ 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,13 +10,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+<<<<<<< HEAD
+            $table->string('role')->default('User');
+=======
+            $table->timestamp('last_activity')->nullable();
+            $table->rememberToken();
+>>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
             $table->timestamps();
         });
 
@@ -45,3 +52,4 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
     }
 };
+

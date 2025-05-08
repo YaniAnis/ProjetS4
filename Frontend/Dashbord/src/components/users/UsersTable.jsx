@@ -1,45 +1,97 @@
-import { useState } from "react";
+<<<<<<< HEAD
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+=======
+import { useState } from "react";
+>>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
 import { Search } from "lucide-react";
-import "./user.css";
+import "./UsersTable.css";
 
-const userData = [
-	{ id: 1, name: "John Doe", email: "john@example.com", role: "Customer", status: "Active" },
-	{ id: 2, name: "Jane Smith", email: "jane@example.com", role: "Admin", status: "Active" },
-	{ id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Customer", status: "Inactive" },
-	{ id: 4, name: "Alice Brown", email: "alice@example.com", role: "Customer", status: "Active" },
-	{ id: 5, name: "Charlie Wilson", email: "charlie@example.com", role: "Moderator", status: "Active" },
-];
-
+<<<<<<< HEAD
 const UsersTable = () => {
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredUsers, setFilteredUsers] = useState(userData);
+	const [users, setUsers] = useState([]);
+	const [filteredUsers, setFilteredUsers] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-	const handleSearch = (e) => {
-		const term = e.target.value.toLowerCase();
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const response = await fetch("http://localhost:8000/api/users");
+				const data = await response.json();
+				console.log("Fetched users:", data); // Debug: see what the API returns
+
+				const usersArray = Array.isArray(data) ? data : data.data || [];
+				setUsers(usersArray);
+				setFilteredUsers(usersArray);
+			} catch (error) {
+				console.error("Failed to fetch users:", error);
+				setError("Failed to load users.");
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchUsers();
+	}, []);
+=======
+const UsersTable = ({ users, onSearch }) => {
+	console.log("UsersTable received users:", users); // Debugging log
+
+	const [searchTerm, setSearchTerm] = useState("");
+>>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
+
+	const handleInputChange = (e) => {
+		const term = e.target.value;
 		setSearchTerm(term);
-		const filtered = userData.filter(
-			(user) => user.name.toLowerCase().includes(term) || user.email.toLowerCase().includes(term)
+<<<<<<< HEAD
+		const filtered = users.filter(
+			(user) =>
+				(user.name || "").toLowerCase().includes(term) ||
+				(user.email || "").toLowerCase().includes(term)
 		);
 		setFilteredUsers(filtered);
+=======
+		onSearch(term); // Call the search handler passed from UtilisateurPage
+>>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
 	};
 
+	const handleDelete = async (userId) => {
+		if (!window.confirm("Are you sure you want to delete this user?")) return;
+		try {
+			const response = await fetch(`http://localhost:8000/api/users/${userId}`, {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+				},
+			});
+			if (response.ok) {
+				setUsers((prev) => prev.filter((u) => u.id !== userId));
+				setFilteredUsers((prev) => prev.filter((u) => u.id !== userId));
+			} else {
+				const data = await response.json();
+				alert(data.message || "Failed to delete user.");
+			}
+		} catch (err) {
+			alert("Failed to delete user.");
+		}
+	};
+
+	if (loading) return <div>Loading users...</div>;
+	if (error) return <div style={{ color: "red" }}>{error}</div>;
+
 	return (
-		<motion.div
-			className='users-table'
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ delay: 0.2 }}
-		>
+		<div className='users-table'>
 			<div className='users-table-header'>
-				<h2 className='users-table-title'>Users</h2>
+				<h2 className='users-table-title'>Liste des Utilisateurs</h2>
 				<div className='users-table-search'>
 					<input
 						type='text'
-						placeholder='Search users...'
+						placeholder='Rechercher un utilisateur...'
 						className='users-table-search-input'
 						value={searchTerm}
-						onChange={handleSearch}
+						onChange={handleInputChange}
 					/>
 					<Search className='users-table-search-icon' size={18} />
 				</div>
@@ -49,60 +101,71 @@ const UsersTable = () => {
 				<table className='users-table-content'>
 					<thead>
 						<tr>
-							<th className='users-table-header-cell'>Name</th>
-							<th className='users-table-header-cell'>Email</th>
-							<th className='users-table-header-cell'>Role</th>
-							<th className='users-table-header-cell'>Status</th>
-							<th className='users-table-header-cell'>Actions</th>
+							<th>Nom</th>
+							<th>Email</th>
+							<th>Date de Création</th>
 						</tr>
 					</thead>
+<<<<<<< HEAD
 
 					<tbody className='users-table-body'>
-						{filteredUsers.map((user) => (
-							<motion.tr
-								key={user.id}
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								transition={{ duration: 0.3 }}
-							>
-								<td className='users-table-cell'>
-									<div className='users-table-cell-content'>
-										<div className='users-table-avatar'>
-											<div className='users-table-avatar-placeholder'>
-												{user.name.charAt(0)}
+						{filteredUsers.length === 0 ? (
+							<tr>
+								<td colSpan={5} style={{ textAlign: "center" }}>No users found.</td>
+							</tr>
+						) : (
+							filteredUsers.map((user) => (
+								<motion.tr
+									key={user.id}
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									transition={{ duration: 0.3 }}
+								>
+									<td className='users-table-cell'>
+										<div className='users-table-cell-content'>
+											<div className='users-table-avatar'>
+												<div className='users-table-avatar-placeholder'>
+													{user.name?.charAt(0)}
+												</div>
 											</div>
+											<div className='users-table-name'>{user.name}</div>
 										</div>
-										<div className='users-table-name'>{user.name}</div>
-									</div>
-								</td>
-
-								<td className='users-table-cell'>{user.email}</td>
-								<td className='users-table-cell'>
-									<span className='users-table-role'>{user.role}</span>
-								</td>
-
-								<td className='users-table-cell'>
-									<span
-										className={`users-table-status ${
-											user.status === "Active"
-												? "users-table-status-active"
-												: "users-table-status-inactive"
-										}`}
-									>
-										{user.status}
-									</span>
-								</td>
-
-								<td className='users-table-cell'>
-									<button className='users-table-action-edit'>Edit</button>
-									<button className='users-table-action-delete'>Delete</button>
-								</td>
-							</motion.tr>
+									</td>
+									<td className='users-table-cell'>{user.email}</td>
+									<td className='users-table-cell'>
+										<span className='users-table-role'>{user.role}</span>
+									</td>
+									<td className='users-table-cell'>
+										<span className={`users-table-status users-table-status-active`}>
+											Active
+										</span>
+									</td>
+									<td className='users-table-cell'>
+										<button
+											className='users-table-action-delete'
+											onClick={() => handleDelete(user.id)}
+										>
+											Delete
+										</button>
+									</td>
+								</motion.tr>
+							))
+						)}
+=======
+					<tbody>
+						{users.map((user) => (
+							<tr key={user.id}>
+								<td>{user.name}</td>
+								<td>{user.email}</td>
+								<td>{new Date(user.created_at).toLocaleDateString()}</td>
+							</tr>
 						))}
+>>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
 					</tbody>
 				</table>
 			</div>
-		</motion.div>
+		</div>
 	);
 };
+
 export default UsersTable;

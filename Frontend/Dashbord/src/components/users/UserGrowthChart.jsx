@@ -2,24 +2,34 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { motion } from "framer-motion";
 import "./user.css";
 
-const userGrowthData = [
-	{ month: "Jan", users: 1000 },
-	{ month: "Feb", users: 1500 },
-	{ month: "Mar", users: 2000 },
-	{ month: "Apr", users: 3000 },
-	{ month: "May", users: 4000 },
-	{ month: "Jun", users: 5000 },
-];
+function getLastMonths(n) {
+	const months = [];
+	const now = new Date();
+	for (let i = n - 1; i >= 0; i--) {
+		const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+		months.push(d.toLocaleString('default', { month: 'short' }));
+	}
+	return months;
+}
 
-const UserGrowthChart = () => {
+const UserGrowthChart = ({ latestUserCount }) => {
+	const months = getLastMonths(6);
+	const userGrowthData = months.map((month, idx) => ({
+		month,
+		users: idx === months.length - 1 ? latestUserCount : 0
+	}));
+
 	return (
 		<motion.div
-			className='user-growth-chart'
+			className='user-growth-chart px-4 py-5 sm:p-6'
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ delay: 0.3 }}
 		>
 			<h2 className='user-growth-title'>User Growth</h2>
+			<div className="mt-1 text-3xl font-semibold text-gray-100">
+				{latestUserCount}
+			</div>
 			<div className='user-growth-container'>
 				<ResponsiveContainer width='100%' height='100%'>
 					<LineChart data={userGrowthData}>

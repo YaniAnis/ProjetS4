@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom'; // add this line
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -70,6 +71,9 @@ const LoginPage = () => {
         <div className="form-links">
           <a href="/forgot-password">Forgot your password?</a>
           <a href="/resend-confirmation">Resend email confirmation</a>
+        </div>
+        <div className="form-signin">
+          Don't have an account? <Link to="/register">Register here</Link>
         </div>
       </div>
     </div>

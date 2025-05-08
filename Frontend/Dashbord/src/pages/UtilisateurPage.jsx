@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { UserCheck, UserPlus, UsersIcon, UserX } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
@@ -9,14 +11,80 @@ import UserActivityHeatmap from "../components/users/UserActivityHeatmap";
 import UserDemographicsChart from "../components/users/UserDemographicsChart";
 import "./Pages.css";
 
-const userStats = {
-	totalUsers: 152845,
-	newUsersToday: 243,
-	activeUsers: 98520,
-	churnRate: "2.4%",
-};
-
 const UtilisateurPage = () => {
+<<<<<<< HEAD
+	const [users, setUsers] = useState([]);
+
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const response = await fetch("http://localhost:8000/api/users");
+				const data = await response.json();
+				const usersArray = Array.isArray(data) ? data : data.data || [];
+				setUsers(usersArray);
+			} catch (e) {
+				setUsers([]);
+		}
+		};
+		fetchUsers();
+	}, []);
+
+	const formatNumber = (num) =>
+		num.toLocaleString("fr-FR").replace(/,/g, " ").replace(/\s/g, " ");
+
+	// Calculate stats
+	const today = new Date().toISOString().slice(0, 10);
+	const totalUsers = users.length;
+	const newUsersToday = users.filter(
+		u => u.created_at && u.created_at.slice(0, 10) === today
+	).length;
+	const activeUsers = users.filter(
+		u => !u.deleted_at
+	).length;
+	const deletedUsers = users.filter(
+		u => u.deleted_at
+	).length;
+	const churnRate = totalUsers > 0 ? ((deletedUsers / totalUsers) * 100).toFixed(1) + "%" : "0%";
+=======
+	const [userStats, setUserStats] = useState({
+		totalUsers: 0,
+		newUsersToday: 0,
+		activeUsers: 0,
+		churnRate: "0%",
+	});
+	const [users, setUsers] = useState([]);
+	const [filteredUsers, setFilteredUsers] = useState([]);
+
+	useEffect(() => {
+		// Fetch user statistics
+		fetch("/api/user-stats")
+			.then((response) => response.json())
+			.then((data) => setUserStats(data))
+			.catch((error) => console.error("Error fetching user stats:", error));
+
+		// Fetch user data
+		fetch("/api/users")
+			.then((response) => response.json())
+			.then((data) => {
+				console.log("Fetched users:", data); // Debugging log
+				setUsers(data);
+				setFilteredUsers(data); // Initialize filtered users
+			})
+			.catch((error) => console.error("Error fetching users:", error));
+	}, []);
+
+	// Handle search
+	const handleSearch = (searchTerm) => {
+		const lowerCaseTerm = searchTerm.toLowerCase();
+		const filtered = users.filter(
+			(user) =>
+				user.name.toLowerCase().includes(lowerCaseTerm) ||
+				user.email.toLowerCase().includes(lowerCaseTerm)
+		);
+		setFilteredUsers(filtered);
+	};
+>>>>>>> ca26c2be4aeee4b1b5d624080ae96e93304c8975
+
 	return (
 		<div className='users-page'>
 			<Header title='Utilisateur' />
@@ -32,24 +100,51 @@ const UtilisateurPage = () => {
 					<StatCard
 						name='Total Users'
 						icon={UsersIcon}
-						value={userStats.totalUsers.toLocaleString()}
+						value={
+							<span className="mt-1 text-3xl font-semibold text-gray-100">
+								{formatNumber(totalUsers)}
+							</span>
+						}
 						color='#6366F1'
 					/>
-					<StatCard name='New Users Today' icon={UserPlus} value={userStats.newUsersToday} color='#10B981' />
+					<StatCard
+						name='New Users Today'
+						icon={UserPlus}
+						value={
+							<span className="mt-1 text-3xl font-semibold text-gray-100">
+								{formatNumber(newUsersToday)}
+							</span>
+						}
+						color='#10B981'
+					/>
 					<StatCard
 						name='Active Users'
 						icon={UserCheck}
-						value={userStats.activeUsers.toLocaleString()}
+						value={
+							<span className="mt-1 text-3xl font-semibold text-gray-100">
+								{formatNumber(activeUsers)}
+							</span>
+						}
 						color='#F59E0B'
 					/>
-					<StatCard name='Churn Rate' icon={UserX} value={userStats.churnRate} color='#EF4444' />
+					<StatCard
+						name='Churn Rate'
+						icon={UserX}
+						value={
+							<span className="mt-1 text-3xl font-semibold text-gray-100">
+								{churnRate}
+							</span>
+						}
+						color='#EF4444'
+					/>
 				</motion.div>
 
-				<UsersTable />
+				{/* Pass filtered users and search handler to UsersTable */}
+				<UsersTable users={filteredUsers} onSearch={handleSearch} />
 
 				{/* USER CHARTS */}
 				<div className='users-charts-grid'>
-					<UserGrowthChart />
+					<UserGrowthChart latestUserCount={users.length} />
 					<UserActivityHeatmap />
 					<UserDemographicsChart />
 				</div>
@@ -57,4 +152,5 @@ const UtilisateurPage = () => {
 		</div>
 	);
 };
+
 export default UtilisateurPage;
