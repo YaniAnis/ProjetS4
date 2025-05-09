@@ -2,6 +2,7 @@ import { BarChart2, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart,  User
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Newspaper } from "lucide-react";
 
 const SIDEBAR_ITEMS = [
     {
@@ -14,7 +15,9 @@ const SIDEBAR_ITEMS = [
     { name: "Utilisateur", icon: Users, color: "#EC4899", href: "/users" },
     { name: "Ventes", icon: DollarSign, color: "#10B981", href: "/ventes" },
     { name: "Commande", icon: ShoppingCart, color: "#F59E0B", href: "/commande" },
+    { name: "Actualite", icon: Newspaper, color: "#F87171", href: "/Actualite" },
     { name: "Paramètre", icon: Settings, color: "#6EE7B7", href: "/parametre" },
+
 ];
 
 const Sidebar = () => {
