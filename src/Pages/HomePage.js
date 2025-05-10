@@ -7,7 +7,7 @@ function HomePage() {
       <HeroCarousel />
       <div className="news-section">
         <h2 className="news-title">Actualités de la Ligue</h2>
-        <NewsCards />
+        <NewsCards limit={4} />
       </div>
     </main>
   )

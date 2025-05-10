@@ -1,53 +1,32 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import "./NewsCards.css"
 import { Link } from "react-router-dom"
 
-// Données des actualités
-const newsData = [
-  {
-    id: 1,
-    title: "Le MC Alger remporte une victoire éclatante contre le NC",
-    excerpt: "Les joueurs du Mouloudia ont livré une prestation remarquable lors de leur dernier match de championnat.",
-    image: "/images/news/MCANC.jpg",
-    date: "10 Avril 2025",
-    readTime: "5 min",
-  },
-  {
-    id: 2,
-    title: "Youcef Belaïli élu joueur du mois pour la troisième fois consécutive",
-    excerpt: "Le prodige algérien continue d'impressionner avec ses performances exceptionnelles sur le terrain.",
-    image: "/images/news/Youcef-Belaili-2-1.jpg",
-    date: "5 Avril 2025",
-    readTime: "3 min",
-  },
-  {
-    id: 3,
-    title: "Le Stade 5 Juillet se prépare pour accueillir la finale de la Coupe d'Algérie",
-    excerpt:
-      "Les préparatifs battent leur plein pour l'événement qui aura lieu le mois prochain au stade emblématique d'Alger.",
-    image: "/images/news/Stade-5-Juillet.jpg",
-    date: "2 Avril 2025",
-    readTime: "4 min",
-  },
-  {
-    id: 4,
-    title: "Nouveau record d'affluence pour la Ligue 1 Mobilis cette saison",
-    excerpt:
-      "Les stades algériens n'ont jamais été aussi remplis, témoignant de l'engouement croissant pour le championnat national.",
-    image: "/images/news/ligue1mobilis.jpg",
-    date: "28 Mars 2025",
-    readTime: "6 min",
-  },
-]
-
-function NewsCards() {
+// Remove static newsData and fetch from backend
+function NewsCards({ limit }) {
+  const [newsData, setNewsData] = useState([])
   const [hoveredCard, setHoveredCard] = useState(null)
+
+  useEffect(() => {
+    const fetchActualities = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/actualities")
+        const data = await res.json()
+        setNewsData(Array.isArray(data) ? data : data.data || [])
+      } catch {
+        setNewsData([])
+      }
+    }
+    fetchActualities()
+  }, [])
+
+  const displayedNews = limit ? newsData.slice(0, limit) : newsData
 
   return (
     <div className="news-cards">
-      {newsData.map((news) => (
+      {displayedNews.map((news) => (
         <div
           key={news.id}
           className={`news-card ${hoveredCard === news.id ? "hovered" : ""}`}
@@ -55,7 +34,16 @@ function NewsCards() {
           onMouseLeave={() => setHoveredCard(null)}
         >
           <div className="news-card-image">
-            <img src={news.image || "/placeholder.svg"} alt={news.title} />
+            <img
+              src={
+                news.image
+                  ? news.image.startsWith("http")
+                    ? news.image
+                    : `http://localhost:8000/storage/${news.image}`
+                  : "/placeholder.svg"
+              }
+              alt={news.title}
+            />
           </div>
           <div className="news-card-content">
             <div className="news-card-meta">
@@ -76,7 +64,15 @@ function NewsCards() {
                   <line x1="8" y1="2" x2="8" y2="6"></line>
                   <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
-                <span>{news.date}</span>
+                <span>
+                  {news.created_at
+                    ? new Date(news.created_at).toLocaleDateString("fr-FR", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    : ""}
+                </span>
               </div>
               <div className="news-card-time">
                 <svg
@@ -93,11 +89,13 @@ function NewsCards() {
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
-                <span>{news.readTime}</span>
+                <span>
+                  {news.readTime ? `${news.readTime} min` : ""}
+                </span>
               </div>
             </div>
             <h3 className="news-card-title">{news.title}</h3>
-            <p className="news-card-excerpt">{news.excerpt}</p>
+            <p className="news-card-excerpt">{news.excerpt || news.content}</p>
           </div>
           <div className="news-card-footer">
             <Link to={`/actualites/${news.id}`} className="news-card-link">
@@ -120,6 +118,9 @@ function NewsCards() {
           </div>
         </div>
       ))}
+      {displayedNews.length === 0 && (
+        <div className="news-card-empty">Aucune actualité disponible.</div>
+      )}
     </div>
   )
 }

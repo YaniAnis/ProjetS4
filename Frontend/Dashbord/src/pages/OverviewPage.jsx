@@ -11,6 +11,7 @@ import "./Pages.css";
 
 const OverviewPage = () => {
 	const [users, setUsers] = useState([]);
+	const [actualities, setActualities] = useState([]);
 
 	useEffect(() => {
 		const fetchUsers = async () => {
@@ -24,6 +25,19 @@ const OverviewPage = () => {
 			}
 		};
 		fetchUsers();
+	}, []);
+
+	useEffect(() => {
+		const fetchActualities = async () => {
+			try {
+				const res = await fetch("http://localhost:8000/api/actualities");
+				const data = await res.json();
+				setActualities(Array.isArray(data) ? data : data.data || []);
+			} catch {
+				setActualities([]);
+			}
+		};
+		fetchActualities();
 	}, []);
 
 	const formatNumber = (num) =>
@@ -54,6 +68,20 @@ const OverviewPage = () => {
 					/>
 					<StatCard name='Nombre de Matchs' icon={ShoppingBag} value='567' color='#EC4899' />
 				</motion.div>
+
+				{/* Actualities Preview */}
+				<div className="bg-gray-800 bg-opacity-50 rounded-xl p-6 mb-8 max-w-2xl mx-auto">
+					<h3 className="text-lg font-semibold text-gray-100 mb-4">Actualités récentes</h3>
+					<ul className="space-y-4">
+						{actualities.slice(0, 3).map((a, idx) => (
+							<li key={a.id || idx} className="border-b border-gray-700 pb-2">
+								<div className="text-indigo-400 font-bold">{a.title}</div>
+								<div className="text-gray-300">{a.content}</div>
+							</li>
+						))}
+						{actualities.length === 0 && <li className="text-gray-400">Aucune actualité.</li>}
+					</ul>
+				</div>
 
 				{/* CHARTS */}
 				<div className='overview-charts-grid'>

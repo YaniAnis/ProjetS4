@@ -6,6 +6,7 @@ import UtilisateurPage from "./pages/UtilisateurPage";
 import VentesPage from "./pages/VentesPage";
 import CommandePage from "./pages/CommandePage";
 import ParametrePage from "./pages/ParametrePage";
+import ActualitePage from "./pages/ActualitePage"; // <-- Add this import
 
 function App() {
 	return (
@@ -25,6 +26,7 @@ function App() {
 					<Route path='/ventes' element={<VentesPage />} />
 					<Route path='/commande' element={<CommandePage />} />
 					<Route path='/parametre' element={<ParametrePage />} />
+					<Route path='/Actualite' element={<ActualitePage />} /> {/* <-- Add this line */}
 				</Routes>
 			
 		</div>
