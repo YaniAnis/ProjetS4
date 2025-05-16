@@ -14,7 +14,7 @@ function StadiumPage() {
     { id: "D", name: "D", basePrice: 90, maxPrice: null, available: 148, selected: false, category: "Side Premium" },
     { id: "E", name: "E", basePrice: 90, maxPrice: null, available: 142, selected: false, category: "Side Premium" },
     { id: "F", name: "F", basePrice: 90, maxPrice: null, available: 152, selected: false, category: "Side Premium" },
-    { id: "H", name: "H", basePrice: 90, maxPrice: null, available: 154, selected: false, category: "Side Premium" },
+    { id: "G", name: "G", basePrice: 90, maxPrice: null, available: 154, selected: false, category: "Side Premium" },
     { id: "VIP", name: "VIP", basePrice: 150, maxPrice: null, available: 60, selected: true, category: "VIP" },
   ])
 
