@@ -10,6 +10,7 @@ import ContactPage from "./Pages/ContactPage"
 import NewsDetailPage from "./Pages/NewsDetailPage"
 import LoginPage from "./Pages/LoginPage"
 import RegisterPage from "./Pages/RegisterPage"
+import ContactMessage from './Pages/ContactMessage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/actualites/:id" element={<NewsDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/Message" element={<ContactMessage />} />
         
       </Routes>
       <Footer />

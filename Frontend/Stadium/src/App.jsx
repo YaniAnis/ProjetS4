@@ -3,8 +3,7 @@
 import { useState } from "react"
 import StadiumMap from "./components/StadiumMap"
 import SectionSelector from "./components/SectionSelector"
-import Navbar from "./components/Navbar"
-import Footer from "./components/Footer"
+
 import MatchInfo from "./components/MatchInfo"
 import "./app.css"
 
@@ -55,7 +54,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <Navbar />
+
 
       <main className="main-content">
         <MatchInfo
@@ -107,7 +106,6 @@ function App() {
         </div>
       </main>
 
-      <Footer />
     </div>
   )
 }

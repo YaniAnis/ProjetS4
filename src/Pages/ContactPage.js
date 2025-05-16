@@ -1,14 +1,14 @@
 import React from 'react';
 import './Contact.css';
 import { Search, ChevronRight, Mail } from 'lucide-react';
-
+import { Link } from 'react-router-dom';
 
 function ContactPage() {
     return (
       <main className="help-page">
       {/* Stadium Background Image */}
       <div className="stadium-background">
-        <img src="/stadium-background.png" alt="Stadium" className="stadium-image" />
+        <img src="/images/Contact/stadium-background.png" alt="Stadium" className="stadium-image" />
         <div className="overlay"></div>
       </div>
 
@@ -72,7 +72,7 @@ function ContactPage() {
               <p className="email-description">
                 Vous n'avez pas trouvé la réponse à votre question ? Contactez notre équipe de support.
               </p>
-              <button className="contact-button">Contacter</button>
+              <Link to="/Message" className="contact-button">Contacter</Link>
             </div>
           </div>
         </div>
