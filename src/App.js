@@ -11,6 +11,8 @@ import NewsDetailPage from "./Pages/NewsDetailPage"
 import LoginPage from "./Pages/LoginPage"
 import RegisterPage from "./Pages/RegisterPage"
 import ContactMessage from './Pages/ContactMessage';
+import PaymentPage from "./Pages/PayementPage"
+import StadiumPage from './Pages/StadiumPage';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
         <Route path="/actualites/:id" element={<NewsDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/Message" element={<ContactMessage />} />
+        <Route path="/Payment" element={<PaymentPage />} />     
+        <Route path="/tickets" element={<StadiumPage />} />     
         
       </Routes>
       <Footer />

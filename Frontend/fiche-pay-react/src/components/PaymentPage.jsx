@@ -3,7 +3,7 @@
 import React from "react"
 import CreditCard from "./CreditCard"
 import PaymentForm from "./PaymentForm"
-import "../styles/PaymentPage.css"
+import "../components/styles/PaymentPage.css"
 
 function PaymentPage() {
   const [cardData, setCardData] = React.useState({

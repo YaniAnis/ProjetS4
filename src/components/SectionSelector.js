@@ -1,4 +1,4 @@
-"use client"
+import React from "react"
 import "./SectionSelector.css"
 
 function SectionSelector({ section, onSelect, onHover, onLeave }) {
@@ -44,4 +44,4 @@ function SectionSelector({ section, onSelect, onHover, onLeave }) {
   )
 }
 
-export default SectionSelector
+export default React.memo(SectionSelector)

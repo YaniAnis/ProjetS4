@@ -1,13 +1,12 @@
-"use client"
-
 import { useState } from "react"
-import StadiumMap from "./components/StadiumMap"
-import SectionSelector from "./components/SectionSelector"
+import StadiumMap from "../components/StadiumMap"
+import SectionSelector from "../components/SectionSelector"
+import { useNavigate } from "react-router-dom"
 
-import MatchInfo from "./components/MatchInfo"
+import MatchInfo from "../components/MatchInfo"
 import "./StadiumPage.css"
 
-function App() {
+function StadiumPage() {
   const [sections, setSections] = useState([
     { id: "A", name: "A", basePrice: 120, maxPrice: null, available: 184, selected: false, category: "Premium" },
     { id: "B", name: "B", basePrice: 90, maxPrice: null, available: 150, selected: false, category: "Side Premium" },
@@ -20,6 +19,7 @@ function App() {
   ])
 
   const [hoveredSection, setHoveredSection] = useState(null)
+  const navigate = useNavigate()
 
   const handleSectionHover = (sectionId) => {
     setHoveredSection(sectionId)
@@ -39,6 +39,7 @@ function App() {
     alert(
       `Proceeding with ${selectedSection?.id === "VIP" ? "VIP Zone" : `Zone ${selectedSection?.name}`} at €${selectedSection?.basePrice}`,
     )
+    navigate('/payement')
   }
 
   // Match information
@@ -110,4 +111,4 @@ function App() {
   )
 }
 
-export default App
+export default StadiumPage
