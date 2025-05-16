@@ -28,7 +28,7 @@ function App() {
         <Route path="/actualites/:id" element={<NewsDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/Message" element={<ContactMessage />} />
-        <Route path="/Payment" element={<PaymentPage />} />     
+        <Route path="/Payement" element={<PaymentPage />} />     
         <Route path="/tickets" element={<StadiumPage />} />     
         
       </Routes>
