@@ -1,7 +1,12 @@
-"use client"
+import React, { useState } from "react"
 import "./styles/PaymentForm.css"
 
 function PaymentForm({ cardData, onInputChange, onInputFocus }) {
+  const [showVerification, setShowVerification] = useState(false)
+  const [verificationCode, setVerificationCode] = useState("")
+  const [paiementId, setPaiementId] = useState(null)
+  const [verificationMessage, setVerificationMessage] = useState("")
+
   const formatCardNumber = (value) => {
     if (!value) return ""
 
@@ -104,7 +109,7 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
     }, 3000)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validation
@@ -112,15 +117,64 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
       return;
     }
 
-    // Show success message
-    alert("Paiement traité avec succès!");
+    // Simulate payment creation and receiving a paiementId and code
+    // In real app, call backend to create payment and get code
+    const fakePaiementId = 1 // Replace with real ID from backend
+    setPaiementId(fakePaiementId)
+    setShowVerification(true)
+    alert("Un code de vérification a été envoyé. Veuillez le saisir pour valider le paiement.")
 
-    // Reset form
-    onInputChange("number", "");
-    onInputChange("name", "");
-    onInputChange("expiry", "");
-    onInputChange("cvc", "");
-    e.target.reset();
+    // Optionally reset form fields
+    // onInputChange("number", "");
+    // onInputChange("name", "");
+    // onInputChange("expiry", "");
+    // onInputChange("cvc", "");
+    // e.target.reset();
+  }
+
+  const handleVerify = async (e) => {
+    e.preventDefault()
+    setVerificationMessage("")
+
+    // Call backend to verify payment
+    try {
+      const res = await fetch("/api/verify-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paiement_id: paiementId,
+          verification_code: verificationCode,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setVerificationMessage("Paiement vérifié avec succès !")
+        setShowVerification(false)
+      } else {
+        setVerificationMessage(data.message || "Code invalide.")
+      }
+    } catch {
+      setVerificationMessage("Erreur lors de la vérification.")
+    }
+  }
+
+  if (showVerification) {
+    return (
+      <form className="payment-form" onSubmit={handleVerify}>
+        <div className="form-input">
+          <label htmlFor="verification-code">Code de vérification</label>
+          <input
+            type="text"
+            id="verification-code"
+            value={verificationCode}
+            onChange={e => setVerificationCode(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className="payment-button">Vérifier</button>
+        {verificationMessage && <div style={{ color: "red", marginTop: 10 }}>{verificationMessage}</div>}
+      </form>
+    )
   }
 
   return (

@@ -14,6 +14,7 @@ class Paiement extends Model
         'user_id',
         'mode_paiement',
         'statut',
+        'verification_code',
     ];
 
     // Relation to Ticket
