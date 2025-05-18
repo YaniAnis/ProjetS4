@@ -1,0 +1,148 @@
+/* Daily Orders styles */
+.daily-orders {
+    background-color: rgba(31, 41, 55, 0.5); /* Equivalent to bg-gray-800 bg-opacity-50 */
+    backdrop-filter: blur(10px); /* Equivalent to backdrop-blur-md */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+    border-radius: 0.75rem; /* Equivalent to rounded-xl */
+    padding: 1.5rem; /* Equivalent to p-6 */
+    border: 1px solid #374151; /* Equivalent to border border-gray-700 */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .daily-orders-title {
+    font-size: 1.25rem; /* Equivalent to text-xl */
+    font-weight: 600; /* Equivalent to font-semibold */
+    color: #f3f4f6; /* Equivalent to text-gray-100 */
+    margin-bottom: 1rem; /* Equivalent to mb-4 */
+  }
+  
+  /* Order Distribution styles */
+  .order-distribution {
+    background-color: rgba(31, 41, 55, 0.5); /* Equivalent to bg-gray-800 bg-opacity-50 */
+    backdrop-filter: blur(10px); /* Equivalent to backdrop-blur-md */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+    border-radius: 0.75rem; /* Equivalent to rounded-xl */
+    padding: 1.5rem; /* Equivalent to p-6 */
+    border: 1px solid #374151; /* Equivalent to border border-gray-700 */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .order-distribution-title {
+    font-size: 1.25rem; /* Equivalent to text-xl */
+    font-weight: 600; /* Equivalent to font-semibold */
+    color: #f3f4f6; /* Equivalent to text-gray-100 */
+    margin-bottom: 1rem; /* Equivalent to mb-4 */
+  }
+  
+  /* Orders Table styles */
+  .orders-table {
+    background-color: rgba(31, 41, 55, 0.5); /* Equivalent to bg-gray-800 bg-opacity-50 */
+    backdrop-filter: blur(10px); /* Equivalent to backdrop-blur-md */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+    border-radius: 0.75rem; /* Equivalent to rounded-xl */
+    padding: 1.5rem; /* Equivalent to p-6 */
+    border: 1px solid #374151; /* Equivalent to border border-gray-700 */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .orders-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+  }
+  
+  .orders-table-title {
+    font-size: 1.25rem; /* Equivalent to text-xl */
+    font-weight: 600; /* Equivalent to font-semibold */
+    color: #f3f4f6; /* Equivalent to text-gray-100 */
+  }
+  
+  .orders-table-search {
+    position: relative;
+  }
+  
+  .orders-table-search-input {
+    background-color: #374151; /* Equivalent to bg-gray-700 */
+    color: #ffffff; /* Equivalent to text-white */
+    border-radius: 0.5rem; /* Equivalent to rounded-lg */
+    padding: 0.5rem 2rem 0.5rem 2.5rem; /* Equivalent to pl-10 pr-4 py-2 */
+    outline: none;
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .orders-table-search-input:focus {
+    box-shadow: 0 0 0 2px #3b82f6; /* Equivalent to focus:ring-2 focus:ring-blue-500 */
+  }
+  
+  .orders-table-search-icon {
+    position: absolute;
+    left: 0.75rem; /* Equivalent to left-3 */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af; /* Equivalent to text-gray-400 */
+  }
+  
+  .orders-table-container {
+    overflow-x: auto;
+  }
+  
+  .orders-table-content {
+    width: 100%;
+    border-collapse: collapse;
+    color: #d1d5db; /* Equivalent to text-gray-300 */
+  }
+  
+  .orders-table-content th {
+    padding: 0.75rem; /* Equivalent to px-6 py-3 */
+    text-align: left;
+    font-size: 0.75rem; /* Equivalent to text-xs */
+    font-weight: 500; /* Equivalent to font-medium */
+    color: #9ca3af; /* Equivalent to text-gray-400 */
+    text-transform: uppercase;
+    border-bottom: 1px solid #374151; /* Equivalent to divide-gray-700 */
+  }
+  
+  .orders-table-content td {
+    padding: 0.75rem; /* Equivalent to px-6 py-4 */
+    font-size: 0.875rem; /* Equivalent to text-sm */
+    color: #f3f4f6; /* Equivalent to text-gray-100 */
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem; /* Equivalent to px-2 */
+    font-size: 0.75rem; /* Equivalent to text-xs */
+    font-weight: 600; /* Equivalent to font-semibold */
+    border-radius: 9999px; /* Equivalent to rounded-full */
+  }
+  
+  .status-badge.delivered {
+    background-color: rgba(16, 185, 129, 0.2); /* Equivalent to bg-green-100 */
+    color: #10b981; /* Equivalent to text-green-800 */
+  }
+  
+  .status-badge.processing {
+    background-color: rgba(234, 179, 8, 0.2); /* Equivalent to bg-yellow-100 */
+    color: #f59e0b; /* Equivalent to text-yellow-800 */
+  }
+  
+  .status-badge.shipped {
+    background-color: rgba(59, 130, 246, 0.2); /* Equivalent to bg-blue-100 */
+    color: #3b82f6; /* Equivalent to text-blue-800 */
+  }
+  
+  .status-badge.pending {
+    background-color: rgba(239, 68, 68, 0.2); /* Equivalent to bg-red-100 */
+    color: #ef4444; /* Equivalent to text-red-800 */
+  }
+  
+  .view-button {
+    color: #6366f1; /* Equivalent to text-indigo-400 */
+    transition: color 0.2s ease;
+  }
+  
+  .view-button:hover {
+    color: #818cf8; /* Equivalent to hover:text-indigo-300 */
+  }
+  

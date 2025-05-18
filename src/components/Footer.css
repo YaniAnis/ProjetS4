@@ -1,120 +1,155 @@
 .footer {
-    background-color: #14532d;
-    color: white;
-    padding: 3rem 0 1rem;
-    margin-top: auto;
-  }
-  
-  .footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
+  background-color: #f8f9fa;
+  color: #4b5563;
+  padding: 3rem 1rem;
+  margin-top: auto;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.footer.dark-mode {
+  background-color: #1a1a1a;
+  color: #d1d5db;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #166534;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.footer.dark-mode .footer-logo {
+  color: #4ade80;
+}
+
+.footer-logo svg {
+  margin-right: 0.5rem;
+}
+
+.footer-description {
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.footer-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  color: #4b5563;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.footer.dark-mode .social-link {
+  background-color: #2d2d2d;
+  color: #d1d5db;
+}
+
+.social-link:hover {
+  background-color: #166534;
+  color: white;
+}
+
+.footer.dark-mode .social-link:hover {
+  background-color: #4ade80;
+  color: #1a1a1a;
+}
+
+.footer-heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: #166534;
+}
+
+.footer.dark-mode .footer-heading {
+  color: #4ade80;
+}
+
+.footer-links,
+.footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li,
+.footer-contact li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #4b5563;
+  transition: color 0.2s;
+}
+
+.footer.dark-mode .footer-links a {
+  color: #d1d5db;
+}
+
+.footer-links a:hover {
+  color: #166534;
+}
+
+.footer.dark-mode .footer-links a:hover {
+  color: #4ade80;
+}
+
+.footer-contact li {
+  display: flex;
+  align-items: center;
+}
+
+.footer-contact svg {
+  margin-right: 0.75rem;
+  color: #166534;
+}
+
+.footer.dark-mode .footer-contact svg {
+  color: #4ade80;
+}
+
+.footer-bottom {
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.footer.dark-mode .footer-bottom {
+  border-top: 1px solid #2d2d2d;
+}
+
+@media (max-width: 768px) {
   .footer-grid {
-    display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
   }
-  
-  .footer-section {
-    margin-bottom: 1rem;
-  }
-  
-  .footer-logo {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .footer-logo svg {
-    margin-right: 0.5rem;
-  }
-  
-  .footer-logo span {
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-  
-  .footer-description {
-    color: #e5e7eb;
-    margin-bottom: 1rem;
-    line-height: 1.5;
-  }
-  
-  .footer-social {
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .social-link {
-    color: white;
-    transition: color 0.2s;
-  }
-  
-  .social-link:hover {
-    color: #4ade80;
-  }
-  
-  .footer-heading {
-    font-size: 1.125rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-  
-  .footer-links {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .footer-links li {
-    margin-bottom: 0.5rem;
-  }
-  
-  .footer-links a {
-    color: #e5e7eb;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  
-  .footer-links a:hover {
-    color: white;
-  }
-  
-  .footer-contact {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .footer-contact li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    color: #e5e7eb;
-  }
-  
-  .footer-contact svg {
-    margin-right: 0.5rem;
-  }
-  
-  .footer-bottom {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #166534;
-    text-align: center;
-    color: #e5e7eb;
-    font-size: 0.875rem;
-  }
-  
-  @media (min-width: 768px) {
-    .footer-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .footer-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  
+}

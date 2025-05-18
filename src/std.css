@@ -1,0 +1,11 @@
+.std{
+ margin : 20px;
+ width: 300px;
+ height: 100px;
+ border: 2px solid #954c4c;
+ border-radius: 20px;
+ text-align: center;
+ font-size: 15px ;
+ padding: 5px;
+
+}
