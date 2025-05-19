@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -36,6 +37,20 @@ class AuthController extends Controller
             if (!$user) {
                 throw new \Exception('Failed to save user');
             }
+
+            // Send a welcome or confirmation email
+            Mail::raw('Bienvenue chez Footix ! ⚽🎟️
+
+Votre compte a été créé avec succès. Vous pouvez désormais réserver vos places pour les plus grands matchs et vibrer au rythme du football en quelques clics !
+
+N’attendez plus pour consulter le calendrier des rencontres et profiter des meilleures offres.
+
+À très vite dans les tribunes avec Footix !
+
+L’équipe Footix', function($msg) use ($user) {
+                $msg->to($user->email)
+                    ->subject('Bienvenue chez Footix !');
+            });
 
             Log::info('User created successfully', ['user' => $user]);
 

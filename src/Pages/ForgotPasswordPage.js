@@ -9,7 +9,7 @@ import CheckIcon from "./icons/CheckIcon"
 import ArrowRightIcon from "./icons/ArrowRightIcon"
 import EyeIcon from "./icons/EyeIcon"
 import EyeOffIcon from "./icons/EyeOffIcon"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 function ForgotPasswordPage() {
   // États pour gérer les différentes étapes
@@ -32,6 +32,7 @@ function ForgotPasswordPage() {
 
   // Références pour les inputs du code
   const codeInputRefs = useRef([])
+  const navigate = useNavigate();
 
   // Initialiser les références pour les inputs du code
   useEffect(() => {
@@ -43,11 +44,6 @@ function ForgotPasswordPage() {
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(String(email).toLowerCase())
-  }
-
-  // Générer un code aléatoire à 6 chiffres
-  const generateCode = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString()
   }
 
   // Évaluer la force du mot de passe
@@ -63,7 +59,7 @@ function ForgotPasswordPage() {
   }
 
   // Gérer la soumission du formulaire de demande
-  const handleRequestSubmit = (e) => {
+  const handleRequestSubmit = async (e) => {
     e.preventDefault()
 
     setEmailError("")
@@ -75,54 +71,74 @@ function ForgotPasswordPage() {
 
     setLoading(true)
 
-    // Simuler l'envoi d'un email (à remplacer par votre backend)
-    setTimeout(() => {
-      setLoading(false)
-
-      // Générer un code de vérification
-      const code = generateCode()
-      setVerificationCode(code)
-      console.log("Code de vérification (à des fins de démonstration):", code)
-
+    try {
+      const res = await fetch("http://localhost:8000/api/forgot-password-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) {
+        setLoading(false);
+        setEmailError("Erreur lors de l'envoi du code.");
+        return;
+      }
       // Passer à l'étape de vérification
       setCurrentStep("verify")
-
-      // Réinitialiser le code entré
       setEnteredCode(["", "", "", "", "", ""])
-
-      // Focus sur le premier champ de code
       setTimeout(() => {
         if (codeInputRefs.current[0]) {
           codeInputRefs.current[0].focus()
         }
       }, 100)
-    }, 1500)
+    } catch (err) {
+      setEmailError("Erreur réseau.");
+    } finally {
+      setLoading(false)
+    }
   }
 
   // Gérer la soumission du formulaire de vérification
-  const handleVerifySubmit = (e) => {
+  const handleVerifySubmit = async (e) => {
     e.preventDefault()
 
     setCodeError("")
     const code = enteredCode.join("")
 
+    if (enteredCode.some((digit) => !digit)) {
+      setCodeError("Veuillez entrer le code complet.")
+      return
+    }
+
     setLoading(true)
 
-    // Simuler la vérification du code
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      const res = await fetch("http://localhost:8000/api/verify-forgot-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code }),
+      });
+      setLoading(false);
 
-      if (code === verificationCode) {
-        // Code correct, passer à l'étape suivante
+      if (!res || res.status === 0) {
+        setCodeError("Erreur réseau. Vérifiez que le backend fonctionne et que l'URL est correcte.")
+        return
+      }
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
         setCurrentStep("reset")
       } else {
-        setCodeError("Code incorrect. Veuillez réessayer.")
+        setCodeError(data.message || "Code incorrect. Veuillez réessayer.")
       }
-    }, 1000)
+    } catch (err) {
+      setLoading(false)
+      setCodeError("Erreur réseau. Vérifiez que le backend fonctionne et que l'URL est correcte.")
+    }
   }
 
   // Gérer la soumission du formulaire de réinitialisation
-  const handleResetSubmit = (e) => {
+  const handleResetSubmit = async (e) => {
     e.preventDefault()
 
     setPasswordError("")
@@ -142,13 +158,28 @@ function ForgotPasswordPage() {
 
     setLoading(true)
 
-    // Simuler la réinitialisation du mot de passe
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      const res = await fetch("http://localhost:8000/api/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password: newPassword,
+          code: enteredCode.join("")
+        }),
+      });
+      const data = await res.json();
+      setLoading(false);
 
-      // Passer à l'étape de confirmation
-      setCurrentStep("success")
-    }, 1500)
+      if (res.ok && data.success) {
+        setCurrentStep("success")
+      } else {
+        setPasswordError(data.message || "Erreur lors de la réinitialisation.")
+      }
+    } catch (err) {
+      setLoading(false)
+      setPasswordError("Erreur réseau. Vérifiez que le backend fonctionne et que l'URL est correcte.")
+    }
   }
 
   // Gérer le changement d'un champ du code
@@ -199,32 +230,33 @@ function ForgotPasswordPage() {
   }
 
   // Gérer le renvoi du code
-  const handleResendCode = (e) => {
+  const handleResendCode = async (e) => {
     e.preventDefault()
 
     if (resendDisabled) return
 
     setResendDisabled(true)
 
-    // Générer un nouveau code
-    const code = generateCode()
-    setVerificationCode(code)
-    console.log("Nouveau code de vérification:", code)
-
-    // Réinitialiser les champs de code
-    setEnteredCode(["", "", "", "", "", ""])
-    if (codeInputRefs.current[0]) {
-      codeInputRefs.current[0].focus()
+    try {
+      await fetch("http://localhost:8000/api/forgot-password-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      // Réinitialiser les champs de code
+      setEnteredCode(["", "", "", "", "", ""])
+      if (codeInputRefs.current[0]) {
+        codeInputRefs.current[0].focus()
+      }
+      setResendText("Code envoyé!")
+    } catch (err) {
+      setResendText("Erreur lors de l'envoi")
     }
 
-    // Afficher un message temporaire
-    setResendText("Code envoyé!")
-
-    // Réactiver le lien après un délai
     setTimeout(() => {
       setResendDisabled(false)
       setResendText("Renvoyer")
-    }, 30000) // 30 secondes avant de pouvoir renvoyer
+    }, 30000)
   }
 
   // Mettre à jour la force du mot de passe
@@ -422,9 +454,12 @@ function ForgotPasswordPage() {
             </p>
           </div>
           <div className="card-footer">
-            <a href="#" className="submit-button">
+            <button
+              className="submit-button"
+              onClick={() => navigate("/login")}
+            >
               Se connecter
-            </a>
+            </button>
           </div>
         </div>
       </main>
