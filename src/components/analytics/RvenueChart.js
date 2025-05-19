@@ -1,68 +1,58 @@
-"use client"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
-
-// Données adaptées pour FootTickets
 const revenueData = [
-  { month: "Jan", revenue: 400000, target: 380000 },
-  { month: "Fév", revenue: 300000, target: 320000 },
-  { month: "Mar", revenue: 500000, target: 450000 },
-  { month: "Avr", revenue: 450000, target: 420000 },
-  { month: "Mai", revenue: 600000, target: 550000 },
-  { month: "Juin", revenue: 550000, target: 580000 },
-  { month: "Juil", revenue: 700000, target: 650000 },
-]
+    { month: "Jan", revenue: 4000, target: 3800 },
+    { month: "Feb", revenue: 3000, target: 3200 },
+    { month: "Mar", revenue: 5000, target: 4500 },
+    { month: "Apr", revenue: 4500, target: 4200 },
+    { month: "May", revenue: 6000, target: 5500 },
+    { month: "Jun", revenue: 5500, target: 5800 },
+    { month: "Jul", revenue: 7000, target: 6500 },
+];
 
 const RevenueChart = () => {
-  const [selectedTimeRange, setSelectedTimeRange] = useState("Ce mois")
+    const [selectedTimeRange, setSelectedTimeRange] = useState("This Month");
 
-  // Formater les valeurs en DA
-  const formatCurrency = (value) => {
-    return `${value.toLocaleString()} DA`
-  }
-
-  return (
-    <motion.div
-      className="revenue-chart"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-    >
-      <div className="revenue-chart-header">
-        <h2 className="revenue-chart-title">Revenus vs Objectifs</h2>
-        <select
-          className="revenue-chart-select"
-          value={selectedTimeRange}
-          onChange={(e) => setSelectedTimeRange(e.target.value)}
+    return (
+        <motion.div
+            className="revenue-chart"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
         >
-          <option>Cette semaine</option>
-          <option>Ce mois</option>
-          <option>Ce trimestre</option>
-          <option>Cette année</option>
-        </select>
-      </div>
+            <div className="revenue-chart-header">
+                <h2 className="revenue-chart-title">Revenue vs Target</h2>
+                <select
+                    className="revenue-chart-select"
+                    value={selectedTimeRange}
+                    onChange={(e) => setSelectedTimeRange(e.target.value)}
+                >
+                    <option>This Week</option>
+                    <option>This Month</option>
+                    <option>This Quarter</option>
+                    <option>This Year</option>
+                </select>
+            </div>
 
-      <div style={{ width: "100%", height: 400 }}>
-        <ResponsiveContainer>
-          <AreaChart data={revenueData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="month" stroke="#6b7280" />
-            <YAxis stroke="#6b7280" tickFormatter={formatCurrency} />
-            <Tooltip
-              formatter={(value) => formatCurrency(value)}
-              contentStyle={{ backgroundColor: "white", borderColor: "#e5e7eb" }}
-              itemStyle={{ color: "#374151" }}
-            />
-            <Legend />
-            <Area type="monotone" dataKey="revenue" name="Revenus" stroke="#16a34a" fill="#16a34a" fillOpacity={0.3} />
-            <Area type="monotone" dataKey="target" name="Objectifs" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-    </motion.div>
-  )
-}
-
-export default RevenueChart
+            <div style={{ width: "100%", height: 400 }}>
+                <ResponsiveContainer>
+                    <AreaChart data={revenueData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                        <XAxis dataKey="month" stroke="#9CA3AF" />
+                        <YAxis stroke="#9CA3AF" />
+                        <Tooltip
+                            contentStyle={{ backgroundColor: "rgba(31, 41, 55, 0.8)", borderColor: "#4B5563" }}
+                            itemStyle={{ color: "#E5E7EB" }}
+                        />
+                        <Legend />
+                        <Area type="monotone" dataKey="revenue" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.3} />
+                        <Area type="monotone" dataKey="target" stroke="#10B981" fill="#10B981" fillOpacity={0.3} />
+                    </AreaChart>
+                </ResponsiveContainer>
+            </div>
+        </motion.div>
+    );
+};
+export default RevenueChart;

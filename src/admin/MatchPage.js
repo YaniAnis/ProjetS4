@@ -1,113 +1,46 @@
-"use client"
+import { motion } from "framer-motion";
 
-import { useState } from "react"
-import "./Pages.css"
+import Header from "../components/common/Header";
+import StatCard from "../components/common/StatCard";
+
+import { AlertTriangle, DollarSign, Package, TrendingUp } from "lucide-react";
+import CategoryDistributionChart from "../components/overview/CategoryDistributionChart";
+import SalesTrendChart from "../components/Matches/SalesTrendChart";
+import ProductsTable from "../components/Matches/ProductsTable";
+import AddMatch from "../components/Matches/AddMatch";
+import "./Pages.css";
 
 const MatchPage = () => {
-  const [matches, setMatches] = useState([
-    {
-      id: 1,
-      homeTeam: "MC Alger",
-      awayTeam: "CR Belouizdad",
-      date: "2023-08-15",
-      time: "20:00",
-      stadium: "Stade 5 Juillet",
-      ticketsSold: 12500,
-      ticketsAvailable: 20000,
-    },
-    {
-      id: 2,
-      homeTeam: "JS Kabylie",
-      awayTeam: "USM Alger",
-      date: "2023-08-16",
-      time: "18:30",
-      stadium: "Stade 1er Novembre",
-      ticketsSold: 8700,
-      ticketsAvailable: 15000,
-    },
-    {
-      id: 3,
-      homeTeam: "Paradou AC",
-      awayTeam: "ES Sétif",
-      date: "2023-08-17",
-      time: "17:00",
-      stadium: "Stade Omar Hamadi",
-      ticketsSold: 5200,
-      ticketsAvailable: 10000,
-    },
-  ])
+	return (
+		<div className='products-page'>
+			<Header title='Matches' />
 
-  const [searchTerm, setSearchTerm] = useState("")
+			<main className='products-main'>
+				{/* STATS */}
+				<motion.div
+					className='products-stats-grid'
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 1 }}
+				>
+					<StatCard name='Total Matches' icon={Package} value={45} color='#6366F1' />
+					<StatCard name='Upcoming Matches' icon={TrendingUp} value={12} color='#10B981' />
+					<StatCard name='Completed Matches' icon={AlertTriangle} value={33} color='#F59E0B' />
+					<StatCard name='Total Revenue' icon={DollarSign} value={"$123,456"} color='#EF4444' />
+				</motion.div>
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value)
-  }
+				{/* Add Match Form */}
+				<AddMatch />
 
-  const filteredMatches = matches.filter(
-    (match) =>
-      match.homeTeam.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      match.awayTeam.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      match.stadium.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+				<ProductsTable />
 
-  return (
-    <div className="admin-page">
-      <div className="admin-page-header">
-        <h1 className="admin-page-title">Gestion des Matchs</h1>
-        <div className="admin-page-actions">
-          <button className="admin-page-button">Ajouter un Match</button>
-        </div>
-      </div>
-
-      <div className="admin-search-container">
-        <input
-          type="text"
-          placeholder="Rechercher un match..."
-          className="admin-search-input"
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-      </div>
-
-      <div className="admin-table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Équipe Domicile</th>
-              <th>Équipe Extérieur</th>
-              <th>Date</th>
-              <th>Heure</th>
-              <th>Stade</th>
-              <th>Billets Vendus</th>
-              <th>Billets Disponibles</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredMatches.map((match) => (
-              <tr key={match.id}>
-                <td>{match.id}</td>
-                <td>{match.homeTeam}</td>
-                <td>{match.awayTeam}</td>
-                <td>{match.date}</td>
-                <td>{match.time}</td>
-                <td>{match.stadium}</td>
-                <td>{match.ticketsSold}</td>
-                <td>{match.ticketsAvailable}</td>
-                <td>
-                  <button className="admin-table-button edit">Modifier</button>
-                  <button className="admin-table-button delete">Supprimer</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-}
-
-export default MatchPage
-
-
+				{/* CHARTS */}
+				<div className='products-charts-grid'>
+					<SalesTrendChart />
+					<CategoryDistributionChart />
+				</div>
+			</main>
+		</div>
+	);
+};
+export default MatchPage;

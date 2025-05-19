@@ -1,103 +1,67 @@
-"use client"
+import { BarChart2, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart,  Users } from "lucide-react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Newspaper } from "lucide-react";
 
-import { useState } from "react"
-import { NavLink } from "react-router-dom"
-import { Calendar, CreditCard, Home, Menu, Settings, ShoppingBag, Users, X } from "lucide-react"
-import "./Common.css"
+const SIDEBAR_ITEMS = [
+    {
+        name: "Aperçu",
+        icon: BarChart2,
+        color: "#6366f1",
+        href: "/",
+    },
+    { name: "Matches", icon: ShoppingBag, color: "#8B5CF6", href: "/matches" },
+    { name: "Utilisateur", icon: Users, color: "#EC4899", href: "/users" },
+    { name: "Ventes", icon: DollarSign, color: "#10B981", href: "/ventes" },
+    { name: "Commande", icon: ShoppingCart, color: "#F59E0B", href: "/commande" },
+    { name: "Actualite", icon: Newspaper, color: "#F87171", href: "/Actualite" },
+    { name: "Paramètre", icon: Settings, color: "#6EE7B7", href: "/parametre" },
+
+];
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true)
-  const [activeSubmenu, setActiveSubmenu] = useState(null)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen)
-  }
+    return (
+        <motion.div
+            className={`sidebar ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}
+            animate={{ width: isSidebarOpen ? 256 : 80 }}
+        >
+            <div className="sidebar-container">
+                <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="menu-button"
+                >
+                    <Menu size={24} />
+                </motion.button>
 
-  const toggleSubmenu = (submenu) => {
-    setActiveSubmenu(activeSubmenu === submenu ? null : submenu)
-  }
-
-  const menuItems = [
-    {
-      title: "Tableau de Bord",
-      icon: <Home size={20} />,
-      path: "/admin/overview",
-    },
-    {
-      title: "Matchs",
-      icon: <Calendar size={20} />,
-      path: "/admin/match",
-    },
-    {
-      title: "Ventes",
-      icon: <ShoppingBag size={20} />,
-      path: "/admin/ventes",
-    },
-    {
-      title: "Utilisateurs",
-      icon: <Users size={20} />,
-      path: "/admin/utilisateur",
-    },
-    {
-      title: "Commandes",
-      icon: <CreditCard size={20} />,
-      path: "/admin/commande",
-    },
-    {
-      title: "Paramètres",
-      icon: <Settings size={20} />,
-      path: "/admin/parametre",
-    },
-  ]
-
-  return (
-    <>
-      <div className={`admin-sidebar ${isOpen ? "open" : "closed"}`}>
-        <div className="admin-sidebar-header">
-          <h2 className="admin-sidebar-title">FootTickets</h2>
-          <button className="admin-sidebar-toggle" onClick={toggleSidebar}>
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-
-        <div className="admin-sidebar-content">
-          <nav className="admin-sidebar-nav">
-            <ul className="admin-sidebar-nav-list">
-              {menuItems.map((item, index) => (
-                <li key={index} className="admin-sidebar-nav-item">
-                  <NavLink
-                    to={item.path}
-                    className={({ isActive }) => `admin-sidebar-nav-link ${isActive ? "active" : ""}`}
-                  >
-                    <span className="admin-sidebar-nav-icon">{item.icon}</span>
-                    <span className="admin-sidebar-nav-text">{item.title}</span>
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-
-        <div className="admin-sidebar-footer">
-          <div className="admin-sidebar-user">
-            <div className="admin-sidebar-user-avatar">
-              <img
-                src="https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"
-                alt="User"
-              />
+                <nav className="sidebar-nav">
+                    {SIDEBAR_ITEMS.map((item) => (
+                        <Link key={item.href} to={item.href}>
+                            <motion.div className="sidebar-item">
+                                <item.icon size={20} style={{ color: item.color, minWidth: "20px" }} />
+                                <AnimatePresence>
+                                    {isSidebarOpen && (
+                                        <motion.span
+                                            className="sidebar-item-text"
+                                            initial={{ opacity: 0, width: 0 }}
+                                            animate={{ opacity: 1, width: "auto" }}
+                                            exit={{ opacity: 0, width: 0 }}
+                                            transition={{ duration: 0.2, delay: 0.3 }}
+                                        >
+                                            {item.name}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </motion.div>
+                        </Link>
+                    ))}
+                </nav>
             </div>
-            <div className="admin-sidebar-user-info">
-              <h3 className="admin-sidebar-user-name">Admin</h3>
-              <p className="admin-sidebar-user-role">Administrateur</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Overlay pour mobile */}
-      <div className={`admin-sidebar-overlay ${isOpen ? "visible" : ""}`} onClick={toggleSidebar}></div>
-    </>
-  )
-}
-
-export default Sidebar
+        </motion.div>
+    );
+};
+export default Sidebar;

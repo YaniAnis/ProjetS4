@@ -1,89 +1,57 @@
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { motion } from "framer-motion";
+import "./Overview.css";
+
+const salesData = [
+	{ name: "Jul", sales: 4200 },
+	{ name: "Aug", sales: 3800 },
+	{ name: "Sep", sales: 5100 },
+	{ name: "Oct", sales: 4600 },
+	{ name: "Nov", sales: 5400 },
+	{ name: "Dec", sales: 7200 },
+	{ name: "Jan", sales: 6100 },
+	{ name: "Feb", sales: 5900 },
+	{ name: "Mar", sales: 6800 },
+	{ name: "Apr", sales: 6300 },
+	{ name: "May", sales: 7100 },
+	{ name: "Jun", sales: 7500 },
+];
+
 const SalesOverviewChart = () => {
-  // Données pour le graphique
-  const salesData = [
-    { name: "Jan", sales: 4200 },
-    { name: "Fév", sales: 3800 },
-    { name: "Mar", sales: 5100 },
-    { name: "Avr", sales: 4600 },
-    { name: "Mai", sales: 5400 },
-    { name: "Juin", sales: 7200 },
-    { name: "Juil", sales: 6100 },
-    { name: "Août", sales: 5900 },
-    { name: "Sep", sales: 6800 },
-    { name: "Oct", sales: 6300 },
-    { name: "Nov", sales: 7100 },
-    { name: "Déc", sales: 7500 },
-  ]
+	return (
+		<motion.div
+			className='sales-overview-chart'
+			initial={{ opacity: 0, y: 20 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ delay: 0.2 }}
+		>
+			<h2 className='sales-overview-title'>Aperçu des Ventes</h2>
 
-  // Trouver la valeur maximale pour l'échelle
-  const maxSales = Math.max(...salesData.map((item) => item.sales))
-
-  return (
-    <div className="sales-overview-chart">
-      <h2 className="sales-overview-title">Aperçu des Ventes</h2>
-      <div className="sales-overview-container">
-        <div className="static-line-chart">
-          <div className="chart-grid">
-            {/* Axe Y */}
-            <div className="y-axis">
-              {[0, 1, 2, 3, 4].map((index) => (
-                <div key={index} className="y-label">
-                  {Math.round((maxSales / 4) * (4 - index))}
-                </div>
-              ))}
-            </div>
-
-            {/* Graphique */}
-            <div className="chart-area">
-              <div className="line-container">
-                {salesData.map((item, index) => (
-                  <div
-                    key={index}
-                    className="data-point"
-                    style={{
-                      left: `${(index / (salesData.length - 1)) * 100}%`,
-                      bottom: `${(item.sales / maxSales) * 100}%`,
-                    }}
-                  >
-                    <div className="point-dot"></div>
-                    {index < salesData.length - 1 && (
-                      <div
-                        className="line-segment"
-                        style={{
-                          width: `${100 / (salesData.length - 1)}%`,
-                          transform: `rotate(${Math.atan2(
-                            ((salesData[index + 1].sales - item.sales) / maxSales) * 100,
-                            100 / (salesData.length - 1),
-                          )}rad)`,
-                          transformOrigin: "left center",
-                        }}
-                      ></div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Axe X */}
-            <div className="x-axis">
-              {salesData.map((item, index) => (
-                <div
-                  key={index}
-                  className="x-label"
-                  style={{
-                    left: `${(index / (salesData.length - 1)) * 100}%`,
-                  }}
-                >
-                  {item.name}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default SalesOverviewChart
-
+			<div className='sales-overview-container'>
+				<ResponsiveContainer width={"100%"} height={"100%"}>
+					<LineChart data={salesData}>
+						<CartesianGrid strokeDasharray='3 3' stroke='#4B5563' />
+						<XAxis dataKey={"name"} stroke='#9ca3af' />
+						<YAxis stroke='#9ca3af' />
+						<Tooltip
+							contentStyle={{
+								backgroundColor: "rgba(31, 41, 55, 0.8)",
+								borderColor: "#4B5563",
+							}}
+							itemStyle={{ color: "#E5E7EB" }}
+						/>
+						<Line
+							type='monotone'
+							dataKey='sales'
+							stroke='#6366F1'
+							strokeWidth={3}
+							dot={{ fill: "#6366F1", strokeWidth: 2, r: 6 }}
+							activeDot={{ r: 8, strokeWidth: 2 }}
+						/>
+					</LineChart>
+				</ResponsiveContainer>
+			</div>
+		</motion.div>
+	);
+};
+export default SalesOverviewChart;

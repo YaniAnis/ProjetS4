@@ -1,71 +1,96 @@
-import CategoryDistributionChart from "../components/overview/CategoryDistributionChart"
-import SalesOverviewChart from "../components/overview/SalesOverviewChart"
-import SalesChannelChart from "../components/overview/SalesChannelChart"
-import "./Pages.css"
+import {  ShoppingBag, Users, Zap } from "lucide-react";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+
+import Header from "../components/common/Header";
+import StatCard from "../components/common/StatCard";
+import SalesOverviewChart from "../components/overview/SalesOverviewChart";
+import CategoryDistributionChart from "../components/overview/CategoryDistributionChart";
+import SalesChannelChart from "../components/overview/SalesChannelChart";
+import "./Pages.css";
 
 const OverviewPage = () => {
-  return (
-    <div className="admin-page">
-      <div className="admin-page-header">
-        <h1 className="admin-page-title">Tableau de Bord</h1>
-        <div className="admin-page-actions">
-          <select className="admin-page-select">
-            <option value="all-time">Tout le temps</option>
-            <option value="this-year">Cette année</option>
-            <option value="this-month">Ce mois</option>
-            <option value="this-week">Cette semaine</option>
-          </select>
-        </div>
-      </div>
+	const [users, setUsers] = useState([]);
+	const [actualities, setActualities] = useState([]);
 
-      <div className="admin-stats-grid">
-        <div className="admin-stat-card">
-          <div className="admin-stat-card-content">
-            <h3 className="admin-stat-card-title">Ventes Totales</h3>
-            <p className="admin-stat-card-value">132,500 DA</p>
-            <p className="admin-stat-card-change positive">+12.5% depuis le mois dernier</p>
-          </div>
-        </div>
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const response = await fetch("http://localhost:8000/api/users");
+				const data = await response.json();
+				const usersArray = Array.isArray(data) ? data : data.data || [];
+				setUsers(usersArray);
+			} catch (e) {
+				setUsers([]);
+			}
+		};
+		fetchUsers();
+	}, []);
 
-        <div className="admin-stat-card">
-          <div className="admin-stat-card-content">
-            <h3 className="admin-stat-card-title">Billets Vendus</h3>
-            <p className="admin-stat-card-value">1,245</p>
-            <p className="admin-stat-card-change positive">+8.3% depuis le mois dernier</p>
-          </div>
-        </div>
+	useEffect(() => {
+		const fetchActualities = async () => {
+			try {
+				const res = await fetch("http://localhost:8000/api/actualities");
+				const data = await res.json();
+				setActualities(Array.isArray(data) ? data : data.data || []);
+			} catch {
+				setActualities([]);
+			}
+		};
+		fetchActualities();
+	}, []);
 
-        <div className="admin-stat-card">
-          <div className="admin-stat-card-content">
-            <h3 className="admin-stat-card-title">Matchs Programmés</h3>
-            <p className="admin-stat-card-value">18</p>
-            <p className="admin-stat-card-change positive">+3 depuis le mois dernier</p>
-          </div>
-        </div>
+	const formatNumber = (num) =>
+		num.toLocaleString("fr-FR").replace(/,/g, " ").replace(/\s/g, " ");
 
-        <div className="admin-stat-card">
-          <div className="admin-stat-card-content">
-            <h3 className="admin-stat-card-title">Taux de Conversion</h3>
-            <p className="admin-stat-card-value">3.2%</p>
-            <p className="admin-stat-card-change negative">-0.5% depuis le mois dernier</p>
-          </div>
-        </div>
-      </div>
+	return (
+		<div className='overview-page'>
+			<Header title='Aperçu Général' />
 
-      <div className="admin-charts-grid">
-        <div className="admin-chart-container">
-          <SalesOverviewChart />
-        </div>
-        <div className="admin-chart-container">
-          <CategoryDistributionChart />
-        </div>
-        <div className="admin-chart-container">
-          <SalesChannelChart />
-        </div>
-      </div>
-    </div>
-  )
-}
+			<main className='overview-main'>
+				{/* STATS */}
+				<motion.div
+					className='overview-stats-grid'
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 1 }}
+				>
+					<StatCard name='Ventes Total' icon={Zap} value='$12,345' color='#6366F1' />
+					<StatCard
+						name='Nouveaux Utilisateur'
+						icon={Users}
+						value={
+							<span className="mt-1 text-3xl font-semibold text-gray-100">
+								{formatNumber(users.length)}
+							</span>
+						}
+						color='#8B5CF6'
+					/>
+					<StatCard name='Nombre de Matchs' icon={ShoppingBag} value='567' color='#EC4899' />
+				</motion.div>
 
-export default OverviewPage
+				{/* Actualities Preview */}
+				<div className="bg-gray-800 bg-opacity-50 rounded-xl p-6 mb-8 max-w-2xl mx-auto">
+					<h3 className="text-lg font-semibold text-gray-100 mb-4">Actualités récentes</h3>
+					<ul className="space-y-4">
+						{actualities.slice(0, 3).map((a, idx) => (
+							<li key={a.id || idx} className="border-b border-gray-700 pb-2">
+								<div className="text-indigo-400 font-bold">{a.title}</div>
+								<div className="text-gray-300">{a.content}</div>
+							</li>
+						))}
+						{actualities.length === 0 && <li className="text-gray-400">Aucune actualité.</li>}
+					</ul>
+				</div>
 
+				{/* CHARTS */}
+				<div className='overview-charts-grid'>
+					<SalesOverviewChart />
+					<CategoryDistributionChart />
+					<SalesChannelChart />
+				</div>
+			</main>
+		</div>
+	);
+};
+export default OverviewPage;
