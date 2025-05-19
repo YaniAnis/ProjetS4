@@ -52,7 +52,8 @@ class AuthController extends Controller
             ], 201);
         } catch (\Exception $e) {
             Log::error('Registration failed', ['error' => $e->getMessage()]);
-            return response()->json(['message' => 'An error occurred during registration.'], 500);
+            // For debugging, return the actual error message:
+            return response()->json(['message' => 'An error occurred during registration.', 'error' => $e->getMessage()], 500);
         }
     }
 
