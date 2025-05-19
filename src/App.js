@@ -21,6 +21,7 @@ import "./components/AdminLayout.css"
 import ProtectedRoute from "./components/ProtectedRoute"  
 import AdminRoute from "./components/AdminRoute"
 import AdminLayout from "./components/AdminLayout"
+import ForgotPasswordPage from "./Pages/ForgotPasswordPage"
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
         <Route path="/actualites" element={<NewsPage />} />
         <Route path="/actualites/:id" element={<NewsDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/help" element={<HelpPage />} />
 
         {/* Routes Admin protégées */}
