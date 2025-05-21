@@ -1,4 +1,5 @@
-import TeamPage from "../components/TeamPage"
+import TeamPage from "../components/TeamPage";
+import "../Pages/Teams.css";
 
 function Teams() {
   return (
@@ -7,7 +8,7 @@ function Teams() {
         <TeamPage />
       </main>
     </div>
-  )
+  );
 }
 
-export default Teams
+export default Teams;
