@@ -22,6 +22,10 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import AdminRoute from "./components/AdminRoute"
 import AdminLayout from "./components/AdminLayout"
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage"
+import ActualitePage from "./admin/ActualitePage";
+import ContactMessage from './Pages/ContactMessage';
+import PaymentPage from "./Pages/PayementPage"
+import StadiumPage from './Pages/StadiumPage';
 
 
 function App() {
@@ -56,6 +60,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/help" element={<HelpPage />} />
+        <Route path="/contact" element={<ContactMessage />} /> {/* <-- Add this line */}
+        <Route path="/Payement" element={<PaymentPage />} />     
+        <Route path="/tickets" element={<StadiumPage />} />  
 
         {/* Routes Admin protégées */}
         <Route
@@ -71,6 +78,7 @@ function App() {
           <Route path="match" element={<MatchPage />} />
           <Route path="ventes" element={<VentesPage />} />
           <Route path="utilisateur" element={<UtilisateurPage />} />
+          <Route path='actualite' element={<ActualitePage />} /> {/* <-- Add this line */}
           <Route path="commande" element={<CommandePage />} />
           <Route path="parametre" element={<ParametrePage />} />
         </Route>

@@ -9,14 +9,14 @@ const SIDEBAR_ITEMS = [
         name: "Aperçu",
         icon: BarChart2,
         color: "#6366f1",
-        href: "/",
+        href: "/admin/overview",
     },
-    { name: "Matches", icon: ShoppingBag, color: "#8B5CF6", href: "/matches" },
-    { name: "Utilisateur", icon: Users, color: "#EC4899", href: "/users" },
-    { name: "Ventes", icon: DollarSign, color: "#10B981", href: "/ventes" },
-    { name: "Commande", icon: ShoppingCart, color: "#F59E0B", href: "/commande" },
-    { name: "Actualite", icon: Newspaper, color: "#F87171", href: "/Actualite" },
-    { name: "Paramètre", icon: Settings, color: "#6EE7B7", href: "/parametre" },
+    { name: "Matches", icon: ShoppingBag, color: "#8B5CF6", href: "/admin/match" },
+    { name: "Utilisateur", icon: Users, color: "#EC4899", href: "/admin/utilisateur" },
+    { name: "Ventes", icon: DollarSign, color: "#10B981", href: "/admin/ventes" },
+    { name: "Commande", icon: ShoppingCart, color: "#F59E0B", href: "/admin/commande" },
+    { name: "Actualite", icon: Newspaper, color: "#F87171", href: "/admin/actualite" },
+    { name: "Paramètre", icon: Settings, color: "#6EE7B7", href: "/admin/parametre" },
 
 ];
 
