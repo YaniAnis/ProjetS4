@@ -2,6 +2,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1100px;
+  margin-top: 2.5rem; /* espace avec le titre */
 }
 
 .news-card {
@@ -130,9 +134,19 @@
 @media (max-width: 768px) {
   .news-cards {
     grid-template-columns: 1fr;
+    max-width: 100%;
   }
 }
 
 .news-cards.dark-mode {
   background-color: #121212;
+}
+
+body:not(.dark-mode) .news-cards {
+  background-color: #fff !important;
+}
+
+body:not(.dark-mode) .news-card {
+  background-color: #fff !important;
+  border-color: #e5e7eb !important;
 }

@@ -29,14 +29,25 @@
   color: inherit;
 }
 
+.navbar-logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  display: block;
+  margin-right: 20px;
+}
+
 .navbar-logo-icon {
   color: #22c55e;
   margin-right: 0.5rem;
 }
 
 .navbar-logo-text {
-  font-weight: 700;
-  font-size: 1.25rem;
+  font-weight: 800;
+  font-size: 2rem;
+  margin-left: 6px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .navbar-links {

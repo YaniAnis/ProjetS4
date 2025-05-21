@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import "./Navbar.css"
 
-function Navbar({ darkMode, setDarkMode }) {
+function Navbar({ darkMode, toggleDarkMode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigate = useNavigate()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -30,32 +30,19 @@ function Navbar({ darkMode, setDarkMode }) {
     navigate("/")
   }
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
-  }
-
   return (
     <header className={`navbar ${darkMode ? "dark-mode" : ""}`}>
       <div className="navbar-container">
         <div className="navbar-logo">
           <Link to="/">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="navbar-logo-icon"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              <path d="M2 12h20" />
-            </svg>
-            <span className="navbar-logo-text">FootTickets</span>
+            <img
+              src="/images/Logos/raw.png"
+              alt="Footix Logo"
+              className="navbar-logo-img"
+              style={{ width: 44, height: 44, marginRight: 20, verticalAlign: "middle", objectFit: "contain", display: "block" }}
+              onError={e => { e.target.style.display = "none"; }}
+            />
+            <span className="navbar-logo-text" style={{ marginLeft: 6, fontSize: "2rem" }}>Footix</span>
           </Link>
         </div>
 
@@ -71,6 +58,9 @@ function Navbar({ darkMode, setDarkMode }) {
           </Link>
           <Link to="/actualites" className="navbar-link">
             Actualités
+          </Link>
+          <Link to="/help" className="navbar-link">
+            Contact
           </Link>
         </nav>
 
@@ -223,6 +213,9 @@ function Navbar({ darkMode, setDarkMode }) {
           </Link>
           <Link to="/actualites" className="navbar-mobile-link" onClick={() => setIsMenuOpen(false)}>
             Actualités
+          </Link>
+          <Link to="/help" className="navbar-mobile-link" onClick={() => setIsMenuOpen(false)}>
+          Contact
           </Link>
           {isLoggedIn ? (
             <>

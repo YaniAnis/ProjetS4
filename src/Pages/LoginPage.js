@@ -16,14 +16,12 @@ function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
 
   const navigate = useNavigate()
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     setError("")
-    setSuccess("")
 
     if (isLogin) {
       // Vérification simple pour la démo
@@ -54,38 +52,11 @@ function LoginPage() {
           setError("Les mots de passe ne correspondent pas")
           return
         }
-        try {
-          const res = await fetch("http://localhost:8000/api/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: firstName + " " + lastName,
-              email,
-              password,
-              password_confirmation: confirmPassword,
-            }),
-          })
-          const data = await res.json()
-          console.log("Registration response:", data)
-          if (!res.ok) {
-            // Show validation errors if present
-            if (data.errors) {
-              const messages = Object.values(data.errors).flat().join(" ")
-              setError(messages)
-            } else if (data.error) {
-              setError(data.message + " " + data.error)
-            } else if (data.message) {
-              setError(data.message)
-            } else {
-              setError("Registration failed")
-            }
-          } else {
-            setSuccess("Registration successful! You can now log in.")
-            setIsLogin(true)
-          }
-        } catch (err) {
-          setError("Network error")
-        }
+
+        console.log("Registration successful")
+        localStorage.setItem("userRole", "user")
+        localStorage.setItem("isLoggedIn", "true")
+        navigate("/")
       } else {
         setError("Veuillez remplir tous les champs")
       }
@@ -178,11 +149,6 @@ function LoginPage() {
               {error && (
                 <div className="form-error" role="alert">
                   {error}
-                </div>
-              )}
-              {success && (
-                <div className="form-message" role="alert">
-                  {success}
                 </div>
               )}
 

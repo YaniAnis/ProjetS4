@@ -17,6 +17,18 @@
   align-items: center;
   flex-direction: column;
   max-height: 573px;
+  margin-bottom: 48px; /* Ajoute une marge pour séparer du footer */
+}
+
+/* Fond général de la page login/register */
+body:not(.dark-mode) {
+  background-color: #BFBFBF !important;
+}
+
+/* Pour s'assurer que le fond du container prend toute la hauteur */
+.page-container,
+.auth-container {
+  background-color: transparent !important;
 }
 
 /* Auth Card */
@@ -24,11 +36,17 @@
   width: 100%;
   max-width: 700px;
   min-height: 610px;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+  background-color: #fff;
+  border: 1px solid #8C8C8C;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 30px #fff;
+}
+
+/* Dark mode pour la carte */
+body.dark-mode .auth-card {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
 }
 
 /* Forms */
@@ -43,10 +61,18 @@
   padding: 25px 20px;
   margin: 20px auto 0;
   border-radius: 20px;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #8C8C8C;
+  box-shadow: 0px 15px 20px RGBA(5, 242, 151, 0.3);
+}
+
+/* Mode sombre pour les formulaires */
+body.dark-mode .custom-register-form,
+body.dark-mode .custom-login-form {
   background-color: #1a1a1a;
   color: #fff;
   border: 1px solid #333;
-  box-shadow: 0px 15px 20px RGBA(5, 242, 151, 0.3);
 }
 
 /* Form Titles */
@@ -84,15 +110,26 @@
   display: block;
 }
 
-.form-input {
-  background-color: #333;
-  color: #fff;
+/* Inputs et textarea en day mode : même couleur que le fond */
+.form-input,
+textarea {
+  background-color: #BFBFBF;
+  color: #333;
   width: 100%;
   padding: 20px 10px 10px;
-  border: 1px solid rgba(105, 105, 105, 0.397);
+  border: 1px solid #8C8C8C;
   border-radius: 10px;
   font-size: medium;
   outline: none;
+  resize: vertical;
+}
+
+/* Inputs et textarea en dark mode : gris foncé */
+body.dark-mode .form-input,
+body.dark-mode textarea {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #333;
 }
 
 .input-label {
@@ -124,12 +161,13 @@
   margin-bottom: 15px;
 }
 
-.form-checkbox input {
-  margin-right: 10px;
-  accent-color: #00ff7f;
+/* Checkbox label couleur grise foncée en day mode */
+.form-checkbox label {
+  color: #454545;
 }
 
-.form-checkbox label {
+/* Checkbox label couleur claire en dark mode */
+body.dark-mode .form-checkbox label {
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -245,7 +283,7 @@
 /* Tab Navigation */
 .auth-tabs {
   display: flex;
-  border-bottom: 1px solid #333;
+  border-bottom: 2px solid #616161;
 }
 
 .auth-tab {

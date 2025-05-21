@@ -9,22 +9,14 @@ function Footer({ darkMode }) {
           {/* Logo et description */}
           <div className="footer-section">
             <div className="footer-logo">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                <path d="M2 12h20" />
-              </svg>
-              <span>FootTickets</span>
+              <img
+                src="/images/Logos/raw.png"
+                alt="Footix Logo"
+                className="footer-logo-img"
+                style={{ width: 38, height: 38, marginRight: 16, verticalAlign: "middle", objectFit: "contain", display: "block" }}
+                onError={e => { e.target.style.display = "none"; }}
+              />
+              <span style={{ fontSize: "1.7rem", fontWeight: 700 }}>Footix</span>
             </div>
             <p className="footer-description">
               Votre plateforme de référence pour l'achat de billets de matchs de football.
@@ -144,7 +136,7 @@ function Footer({ darkMode }) {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} FootTickets. Tous droits réservés.</p>
+          <p>&copy; {new Date().getFullYear()} Footix. Tous droits réservés.</p>
         </div>
       </div>
     </footer>
