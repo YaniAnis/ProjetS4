@@ -1,6 +1,7 @@
 .category-filter {
   position: relative;
   min-width: 220px;
+  z-index: 20;
 }
 
 .filter-button {
@@ -11,11 +12,13 @@
   padding: 14px 20px;
   background-color: #1a472a;
   color: white;
-  border-radius: 30px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 15px;
   font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 2px 6px rgba(26, 71, 42, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(26, 71, 42, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
 .filter-button:hover {
@@ -67,6 +70,7 @@
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
+  border: rgb(190, 178, 178) 8px ;
 }
 
 .dropdown-item:hover {
