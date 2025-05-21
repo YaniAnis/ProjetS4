@@ -8,6 +8,7 @@ use App\Http\Controllers\ActualityController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
+use App\Models\User;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -70,4 +71,12 @@ Route::post('/reset-password', function (\Illuminate\Http\Request $request) {
     // Optionally, remove the code from cache after successful reset
     Cache::forget('forgot_code_' . $request->email);
     return response()->json(['success' => true, 'message' => 'Mot de passe réinitialisé avec succès']);
+});
+
+Route::post('/register-send-code', [AuthController::class, 'sendRegisterCode']);
+Route::post('/register-verify-code', [AuthController::class, 'verifyRegisterCode']);
+
+Route::get('/check-email', function (\Illuminate\Http\Request $request) {
+    $exists = User::where('email', $request->query('email'))->exists();
+    return response()->json(['exists' => $exists]);
 });

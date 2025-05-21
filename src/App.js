@@ -6,7 +6,7 @@ import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import HomePage from "./Pages/HomePage"
 import MatchesPage from "./Pages/MatchesPage"
-import TeamsPage from "./Pages/TeamsPage"
+import Teams from "./Pages/Teams"
 import NewsPage from "./Pages/NewsPage"
 import NewsDetailPage from "./Pages/NewsDetailPage"
 import LoginPage from "./Pages/LoginPage"
@@ -54,7 +54,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/matches" element={<MatchesPage />} />
-        <Route path="/equipes" element={<TeamsPage />} />
+        <Route path="/equipes" element={<Teams />} />
         <Route path="/actualites" element={<NewsPage />} />
         <Route path="/actualites/:id" element={<NewsDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
