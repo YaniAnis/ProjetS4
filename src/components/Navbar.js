@@ -55,7 +55,7 @@ function Navbar({ darkMode, setDarkMode }) {
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
               <path d="M2 12h20" />
             </svg>
-            <span className="navbar-logo-text">FootTickets</span>
+            <span className="navbar-logo-text">FooTiX</span>
           </Link>
         </div>
 
