@@ -13,7 +13,7 @@ function NewsDetailPage() {
   useEffect(() => {
     const fetchNewsItem = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/actualities/${id}`)
+        const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -29,87 +29,31 @@ function NewsDetailPage() {
     fetchNewsItem()
   }, [id])
 
-  if (loading) return <div className="loading">Chargement...</div>
-  if (error) return <div className="loading">Erreur : {error.message}</div>
-  if (!newsItem) return <div className="loading">Actualité non trouvée.</div>
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>
+  }
+
+  if (!newsItem) {
+    return <div>News item not found.</div>
+  }
 
   return (
-    <div className="news-detail">
-      <Link to="/actualites" className="back-link">
-        &larr; Retour aux actualités
-      </Link>
-      <div className="news-detail-header">
-        <h1 className="news-detail-title">{newsItem.title}</h1>
-        <div className="news-detail-meta">
-          <div className="news-detail-date">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <span>
-              {newsItem.created_at
-                ? new Date(newsItem.created_at).toLocaleDateString("fr-FR", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
-                : ""}
-            </span>
-          </div>
-          <div className="news-detail-time">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span>
-              {newsItem.readTime ? `${newsItem.readTime} min` : ""}
-            </span>
-          </div>
-        </div>
-      </div>
-      {newsItem.image && (
-        <div className="news-detail-image">
-          <img
-            src={
-              newsItem.image.startsWith("http")
-                ? newsItem.image
-                : `http://localhost:8000/storage/${newsItem.image}`
-            }
-            alt={newsItem.title}
-          />
-        </div>
+    <div className="news-detail-page">
+      <h1>{newsItem.title}</h1>
+      {newsItem.url ? (
+        <a href={newsItem.url} target="_blank" rel="noopener noreferrer">
+          Read more
+        </a>
+      ) : (
+        <p>No URL available.</p>
       )}
-      <div className="news-detail-content">
-        {newsItem.description && (
-          <div className="news-detail-description-centered">
-            <h2 className="news-detail-description-title">Description</h2>
-            <div className="news-detail-description-text">{newsItem.description}</div>
-          </div>
-        )}
-        {newsItem.content}
-      </div>
+      <p>By: {newsItem.by}</p>
+      <p>Score: {newsItem.score}</p>
+      <Link to="/">Back to Home</Link>
     </div>
   )
 }

@@ -19,7 +19,7 @@
   /* Stadium background */
   .stadium-background {
     position: relative;
-    height: 350px; /* Augmenté pour compenser l'absence du logo */
+    height: 350px;
     width: 100%;
     overflow: hidden;
     margin-bottom: 2rem;

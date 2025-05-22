@@ -1,0 +1,197 @@
+.danger-zone {
+	background-color: rgba(153, 27, 27, 0.5); /* Equivalent to bg-red-900 bg-opacity-50 */
+	backdrop-filter: blur(10px); /* Equivalent to backdrop-filter backdrop-blur-lg */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+	border-radius: 0.75rem; /* Equivalent to rounded-xl */
+	padding: 1.5rem; /* Equivalent to p-6 */
+	border: 1px solid #7f1d1d; /* Equivalent to border-red-700 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.danger-zone-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.danger-zone-icon {
+	color: #f87171; /* Equivalent to text-red-400 */
+	margin-right: 0.75rem; /* Equivalent to mr-3 */
+}
+
+.danger-zone-title {
+	font-size: 1.25rem; /* Equivalent to text-xl */
+	font-weight: 600; /* Equivalent to font-semibold */
+	color: #f3f4f6; /* Equivalent to text-gray-100 */
+}
+
+.danger-zone-description {
+	color: #d1d5db; /* Equivalent to text-gray-300 */
+	margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.danger-zone-button {
+	background-color: #dc2626; /* Equivalent to bg-red-600 */
+	color: #ffffff; /* Equivalent to text-white */
+	font-weight: 700; /* Equivalent to font-bold */
+	padding: 0.5rem 1rem; /* Equivalent to py-2 px-4 */
+	border-radius: 0.375rem; /* Equivalent to rounded */
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.2s ease; /* Equivalent to transition duration-200 */
+}
+
+.danger-zone-button:hover {
+	background-color: #b91c1c; /* Equivalent to hover:bg-red-700 */
+}
+
+.profile-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+}
+
+@media (min-width: 640px) {
+	.profile-header {
+		flex-direction: row; /* Equivalent to sm:flex-row */
+	}
+}
+
+.profile-image {
+	border-radius: 9999px; /* Equivalent to rounded-full */
+	width: 5rem; /* Equivalent to w-20 */
+	height: 5rem; /* Equivalent to h-20 */
+	object-fit: cover; /* Equivalent to object-cover */
+	margin-right: 1rem; /* Equivalent to mr-4 */
+}
+
+.profile-name {
+	font-size: 1.125rem; /* Equivalent to text-lg */
+	font-weight: 600; /* Equivalent to font-semibold */
+	color: #f3f4f6; /* Equivalent to text-gray-100 */
+}
+
+.profile-email {
+	color: #9ca3af; /* Equivalent to text-gray-400 */
+}
+
+.profile-edit-button {
+	background-color: #4f46e5; /* Equivalent to bg-indigo-600 */
+	color: #ffffff; /* Equivalent to text-white */
+	font-weight: 700; /* Equivalent to font-bold */
+	padding: 0.5rem 1rem; /* Equivalent to py-2 px-4 */
+	border-radius: 0.375rem; /* Equivalent to rounded */
+	width: 100%; /* Equivalent to w-full */
+	transition: background-color 0.2s ease; /* Equivalent to transition duration-200 */
+	border: none;
+	cursor: pointer;
+}
+
+@media (min-width: 640px) {
+	.profile-edit-button {
+		width: auto; /* Equivalent to sm:w-auto */
+	}
+}
+
+.profile-edit-button:hover {
+	background-color: #4338ca; /* Equivalent to hover:bg-indigo-700 */
+}
+
+.security-button-container {
+	margin-top: 1rem; /* Equivalent to mt-4 */
+}
+
+.security-change-password-button {
+	background-color: #4f46e5; /* Equivalent to bg-indigo-600 */
+	color: #ffffff; /* Equivalent to text-white */
+	font-weight: 700; /* Equivalent to font-bold */
+	padding: 0.5rem 1rem; /* Equivalent to py-2 px-4 */
+	border-radius: 0.375rem; /* Equivalent to rounded */
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.2s ease; /* Equivalent to transition duration-200 */
+}
+
+.security-change-password-button:hover {
+	background-color: #4338ca; /* Equivalent to hover:bg-indigo-700 */
+}
+
+.setting-section {
+	background-color: rgba(31, 41, 55, 0.5); /* Equivalent to bg-gray-800 bg-opacity-50 */
+	backdrop-filter: blur(10px); /* Equivalent to backdrop-filter backdrop-blur-lg */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+	border-radius: 0.75rem; /* Equivalent to rounded-xl */
+	padding: 1.5rem; /* Equivalent to p-6 */
+	border: 1px solid #374151; /* Equivalent to border border-gray-700 */
+	margin-bottom: 2rem; /* Equivalent to mb-8 */
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.setting-section-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.setting-section-icon {
+	color: #6366f1; /* Equivalent to text-indigo-400 */
+	margin-right: 1rem; /* Equivalent to mr-4 */
+}
+
+.setting-section-title {
+	font-size: 1.25rem; /* Equivalent to text-xl */
+	font-weight: 600; /* Equivalent to font-semibold */
+	color: #f3f4f6; /* Equivalent to text-gray-100 */
+}
+
+.toggle-switch {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.75rem 0; /* Equivalent to py-3 */
+}
+
+.toggle-switch-label {
+	color: #d1d5db; /* Equivalent to text-gray-300 */
+}
+
+.toggle-switch-button {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	height: 1.5rem; /* Equivalent to h-6 */
+	width: 2.75rem; /* Equivalent to w-11 */
+	border-radius: 9999px; /* Equivalent to rounded-full */
+	transition: background-color 0.2s ease; /* Equivalent to transition-colors */
+	outline: none; /* Equivalent to focus:outline-none */
+	border: none;
+	cursor: pointer;
+}
+
+.toggle-switch-on {
+	background-color: #4f46e5; /* Equivalent to bg-indigo-600 */
+}
+
+.toggle-switch-off {
+	background-color: #4b5563; /* Equivalent to bg-gray-600 */
+}
+
+.toggle-switch-indicator {
+	position: absolute;
+	display: inline-block;
+	width: 1rem; /* Equivalent to size-4 */
+	height: 1rem; /* Equivalent to size-4 */
+	background-color: #ffffff; /* Equivalent to bg-white */
+	border-radius: 9999px; /* Equivalent to rounded-full */
+	transition: transform 0.2s ease; /* Equivalent to transition-transform */
+}
+
+.toggle-switch-indicator-on {
+	transform: translateX(1.5rem); /* Equivalent to translate-x-6 */
+}
+
+.toggle-switch-indicator-off {
+	transform: translateX(0.25rem); /* Equivalent to translate-x-1 */
+}

@@ -72,7 +72,7 @@ function ContactPage() {
               <p className="email-description">
                 Vous n'avez pas trouvé la réponse à votre question ? Contactez notre équipe de support.
               </p>
-              <Link to="/Message" className="contact-button">Contacter</Link>
+              <Link to="/contact" className="contact-button">Contacter</Link>
             </div>
           </div>
         </div>

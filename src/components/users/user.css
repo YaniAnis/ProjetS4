@@ -1,0 +1,215 @@
+.user-activity-heatmap {
+	background-color: rgba(31, 41, 55, 0.5); /* Equivalent to bg-gray-800 bg-opacity-50 */
+	backdrop-filter: blur(10px); /* Equivalent to backdrop-blur-md */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+	border-radius: 0.75rem; /* Equivalent to rounded-xl */
+	padding: 1.5rem; /* Equivalent to p-6 */
+	border: 1px solid #374151; /* Equivalent to border border-gray-700 */
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.user-activity-title {
+	font-size: 1.25rem; /* Equivalent to text-xl */
+	font-weight: 600; /* Equivalent to font-semibold */
+	color: #f3f4f6; /* Equivalent to text-gray-100 */
+	margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.user-activity-container {
+	width: 100%;
+	height: 300px;
+}
+
+.user-demographics-chart {
+	background-color: rgba(31, 41, 55, 0.5); /* Equivalent to bg-gray-800 bg-opacity-50 */
+	backdrop-filter: blur(10px); /* Equivalent to backdrop-blur-md */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+	border-radius: 0.75rem; /* Equivalent to rounded-xl */
+	padding: 1.5rem; /* Equivalent to p-6 */
+	border: 1px solid #374151; /* Equivalent to border border-gray-700 */
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.user-demographics-title {
+	font-size: 1.25rem; /* Equivalent to text-xl */
+	font-weight: 600; /* Equivalent to font-semibold */
+	color: #f3f4f6; /* Equivalent to text-gray-100 */
+	margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.user-demographics-container {
+	width: 100%;
+	height: 300px;
+}
+
+.user-growth-chart {
+	background-color: rgba(31, 41, 55, 0.5); /* Equivalent to bg-gray-800 bg-opacity-50 */
+	backdrop-filter: blur(10px); /* Equivalent to backdrop-blur-md */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+	border-radius: 0.75rem; /* Equivalent to rounded-xl */
+	padding: 1.5rem; /* Equivalent to p-6 */
+	border: 1px solid #374151; /* Equivalent to border border-gray-700 */
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.user-growth-title {
+	font-size: 1.25rem; /* Equivalent to text-xl */
+	font-weight: 600; /* Equivalent to font-semibold */
+	color: #f3f4f6; /* Equivalent to text-gray-100 */
+	margin-bottom: 1rem; /* Equivalent to mb-4 */
+}
+
+.user-growth-container {
+	height: 320px;
+}
+
+.users-table {
+	background-color: rgba(31, 41, 55, 0.5); /* Equivalent to bg-gray-800 bg-opacity-50 */
+	backdrop-filter: blur(10px); /* Equivalent to backdrop-blur-md */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+	border-radius: 0.75rem; /* Equivalent to rounded-xl */
+	padding: 1.5rem; /* Equivalent to p-6 */
+	border: 1px solid #374151; /* Equivalent to border border-gray-700 */
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.users-table-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+}
+
+.users-table-title {
+	font-size: 1.25rem; /* Equivalent to text-xl */
+	font-weight: 600; /* Equivalent to font-semibold */
+	color: #f3f4f6; /* Equivalent to text-gray-100 */
+}
+
+.users-table-search {
+	position: relative;
+}
+
+.users-table-search-input {
+	background-color: #374151; /* Equivalent to bg-gray-700 */
+	color: #ffffff; /* Equivalent to text-white */
+	border-radius: 0.5rem; /* Equivalent to rounded-lg */
+	padding: 0.5rem 1rem 0.5rem 2.5rem; /* Equivalent to pl-10 pr-4 py-2 */
+	outline: none;
+	border: none;
+}
+
+.users-table-search-input::placeholder {
+	color: #9ca3af; /* Equivalent to placeholder-gray-400 */
+}
+
+.users-table-search-input:focus {
+	box-shadow: 0 0 0 2px #3b82f6; /* Equivalent to focus:ring-2 focus:ring-blue-500 */
+}
+
+.users-table-search-icon {
+	position: absolute;
+	left: 0.75rem; /* Equivalent to left-3 */
+	top: 0.625rem; /* Equivalent to top-2.5 */
+	color: #9ca3af; /* Equivalent to text-gray-400 */
+}
+
+.users-table-container {
+	overflow-x: auto;
+}
+
+.users-table-content {
+	width: 100%; /* Equivalent to min-w-full */
+	border-collapse: collapse;
+}
+
+.users-table-header-cell {
+	padding: 0.75rem 1.5rem; /* Equivalent to px-6 py-3 */
+	text-align: left;
+	font-size: 0.75rem; /* Equivalent to text-xs */
+	font-weight: 500; /* Equivalent to font-medium */
+	color: #9ca3af; /* Equivalent to text-gray-400 */
+	text-transform: uppercase; /* Equivalent to uppercase */
+	letter-spacing: 0.05em; /* Equivalent to tracking-wider */
+}
+
+.users-table-body {
+	border-top: 1px solid #374151; /* Equivalent to divide-y divide-gray-700 */
+}
+
+.users-table-cell {
+	padding: 1rem 1.5rem; /* Equivalent to px-6 py-4 */
+	white-space: nowrap; /* Equivalent to whitespace-nowrap */
+	font-size: 0.875rem; /* Equivalent to text-sm */
+	color: #d1d5db; /* Equivalent to text-gray-300 */
+}
+
+.users-table-cell-content {
+	display: flex;
+	align-items: center;
+}
+
+.users-table-avatar {
+	flex-shrink: 0;
+	width: 2.5rem; /* Equivalent to h-10 w-10 */
+	height: 2.5rem;
+}
+
+.users-table-avatar-placeholder {
+	width: 100%;
+	height: 100%;
+	border-radius: 9999px; /* Equivalent to rounded-full */
+	background: linear-gradient(to right, #a78bfa, #60a5fa); /* Equivalent to bg-gradient-to-r from-purple-400 to-blue-500 */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #ffffff; /* Equivalent to text-white */
+	font-weight: 600; /* Equivalent to font-semibold */
+}
+
+.users-table-name {
+	margin-left: 1rem; /* Equivalent to ml-4 */
+}
+
+.users-table-role {
+	padding: 0.25rem 0.5rem; /* Equivalent to px-2 */
+	font-size: 0.75rem; /* Equivalent to text-xs */
+	font-weight: 600; /* Equivalent to font-semibold */
+	border-radius: 9999px; /* Equivalent to rounded-full */
+	background-color: #1e3a8a; /* Equivalent to bg-blue-800 */
+	color: #bfdbfe; /* Equivalent to text-blue-100 */
+}
+
+.users-table-status {
+	padding: 0.25rem 0.5rem; /* Equivalent to px-2 */
+	font-size: 0.75rem; /* Equivalent to text-xs */
+	font-weight: 600; /* Equivalent to font-semibold */
+	border-radius: 9999px; /* Equivalent to rounded-full */
+}
+
+.users-table-status-active {
+	background-color: #065f46; /* Equivalent to bg-green-800 */
+	color: #d1fae5; /* Equivalent to text-green-100 */
+}
+
+.users-table-status-inactive {
+	background-color: #7f1d1d; /* Equivalent to bg-red-800 */
+	color: #fecaca; /* Equivalent to text-red-100 */
+}
+
+.users-table-action-edit {
+	color: #6366f1; /* Equivalent to text-indigo-400 */
+	margin-right: 0.5rem; /* Equivalent to mr-2 */
+}
+
+.users-table-action-edit:hover {
+	color: #818cf8; /* Equivalent to hover:text-indigo-300 */
+}
+
+.users-table-action-delete {
+	color: #f87171; /* Equivalent to text-red-400 */
+}
+
+.users-table-action-delete:hover {
+	color: #fca5a5; /* Equivalent to hover:text-red-300 */
+}
