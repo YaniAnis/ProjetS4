@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import "./NewsCards.css"
 import { Link } from "react-router-dom"
 
@@ -44,21 +44,45 @@ const newsData = [
 
 function NewsCards() {
   const [hoveredCard, setHoveredCard] = useState(null)
+  const [news, setNews] = useState([])
 
   // Détecter si nous sommes en mode sombre en vérifiant la classe sur le body
   const isDarkMode = document.body.classList.contains("dark-mode")
 
+  useEffect(() => {
+    // Fetch only actualities (admin ActualitePage.js writes to /api/actualities)
+    const fetchNews = async () => {
+      try {
+        const actualitiesRes = await fetch("http://localhost:8000/api/actualities")
+        const actualitiesData = await actualitiesRes.json()
+        const actualities = (Array.isArray(actualitiesData) ? actualitiesData : actualitiesData.data || []).map(a => ({
+          id: `actuality-${a.id}`,
+          title: a.title,
+          excerpt: a.content,
+          image: a.image_url || "/images/news/default.jpg",
+          date: a.created_at ? new Date(a.created_at).toLocaleDateString("fr-FR") : "",
+          readTime: a.readTime ? `${a.readTime} min` : "3 min",
+          type: "actuality"
+        }))
+        setNews(actualities)
+      } catch {
+        setNews([])
+      }
+    }
+    fetchNews()
+  }, [])
+
   return (
     <div className={`news-cards ${isDarkMode ? "dark-mode" : ""}`}>
-      {newsData.map((news) => (
+      {news.map((newsItem) => (
         <div
-          key={news.id}
-          className={`news-card ${hoveredCard === news.id ? "hovered" : ""} ${isDarkMode ? "dark-mode" : ""}`}
-          onMouseEnter={() => setHoveredCard(news.id)}
+          key={newsItem.id}
+          className={`news-card ${hoveredCard === newsItem.id ? "hovered" : ""} ${isDarkMode ? "dark-mode" : ""}`}
+          onMouseEnter={() => setHoveredCard(newsItem.id)}
           onMouseLeave={() => setHoveredCard(null)}
         >
           <div className="news-card-image">
-            <img src={news.image || "/placeholder.svg"} alt={news.title} />
+            <img src={newsItem.image || "/placeholder.svg"} alt={newsItem.title} />
           </div>
           <div className="news-card-content">
             <div className="news-card-meta">
@@ -79,7 +103,7 @@ function NewsCards() {
                   <line x1="8" y1="2" x2="8" y2="6"></line>
                   <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
-                <span>{news.date}</span>
+                <span>{newsItem.date}</span>
               </div>
               <div className="news-card-time">
                 <svg
@@ -96,14 +120,14 @@ function NewsCards() {
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
-                <span>{news.readTime}</span>
+                <span>{newsItem.readTime}</span>
               </div>
             </div>
-            <h3 className="news-card-title">{news.title}</h3>
-            <p className="news-card-excerpt">{news.excerpt}</p>
+            <h3 className="news-card-title">{newsItem.title}</h3>
+            <p className="news-card-excerpt">{newsItem.excerpt}</p>
           </div>
           <div className="news-card-footer">
-            <Link to={`/actualites/${news.id}`} className="news-card-link">
+            <Link to={`/actualites/${newsItem.id.replace("actuality-", "")}`} className="news-card-link">
               Lire plus
               <svg
                 xmlns="http://www.w3.org/2000/svg"

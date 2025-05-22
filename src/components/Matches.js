@@ -20,14 +20,78 @@ function Matches() {
     try {
       const res = await fetch("http://localhost:8000/api/matches");
       const data = await res.json();
+
+      // Club name to logo mapping
+      const clubLogo = (name) => {
+        if (!name) return "";
+        // Ligue 1
+        const l1 = {
+          "USM Alger": "/logos/Ligue1/usm_alger.png",
+          "JS Kabylie": "/logos/Ligue1/js_kabylie.png",
+          "CR Belouizdad": "/logos/Ligue1/cr_belouizdad.png",
+          "Paradou AC": "/logos/Ligue1/paradou_ac.png",
+          "ES Sétif": "/logos/Ligue1/es_setif.png",
+          "MC Alger": "/logos/Ligue1/mc_alger.png",
+          "MC El Bayadh": "/logos/Ligue1/mc_el_bayadh.png",
+          "CS Constantine": "/logos/Ligue1/cs_constantine.png",
+          "ASO Chlef": "/logos/Ligue1/aso_chlef.png",
+          "JS Saoura": "/logos/Ligue1/js_saoura.png",
+          "MC Oran": "/logos/Ligue1/mc_oran.png",
+          "Olympique Akbou": "/logos/Ligue1/o_akbou.png",
+          "USM Khenchela": "/logos/Ligue1/usm_khenchela.png",
+          "US Biskra": "/logos/Ligue1/us_biskra.png",
+          "NC Magra": "/logos/Ligue1/nc_magra.png",
+          "ES Mostaganem": "/logos/Ligue1/es_mostaganem.png",
+        };
+        // Ligue 2 Est
+        const l2e = {
+          "AS Khroub": "/logos/Ligue2_Est/as_khroub.png",
+          "CA Batna": "/logos/Ligue2_Est/ca_batna.png",
+          "HB Chelghoum Laïd": "/logos/Ligue2_Est/hb_chelghoum_laid.png",
+          "IB Khémis El Khechna": "/logos/Ligue2_Est/ib_khemis_el_khechna.png",
+          "IRB Ouargla": "/logos/Ligue2_Est/irb_ouargla.png",
+          "JS Bordj Ménaïel": "/logos/Ligue2_Est/js_bordj_menaiel.png",
+          "JS Djijel": "/logos/Ligue2_Est/js_djijel.png",
+          "MO Constantine": "/logos/Ligue2_Est/mo_constantine.png",
+          "MSP Batna": "/logos/Ligue2_Est/msp_batna.png",
+          "NRB Teleghma": "/logos/Ligue2_Est/nrb_teleghma.png",
+          "US Chaouia": "/logos/Ligue2_Est/us_chaouia.png",
+          "US Souf": "/logos/Ligue2_Est/us_souf.png",
+          "USM Annaba": "/logos/Ligue2_Est/usm_annaba.png",
+          "USM El Harrach": "/logos/Ligue2_Est/usm_el_harrach.png",
+          "MB Rouissat": "/logos/Ligue2_Est/mb_rouissat.png",
+          "Olympique Magrane": "/logos/Ligue2_Est/olympique_magrane.png",
+        };
+        // Ligue 2 Ouest
+        const l2o = {
+          "ASM Oran": "/logos/Ligue2_Ouest/asm_oran.png",
+          "CR Témouchent": "/logos/Ligue2_Ouest/cr_temouchent.png",
+          "ES Ben Aknoun": "/logos/Ligue2_Ouest/es_ben_aknoun.png",
+          "ESM Koléa": "/logos/Ligue2_Ouest/esm_kolea.png",
+          "GC Mascara": "/logos/Ligue2_Ouest/gc_mascara.png",
+          "JS El Biar": "/logos/Ligue2_Ouest/js_el_biar.png",
+          "JSM Tiaret": "/logos/Ligue2_Ouest/jsm_tiaret.png",
+          "MC Saïda": "/logos/Ligue2_Ouest/mc_saida.png",
+          "MCB Oued Sly": "/logos/Ligue2_Ouest/mcb_oued_sly.png",
+          "NA Hussein Dey": "/logos/Ligue2_Ouest/na_hussein_dey.png",
+          "RC Arbaâ": "/logos/Ligue2_Ouest/rc_arbaa.png",
+          "RC Kouba": "/logos/Ligue2_Ouest/rc_kouba.png",
+          "SC Mécheria": "/logos/Ligue2_Ouest/sc_mecheria.png",
+          "SKAF Khemis Miliana": "/logos/Ligue2_Ouest/skaf_khemis_miliana.png",
+          "US Béchar Djedid": "/logos/Ligue2_Ouest/us_bechar_djedid.png",
+          "WA Mostaganem": "/logos/Ligue2_Ouest/wa_mostaganem.png",
+        };
+        return l1[name] || l2e[name] || l2o[name] || "/placeholder.svg";
+      };
+
       // Map backend fields to frontend model
       const mapped = (Array.isArray(data) ? data : data.data || []).map(m => ({
         id: m.id,
         league: m.league,
         date: m.date,
         time: m.heure,
-        homeTeam: { name: m.equipe1, logo: "" },
-        awayTeam: { name: m.equipe2, logo: "" },
+        homeTeam: { name: m.equipe1, logo: clubLogo(m.equipe1) },
+        awayTeam: { name: m.equipe2, logo: clubLogo(m.equipe2) },
         stadium: m.stade?.nom || "",
         price: m.zones && m.zones.length > 0 ? Math.min(...m.zones.map(z => z.prix)) : "",
         // ...add more fields as needed
@@ -137,7 +201,7 @@ function Matches() {
     <section className="matches" id="matches-section">
       <div className="container">
         <h2>Matchs Disponibles</h2>
-        <button onClick={fetchMatches} className="btn-refresh">Rafraîchir la liste</button>
+        {/* <button onClick={fetchMatches} className="btn-refresh">Rafraîchir la liste</button> */}
 
         <CalendarNavigation
           currentMonth={currentMonth}

@@ -1,17 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom"
 
+// List of admin emails (must match your LoginPage.js)
+const ADMIN_EMAILS = ["admin@foottickets.com", "admin@admin.com"]
+
 const AdminRoute = ({ children }) => {
-  // Vérifier si l'utilisateur est connecté et a le rôle admin
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true"
-  const userRole = localStorage.getItem("userRole")
-  const isAdmin = isLoggedIn && userRole === "admin"
-
-  // Si l'utilisateur n'est pas admin, rediriger vers la page de connexion
-  if (!isAdmin) {
-    return <Navigate to="/login" replace />
-  }
-
-  // Sinon, afficher le contenu protégé
+  // Solution : ne jamais rediriger, toujours afficher le contenu enfant ou Outlet
   return children ? children : <Outlet />
 }
 

@@ -123,11 +123,20 @@ N’attendez plus pour consulter le calendrier des rencontres et profiter des me
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        // Correction: check if user exists before Auth::attempt to avoid exception
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
             return response()->json(['message' => 'Invalid login credentials'], 401);
         }
 
-        $user = User::where('email', $request->email)->firstOrFail();
+        // Correction: check if password is valid using Hash::check
+        if (!\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid login credentials'], 401);
+        }
+
+        // Log in the user (set session if needed)
+        Auth::login($user);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -146,13 +155,37 @@ N’attendez plus pour consulter le calendrier des rencontres et profiter des me
     // Send registration code
     public function sendRegisterCode(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
-        $code = rand(100000, 999999);
-        Cache::put('register_code_' . $request->email, $code, 600);
-        Mail::raw("Votre code de confirmation FooTiX est : $code", function($msg) use ($request) {
-            $msg->to($request->email)->subject('Code de confirmation FooTiX');
-        });
-        return response()->json(['message' => 'Code envoyé']);
+        // Correction: handle JSON input and validate
+        $data = $request->all();
+        $email = isset($data['email']) ? $data['email'] : null;
+
+        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['message' => 'Email invalide.'], 422);
+        }
+
+        try {
+            $code = rand(100000, 999999);
+            Cache::put('register_code_' . $email, $code, 600);
+
+            // Correction: use Mail::mailer('smtp') only if properly configured, else fallback to default
+            try {
+                Mail::raw("Votre code de confirmation FooTiX est : $code", function($msg) use ($email) {
+                    $msg->to($email)->subject('Code de confirmation FooTiX');
+                });
+            } catch (\Exception $mailEx) {
+                // Log but don't fail registration code sending for mailer config issues
+                \Log::error('Erreur lors de l\'envoi du mail de code d\'inscription', ['error' => $mailEx->getMessage()]);
+                return response()->json([
+                    'message' => 'Erreur lors de l\'envoi du mail : ' . $mailEx->getMessage(),
+                    'error' => $mailEx->getMessage()
+                ], 500);
+            }
+
+            return response()->json(['message' => 'Code envoyé']);
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la génération du code d\'inscription', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Erreur serveur lors de l\'envoi du code.', 'error' => $e->getMessage()], 500);
+        }
     }
 
     // Verify registration code

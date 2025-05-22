@@ -1,4 +1,23 @@
 function MatchCard({ match }) {
+  // Correction: Calculer le prix minimum à partir des zones (si disponible)
+  let minZonePrice = null;
+  if (Array.isArray(match.zones) && match.zones.length > 0) {
+    const prices = match.zones
+      .map(z => typeof z.price === "number" ? z.price : Number(z.price))
+      .filter(p => !isNaN(p) && p > 0);
+    if (prices.length > 0) {
+      minZonePrice = Math.min(...prices);
+    }
+  } else if (typeof match.price === "number" && !isNaN(match.price) && match.price > 0) {
+    // fallback for legacy data
+    minZonePrice = match.price;
+  }
+
+  let priceDisplay = "Non disponible";
+  if (minZonePrice !== null && !isNaN(minZonePrice) && minZonePrice > 0) {
+    priceDisplay = `À partir de ${minZonePrice} DZD`;
+  }
+
   return (
     <div className="match-card">
       <div className="match-header">
@@ -24,7 +43,7 @@ function MatchCard({ match }) {
             <i className="fas fa-map-marker-alt"></i>
             <span>{match.stadium}</span>
           </div>
-          <div className="price">À partir de {match.price}€</div>
+          <div className="price">{priceDisplay}</div>
         </div>
         <a href={`/purchase?id=${match.id}`} className="btn-primary">
           Acheter des billets

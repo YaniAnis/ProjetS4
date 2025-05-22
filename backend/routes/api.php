@@ -3,16 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController; // Ensure this matches the actual namespace of UserController
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ActualityController;
 use App\Http\Controllers\PaymentController;
-<<<<<<< HEAD
 use App\Http\Controllers\MatchController;
-=======
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
->>>>>>> 47488ee1fca2cae69c180f8bf78ea06ccc97d7bd
 
 Route::middleware('auth:sanctum')->get('/user', function (\Illuminate\Http\Request $request) {
     return $request->user();
@@ -27,13 +24,12 @@ Route::get('/actualities/{id}', [ActualityController::class, 'show']);
 Route::put('/actualities/{id}', [ActualityController::class, 'update']);
 Route::delete('/actualities/{id}', [ActualityController::class, 'destroy']);
 
-Route::get('/users', [UserController::class, 'index']); // Ensure UserController exists in the specified namespace
+Route::get('/users', [UserController::class, 'index']);
 Route::delete('/users/{id}', [UserController::class, 'destroy']);
 Route::get('/user-stats', [UserController::class, 'getUserStats']);
 Route::post('/create-checkout-session', [PaymentController::class, 'createCheckoutSession']);
 Route::post('/verify-payment', [PaymentController::class, 'verifyPayment']);
 
-<<<<<<< HEAD
 Route::get('/matches', [MatchController::class, 'index']);
 Route::post('/matches', [MatchController::class, 'store']);
 Route::get('/matches/{id}', [MatchController::class, 'show']);
@@ -42,7 +38,8 @@ Route::delete('/matches/{id}', [MatchController::class, 'destroy']);
 
 Route::get('/stades', function () {
     return \App\Models\Stade::all();
-=======
+});
+
 Route::post('/forgot-password-code', function (\Illuminate\Http\Request $request) {
     $request->validate(['email' => 'required|email']);
     $code = rand(100000, 999999);
@@ -76,18 +73,26 @@ Route::post('/reset-password', function (\Illuminate\Http\Request $request) {
     if (!$cachedCode || strval($request->code) !== strval($cachedCode)) {
         return response()->json(['success' => false, 'message' => 'Code incorrect'], 400);
     }
-    $user = \App\Models\User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
     if (!$user) {
         return response()->json(['success' => false, 'message' => 'Utilisateur introuvable'], 404);
     }
     $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
     $user->save();
-    // Optionally, remove the code from cache after successful reset
     Cache::forget('forgot_code_' . $request->email);
     return response()->json(['success' => true, 'message' => 'Mot de passe réinitialisé avec succès']);
 });
 
-Route::post('/register-send-code', [AuthController::class, 'sendRegisterCode']);
+Route::post('/register-send-code', function (\Illuminate\Http\Request $request) {
+    try {
+        return app(\App\Http\Controllers\AuthController::class)->sendRegisterCode($request);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur lors de l\'envoi du code : ' . $e->getMessage(),
+        ], 500);
+    }
+});
 Route::post('/register-verify-code', [AuthController::class, 'verifyRegisterCode']);
 
 Route::get('/check-email', function (\Illuminate\Http\Request $request) {
@@ -108,6 +113,7 @@ Route::middleware('auth:sanctum')->put('/user/password', function (\Illuminate\H
     $user->save();
     return response()->json(['message' => 'Mot de passe mis à jour avec succès.']);
 });
+
 Route::middleware('auth:sanctum')->delete('/user/delete', function (\Illuminate\Http\Request $request) {
     $user = $request->user();
     $request->validate([
@@ -119,6 +125,7 @@ Route::middleware('auth:sanctum')->delete('/user/delete', function (\Illuminate\
     $user->delete();
     return response()->json(['message' => 'Compte supprimé avec succès.']);
 });
+
 Route::middleware('auth:sanctum')->put('/user/update', function (\Illuminate\Http\Request $request) {
     $user = $request->user();
     $request->validate([
@@ -135,8 +142,8 @@ Route::middleware('auth:sanctum')->put('/user/update', function (\Illuminate\Htt
 Route::post('/send-change-email-code', function (\Illuminate\Http\Request $request) {
     $request->validate(['email' => 'required|email']);
     $code = rand(100000, 999999);
-    \Illuminate\Support\Facades\Cache::put('change_email_code_' . $request->email, $code, 600);
-    \Illuminate\Support\Facades\Mail::raw("Votre code de vérification FooTiX pour changer d'email est : $code", function($msg) use ($request) {
+    Cache::put('change_email_code_' . $request->email, $code, 600);
+    Mail::raw("Votre code de vérification FooTiX pour changer d'email est : $code", function($msg) use ($request) {
         $msg->to($request->email)->subject('Code de vérification changement d\'email FooTiX');
     });
     return response()->json(['message' => 'Code envoyé']);
@@ -149,14 +156,13 @@ Route::middleware('auth:sanctum')->put('/change-email', function (\Illuminate\Ht
         'email' => 'required|email|unique:users,email,' . $user->id,
         'code' => 'required'
     ]);
-    $cachedCode = \Illuminate\Support\Facades\Cache::get('change_email_code_' . $request->email);
+    $cachedCode = Cache::get('change_email_code_' . $request->email);
     if ($cachedCode && strval($request->code) === strval($cachedCode)) {
         $user->email = $request->email;
         $user->save();
-        \Illuminate\Support\Facades\Cache::forget('change_email_code_' . $request->email);
+        Cache::forget('change_email_code_' . $request->email);
         return response()->json(['message' => 'Email mis à jour avec succès.']);
     } else {
         return response()->json(['message' => 'Code incorrect ou expiré.'], 400);
     }
->>>>>>> 47488ee1fca2cae69c180f8bf78ea06ccc97d7bd
 });
