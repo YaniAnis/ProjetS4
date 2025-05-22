@@ -26,6 +26,7 @@ import ActualitePage from "./admin/ActualitePage";
 import ContactMessage from './Pages/ContactMessage';
 import PaymentPage from "./Pages/PayementPage"
 import StadiumPage from './Pages/StadiumPage';
+import ProfileSettings from "./Pages/ProfileSettings";
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
         <Route path="/contact" element={<ContactMessage />} /> {/* <-- Add this line */}
         <Route path="/Payement" element={<PaymentPage />} />     
         <Route path="/tickets" element={<StadiumPage />} />  
+        <Route path="/profilesettings" element={<ProfileSettings />} /> {/* <-- Add this line */}
 
         {/* Routes Admin protégées */}
         <Route

@@ -1,110 +1,101 @@
 "use client"
 
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 function DeleteAccountTab() {
-  const [showConfirmation, setShowConfirmation] = useState(false)
-  const [deleteReason, setDeleteReason] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirm, setConfirm] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState("")
   const [error, setError] = useState("")
-  const [isDeleting, setIsDeleting] = useState(false)
+  const navigate = useNavigate()
 
-  const handleRequestDelete = () => {
-    setShowConfirmation(true)
-  }
-
-  const handleCancelDelete = () => {
-    setShowConfirmation(false)
-    setDeleteReason("")
-    setConfirmPassword("")
+  const handleDelete = async (e) => {
+    e.preventDefault()
     setError("")
-  }
-
-  const handleConfirmDelete = () => {
-    if (!confirmPassword) {
-      setError("Veuillez entrer votre mot de passe pour confirmer")
+    setSuccess("")
+    if (!password || !confirm) {
+      setError("Veuillez entrer votre mot de passe pour confirmer.")
       return
     }
-
-    setError("")
-    setIsDeleting(true)
-
-    // Simuler la suppression
-    setTimeout(() => {
-      alert("Compte supprimé avec succès. Vous allez être redirigé vers la page d'accueil.")
-    }, 2000)
+    if (password !== confirm) {
+      setError("Les mots de passe ne correspondent pas.")
+      return
+    }
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.")) {
+      return
+    }
+    setLoading(true)
+    let token = localStorage.getItem("authToken") || localStorage.getItem("token")
+    if (!token) {
+      setError("Vous devez être connecté.")
+      setLoading(false)
+      return
+    }
+    try {
+      const res = await fetch("http://localhost:8000/api/user/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ password }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.message || "Erreur lors de la suppression du compte.")
+      } else {
+        setSuccess("Votre compte a été supprimé avec succès.")
+        // Clean up localStorage and redirect after a short delay
+        setTimeout(() => {
+          localStorage.clear()
+          navigate("/login")
+        }, 2000)
+      }
+    } catch {
+      setError("Erreur réseau.")
+    }
+    setLoading(false)
   }
 
   return (
-    <div className="settings-section delete-account-section" id="delete-tab">
-      <div className="settings-header">
-        <h2>Supprimer le compte</h2>
-      </div>
-
+    <div className="delete-account-section">
       <div className="warning-box">
-        <div className="warning-icon">⚠️</div>
+        <span className="warning-icon">⚠️</span>
         <div className="warning-content">
-          <h3>Attention : Cette action est irréversible</h3>
-          <p>
-            La suppression de votre compte entraînera la perte définitive de toutes vos données, y compris votre profil,
-            vos préférences et votre historique.
-          </p>
+          <h3>Attention : Cette action est irréversible !</h3>
+          <p>La suppression de votre compte entraînera la perte définitive de toutes vos données.</p>
         </div>
       </div>
-
-      {/*<div className="delete-info">
-        <h3>Avant de supprimer votre compte</h3>
-        <ul className="delete-checklist">
-          <li>Téléchargez vos données si vous souhaitez les conserver</li>
-          <li>Vérifiez si vous avez des abonnements actifs à annuler</li>
-          <li>Notez que les contenus que vous avez partagés publiquement pourraient rester visibles</li>
-          <li>La suppression sera effective après une période de réflexion de 30 jours</li>
-        </ul>
-      </div>*/}
-
-      {!showConfirmation ? (
-        <div className="form-actions" id="delete-request">
-          <button className="delete-button" onClick={handleRequestDelete}>
-            Supprimer mon compte
-          </button>
+      <form onSubmit={handleDelete}>
+        <div className="form-group">
+          <label>Mot de passe</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="current-password"
+          />
         </div>
-      ) : (
-        <div className="delete-confirmation">
-          <h3>Confirmer la suppression du compte</h3>
-
-          <div className="form-group">
-            <label htmlFor="deleteReason">Pourquoi souhaitez-vous supprimer votre compte ? (facultatif)</label>
-            <select id="deleteReason" value={deleteReason} onChange={(e) => setDeleteReason(e.target.value)}>
-              <option value="">Sélectionnez une raison</option>
-              <option value="privacy">Préoccupations concernant la confidentialité</option>
-              <option value="experience">Mauvaise expérience utilisateur</option>
-              <option value="alternative">J'utilise un service alternatif</option>
-              <option value="temporary">Je vais créer un nouveau compte</option>
-              <option value="other">Autre raison</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="confirmDeletePassword">Entrez votre mot de passe pour confirmer</label>
-            <input
-              type="password"
-              id="confirmDeletePassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            {error && <span className="error-message">{error}</span>}
-          </div>
-
-          <div className="confirmation-actions">
-            <button className="cancel-button" onClick={handleCancelDelete} disabled={isDeleting}>
-              Annuler
-            </button>
-            <button className="confirm-delete-button" onClick={handleConfirmDelete} disabled={isDeleting}>
-              {isDeleting ? "Suppression en cours..." : "Confirmer la suppression"}
-            </button>
-          </div>
+        <div className="form-group">
+          <label>Confirmer le mot de passe</label>
+          <input
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            required
+            autoComplete="current-password"
+          />
         </div>
-      )}
+        {error && <div className="form-error">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
+        <button type="submit" className="delete-button" disabled={loading}>
+          {loading ? "Suppression..." : "Confirmer la suppression"}
+        </button>
+      </form>
     </div>
   )
 }

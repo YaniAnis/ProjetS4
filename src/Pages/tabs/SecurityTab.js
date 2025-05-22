@@ -4,13 +4,12 @@ import { useState } from "react"
 import Switch from "../switch.js"
 
 function SecurityTab({ showTwoFactorModal }) {
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  })
-  const [errors, setErrors] = useState({})
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [oldPassword, setOldPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState("")
+  const [error, setError] = useState("")
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
   const [sessions, setSessions] = useState([
     { id: 1, device: "Chrome - Windows", location: "Paris, France", time: "Connecté maintenant", isCurrent: true },
@@ -30,55 +29,53 @@ function SecurityTab({ showTwoFactorModal }) {
     },
   ])
 
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target
-    setPasswordForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
-
-  const validatePasswordForm = () => {
-    const newErrors = {}
-
-    if (!passwordForm.currentPassword) {
-      newErrors.currentPassword = "Veuillez entrer votre mot de passe actuel"
-    }
-
-    if (!passwordForm.newPassword) {
-      newErrors.newPassword = "Veuillez entrer un nouveau mot de passe"
-    } else if (passwordForm.newPassword.length < 8) {
-      newErrors.newPassword = "Le mot de passe doit contenir au moins 8 caractères"
-    }
-
-    if (!passwordForm.confirmPassword) {
-      newErrors.confirmPassword = "Veuillez confirmer votre nouveau mot de passe"
-    } else if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      newErrors.confirmPassword = "Les mots de passe ne correspondent pas"
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordChange = async (e) => {
     e.preventDefault()
+    setError("")
+    setSuccess("")
 
-    if (validatePasswordForm()) {
-      // Simuler le changement de mot de passe
-      setTimeout(() => {
-        setPasswordForm({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        })
-
-        setShowSuccess(true)
-        setTimeout(() => {
-          setShowSuccess(false)
-        }, 3000)
-      }, 1500)
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setError("Veuillez remplir tous les champs.")
+      return
     }
+    if (newPassword !== confirmPassword) {
+      setError("Les nouveaux mots de passe ne correspondent pas.")
+      return
+    }
+    setLoading(true)
+    let token = localStorage.getItem("authToken") || localStorage.getItem("token")
+    if (!token) {
+      setError("Vous devez être connecté.")
+      setLoading(false)
+      return
+    }
+    try {
+      const res = await fetch("http://localhost:8000/api/user/password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          old_password: oldPassword,
+          password: newPassword,
+          password_confirmation: confirmPassword,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.message || "Erreur lors du changement de mot de passe.")
+      } else {
+        setSuccess("Mot de passe modifié avec succès !")
+        setOldPassword("")
+        setNewPassword("")
+        setConfirmPassword("")
+      }
+    } catch {
+      setError("Erreur réseau.")
+    }
+    setLoading(false)
   }
 
   const handleTwoFactorToggle = (checked) => {
@@ -105,53 +102,42 @@ function SecurityTab({ showTwoFactorModal }) {
 
       <div className="security-section">
         <h3>Changer le mot de passe</h3>
-        {showSuccess && <div className="success-message">Votre mot de passe a été modifié avec succès!</div>}
-
-        <form id="password-form" onSubmit={handlePasswordSubmit}>
+        <form onSubmit={handlePasswordChange}>
           <div className="form-group">
-            <label htmlFor="currentPassword">Mot de passe actuel</label>
+            <label>Ancien mot de passe</label>
             <input
               type="password"
-              id="currentPassword"
-              name="currentPassword"
-              value={passwordForm.currentPassword}
-              onChange={handlePasswordChange}
-              className={errors.currentPassword ? "error" : ""}
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              required
+              autoComplete="current-password"
             />
-            {errors.currentPassword && <span className="error-message">{errors.currentPassword}</span>}
           </div>
-
           <div className="form-group">
-            <label htmlFor="newPassword">Nouveau mot de passe</label>
+            <label>Nouveau mot de passe</label>
             <input
               type="password"
-              id="newPassword"
-              name="newPassword"
-              value={passwordForm.newPassword}
-              onChange={handlePasswordChange}
-              className={errors.newPassword ? "error" : ""}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              autoComplete="new-password"
             />
-            {errors.newPassword && <span className="error-message">{errors.newPassword}</span>}
           </div>
-
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirmer le nouveau mot de passe</label>
+            <label>Confirmer le nouveau mot de passe</label>
             <input
               type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={passwordForm.confirmPassword}
-              onChange={handlePasswordChange}
-              className={errors.confirmPassword ? "error" : ""}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              autoComplete="new-password"
             />
-            {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
           </div>
-
-          <div className="form-actions">
-            <button type="submit" className="save-button">
-              Modifier le mot de passe
-            </button>
-          </div>
+          {error && <div className="form-error">{error}</div>}
+          {success && <div className="success-message">{success}</div>}
+          <button type="submit" className="save-button" disabled={loading}>
+            {loading ? "Enregistrement..." : "Enregistrer"}
+          </button>
         </form>
       </div>
 

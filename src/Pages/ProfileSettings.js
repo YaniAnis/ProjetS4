@@ -10,6 +10,7 @@ import PrivacyTab from "./tabs/PrivacyTab";
 import DeleteAccountTab from "./tabs/DeleteAccountTab";
 import TwoFactorModal from "./TwoFactorModal.js"
 import "./profile-settings.css";
+
 import "./main.css";
 
 

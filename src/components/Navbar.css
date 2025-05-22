@@ -265,6 +265,14 @@
   color: #3b82f6;
 }
 
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 @media (max-width: 768px) {
   .navbar-links {
     display: none;
