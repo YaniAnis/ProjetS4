@@ -1,20 +1,23 @@
-import { motion } from "framer-motion";
+import { Lock } from "lucide-react";
+import SettingSection from "./SettingSection";
+import ToggleSwitch from "./ToggleSwitch";
+import { useState } from "react";
 import "./setting.css";
 
-const SettingSection = ({ icon: Icon, title, children }) => {
+const Security = () => {
+	const [twoFactor, setTwoFactor] = useState(false);
+
 	return (
-		<motion.div
-			className='setting-section'
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.5 }}
-		>
-			<div className='setting-section-header'>
-				<Icon className='setting-section-icon' size='24' />
-				<h2 className='setting-section-title'>{title}</h2>
+		<SettingSection icon={Lock} title={"Security"}>
+			<ToggleSwitch
+				label={"Two-Factor Authentication"}
+				isOn={twoFactor}
+				onToggle={() => setTwoFactor(!twoFactor)}
+			/>
+			<div className='security-button-container'>
+				<button className='security-change-password-button'>Changer le Mot de Passe</button>
 			</div>
-			{children}
-		</motion.div>
+		</SettingSection>
 	);
 };
-export default SettingSection;
+export default Security;
