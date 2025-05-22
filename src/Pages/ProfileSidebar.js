@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 function ProfileSidebar({ activeTab, setActiveTab }) {
   const [user, setUser] = useState({ name: "", email: "" });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Try to get user info from localStorage first for instant display
@@ -18,17 +19,23 @@ function ProfileSidebar({ activeTab, setActiveTab }) {
     }
     // Always fetch latest info from backend
     let token = localStorage.getItem("authToken") || localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     fetch("http://localhost:8000/api/user", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
       },
-      credentials: "include",
+      // credentials: "include", // Remove unless your backend requires cookies
     })
       .then(async (res) => {
-        if (!res.ok) return;
+        if (!res.ok) {
+          setLoading(false);
+          return;
+        }
         const data = await res.json();
         setUser({
           name: data.name || "",
@@ -36,9 +43,11 @@ function ProfileSidebar({ activeTab, setActiveTab }) {
         });
         // Also update localStorage for next time
         localStorage.setItem("userInfo", JSON.stringify({ name: data.name, email: data.email }));
+        setLoading(false);
       })
       .catch(() => {
         setUser({ name: "", email: "" });
+        setLoading(false);
       });
   }, []);
 
@@ -59,7 +68,11 @@ function ProfileSidebar({ activeTab, setActiveTab }) {
             textTransform: "lowercase",
           }}
         >
-          {user.name ? user.name : "Nom Prénom"}
+          {loading
+            ? "Chargement..."
+            : user.name
+              ? user.name
+              : ""}
         </div>
         <div
           style={{
@@ -68,7 +81,11 @@ function ProfileSidebar({ activeTab, setActiveTab }) {
             opacity: 0.85,
           }}
         >
-          {user.email ? user.email : "email@gmail.com"}
+          {loading
+            ? ""
+            : user.email
+              ? user.email
+              : ""}
         </div>
       </div>
       <ul className="profile-settings-tabs">

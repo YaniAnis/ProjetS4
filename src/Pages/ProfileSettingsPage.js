@@ -59,9 +59,12 @@ function ProfileSettingsPage() {
           <h1>Paramètres du profil</h1>
           <p>Gérez vos informations personnelles, sécurité et préférences.</p>
           <div style={{ marginTop: "1rem", color: "#fff", fontWeight: 500 }}>
-            {user.name ? user.name : "Nom Prénom"}
-            <br />
-            {user.email ? user.email : "email@gmail.com"}
+            {loading
+              ? "Chargement..."
+              : (user.name && user.email)
+                ? (<>{user.name}<br />{user.email}</>)
+                : (<>{user.name || ""}{user.name && <br />}{user.email || ""}</>)
+            }
           </div>
         </div>
       </div>

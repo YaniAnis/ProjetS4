@@ -3,16 +3,22 @@
 import { useEffect, useState } from "react"
 
 function PersonalInfoTab() {
-  const [user, setUser] = useState({ name: "", email: "" })
+  // Initialize with null to distinguish between "not loaded" and "empty"
+  const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  // Remove default values, will be set after fetch
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
   })
-  const [originalData, setOriginalData] = useState({ ...formData })
+  const [originalData, setOriginalData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  })
   const [error, setError] = useState("")
   const [showEmailCode, setShowEmailCode] = useState(false)
   const [newEmail, setNewEmail] = useState("")
@@ -21,7 +27,6 @@ function PersonalInfoTab() {
   const [emailCodeSent, setEmailCodeSent] = useState(false)
 
   useEffect(() => {
-    // Always use the latest token set by login/register
     let token = localStorage.getItem("authToken") || localStorage.getItem("token");
     if (!token) {
       setLoading(false)
@@ -34,20 +39,25 @@ function PersonalInfoTab() {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
       },
-      credentials: "include"
+      // Remove credentials: "include" unless your backend requires cookies for authentication.
+      // credentials: "include"
     })
       .then(async (res) => {
-        if (!res.ok) {
-          setError("Impossible de récupérer les informations utilisateur.")
+        let data;
+        try {
+          data = await res.json();
+        } catch (e) {
+          setError("Réponse du serveur invalide.")
           setLoading(false)
           return
         }
-        const data = await res.json()
-        setUser({
-          name: data.name || "",
-          email: data.email || "",
-        })
-        // Split name into first and last if possible
+        console.log("API /api/user status:", res.status, "data:", data);
+
+        if (!res.ok) {
+          setError(data?.message || "Impossible de récupérer les informations utilisateur.")
+          setLoading(false)
+          return
+        }
         let firstName = ""
         let lastName = ""
         if (data.name) {
@@ -55,28 +65,31 @@ function PersonalInfoTab() {
           firstName = parts[0] || ""
           lastName = parts.length > 1 ? parts.slice(1).join(" ") : ""
         }
-        setFormData((prev) => ({
-          ...prev,
+        setUser({
+          name: data.name || "",
+          email: data.email || "",
+        })
+        setFormData({
           firstName,
           lastName,
           email: data.email || "",
-        }))
-        setOriginalData((prev) => ({
-          ...prev,
+        })
+        setOriginalData({
           firstName,
           lastName,
           email: data.email || "",
-        }))
+        })
+        setError("")
         setLoading(false)
       })
-      .catch(() => {
-        setUser({ name: "", email: "" })
-        setFormData((prev) => ({
-          ...prev,
+      .catch((err) => {
+        console.error("Erreur réseau ou serveur:", err)
+        setUser(null)
+        setFormData({
           firstName: "",
           lastName: "",
           email: "",
-        }))
+        })
         setError("Erreur réseau ou serveur.")
         setLoading(false)
       })
@@ -273,6 +286,8 @@ function PersonalInfoTab() {
                   onChange={handleChange}
                   disabled={!isEditing}
                   required
+                  // Show placeholder if not editing and value is empty
+                  placeholder={!formData.firstName && !isEditing ? "Non renseigné" : ""}
                 />
               </div>
 
@@ -286,6 +301,7 @@ function PersonalInfoTab() {
                   onChange={handleChange}
                   disabled={!isEditing}
                   required
+                  placeholder={!formData.lastName && !isEditing ? "Non renseigné" : ""}
                 />
               </div>
             </div>
@@ -301,6 +317,7 @@ function PersonalInfoTab() {
                   onChange={isEditing ? (e) => setShowEmailCode(true) || setNewEmail(e.target.value) : undefined}
                   disabled={!isEditing}
                   required
+                  placeholder={!formData.email && !isEditing ? "Non renseigné" : ""}
                 />
                 {isEditing && (
                   <button
