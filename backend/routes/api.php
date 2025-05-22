@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController; // Ensure this matches the actual namespace of UserController
 use App\Http\Controllers\ActualityController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\MatchController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -25,3 +26,13 @@ Route::delete('/users/{id}', [UserController::class, 'destroy']);
 Route::get('/user-stats', [UserController::class, 'getUserStats']);
 Route::post('/create-checkout-session', [PaymentController::class, 'createCheckoutSession']);
 Route::post('/verify-payment', [PaymentController::class, 'verifyPayment']);
+
+Route::get('/matches', [MatchController::class, 'index']);
+Route::post('/matches', [MatchController::class, 'store']);
+Route::get('/matches/{id}', [MatchController::class, 'show']);
+Route::put('/matches/{id}', [MatchController::class, 'update']);
+Route::delete('/matches/{id}', [MatchController::class, 'destroy']);
+
+Route::get('/stades', function () {
+    return \App\Models\Stade::all();
+});

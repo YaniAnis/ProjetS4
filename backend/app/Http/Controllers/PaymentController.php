@@ -62,7 +62,7 @@ class PaymentController extends Controller
             '4242424242424242',
             '4000056655665556',
             '5555555555554444',
-            // Add more test numbers as needed
+   
         ];
 
         // Remove spaces from card number
@@ -82,7 +82,7 @@ class PaymentController extends Controller
             // ...
         ]);
 
-        // Return paiement ID and (for demo) the code
+
         return response()->json([
             'success' => true,
             'paiement_id' => $paiement->id,

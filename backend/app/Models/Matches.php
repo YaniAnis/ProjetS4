@@ -1,9 +1,11 @@
 <?php
 
+// app/Models/Match.php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Matches extends Model
 {
@@ -12,30 +14,31 @@ class Matches extends Model
     protected $fillable = [
         'equipe1',
         'equipe2',
+        'league',
         'date',
         'heure',
         'stade_id',
     ];
 
-    // Relation to Stade
     public function stade()
     {
         return $this->belongsTo(Stade::class, 'stade_id');
     }
 
-    // Accessors for stade attributes
-    public function getLieuAttribute()
+    public function zones()
     {
-        return $this->stade ? $this->stade->lieu : null;
+        return $this->hasMany(Zone::class, 'match_id');
     }
 
-    public function getCapaciteAttribute()
+    // Utility: sum of all zones' capacities
+    public function sumZonesCapacite()
     {
-        return $this->stade ? $this->stade->capacite : null;
+        return $this->zones()->sum('capacite');
     }
 
-    public function getNomStadeAttribute()
+
+    public function isCapaciteValid()
     {
-        return $this->stade ? $this->stade->nom : null;
+        return $this->stade && $this->sumZonesCapacite() == $this->stade->capacite;
     }
 }

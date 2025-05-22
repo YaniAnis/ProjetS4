@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
@@ -11,6 +12,28 @@ import AddMatch from "../components/Matches/AddMatch";
 import "./Pages.css";
 
 const MatchPage = () => {
+	const [matches, setMatches] = useState([]);
+	const [loading, setLoading] = useState(false);
+
+	const fetchMatches = async () => {
+		setLoading(true);
+		try {
+			const res = await fetch("http://localhost:8000/api/matches");
+			const data = await res.json();
+			const matchesArr = Array.isArray(data) ? data : data.data || [];
+			// Sort by id descending so newest match appears first
+			matchesArr.sort((a, b) => b.id - a.id);
+			setMatches(matchesArr);
+		} catch {
+			setMatches([]);
+		}
+		setLoading(false);
+	};
+
+	useEffect(() => {
+		fetchMatches();
+	}, []);
+
 	return (
 		<div className='products-page'>
 			<Header title='Matches' />
@@ -30,9 +53,9 @@ const MatchPage = () => {
 				</motion.div>
 
 				{/* Add Match Form */}
-				<AddMatch />
+				<AddMatch onMatchAdded={fetchMatches} />
 
-				<ProductsTable />
+				<ProductsTable matches={matches} loading={loading} />
 
 				{/* CHARTS */}
 				<div className='products-charts-grid'>

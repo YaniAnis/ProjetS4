@@ -15,18 +15,33 @@ function Matches() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
 
-  // Charger les matchs depuis le localStorage
+  // Fetch matches from backend
   useEffect(() => {
-    const storedMatches = localStorage.getItem("footballMatches")
-    if (storedMatches) {
-      const parsedMatches = JSON.parse(storedMatches)
-      setMatches(parsedMatches)
-      setFilteredMatches(parsedMatches)
-    } else {
-      setMatches([])
-      setFilteredMatches([])
-    }
-  }, [])
+    const fetchMatches = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/matches");
+        const data = await res.json();
+        // Map backend fields to frontend model
+        const mapped = (Array.isArray(data) ? data : data.data || []).map(m => ({
+          id: m.id,
+          league: m.league,
+          date: m.date,
+          time: m.heure,
+          homeTeam: { name: m.equipe1, logo: "" }, // Add logo if available
+          awayTeam: { name: m.equipe2, logo: "" },
+          stadium: m.stade?.nom || "",
+          price: m.zones && m.zones.length > 0 ? Math.min(...m.zones.map(z => z.prix)) : "",
+          // ...add more fields as needed
+        }));
+        setMatches(mapped);
+        setFilteredMatches(mapped);
+      } catch {
+        setMatches([]);
+        setFilteredMatches([]);
+      }
+    };
+    fetchMatches();
+  }, []);
 
   // Filtrer les matchs lorsque les filtres changent
   useEffect(() => {

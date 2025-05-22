@@ -1,28 +1,54 @@
 import { motion } from "framer-motion";
 import { Edit, Search, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Product.css";
 
-const PRODUCT_DATA = [
-	{ id: 1, name: "Wireless Earbuds", category: "Electronics", price: 59.99, stock: 143, sales: 1200 },
-	{ id: 2, name: "Leather Wallet", category: "Accessories", price: 39.99, stock: 89, sales: 800 },
-	{ id: 3, name: "Smart Watch", category: "Electronics", price: 199.99, stock: 56, sales: 650 },
-	{ id: 4, name: "Yoga Mat", category: "Fitness", price: 29.99, stock: 210, sales: 950 },
-	{ id: 5, name: "Coffee Maker", category: "Home", price: 79.99, stock: 78, sales: 720 },
-];
-
-const ProductsTable = () => {
+const ProductsTable = ({ matches = [], loading, onMatchDeleted, onMatchEdit }) => {
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredProducts, setFilteredProducts] = useState(PRODUCT_DATA);
+	const [filteredMatches, setFilteredMatches] = useState(matches);
+
+	useEffect(() => {
+		setFilteredMatches(matches);
+	}, [matches]);
 
 	const handleSearch = (e) => {
 		const term = e.target.value.toLowerCase();
 		setSearchTerm(term);
-		const filtered = PRODUCT_DATA.filter(
-			(product) => product.name.toLowerCase().includes(term) || product.category.toLowerCase().includes(term)
+		const filtered = matches.filter(
+			(match) =>
+				(match.equipe1?.toLowerCase() || "").includes(term) ||
+				(match.equipe2?.toLowerCase() || "").includes(term) ||
+				(match.stade_id?.toString().toLowerCase() || "").includes(term) ||
+				(match.league?.toLowerCase() || "").includes(term)
 		);
+		setFilteredMatches(filtered);
+	};
 
-		setFilteredProducts(filtered);
+	// Handler for deleting a match
+	const handleDelete = async (id) => {
+		if (!window.confirm("Voulez-vous vraiment supprimer ce match ?")) return;
+		try {
+			const res = await fetch(`http://localhost:8000/api/matches/${id}`, {
+				method: "DELETE",
+			});
+			if (res.ok) {
+				if (onMatchDeleted) onMatchDeleted(id);
+			} else {
+				const data = await res.json();
+				alert(data.message || "Erreur lors de la suppression.");
+			}
+		} catch {
+			alert("Erreur lors de la suppression.");
+		}
+	};
+
+	// Handler for editing a match (redirect or open modal)
+	const handleEdit = (id) => {
+		if (onMatchEdit) {
+			onMatchEdit(id);
+		} else {
+			alert("Fonction d'édition non implémentée.");
+		}
 	};
 
 	return (
@@ -37,7 +63,7 @@ const ProductsTable = () => {
 				<div className='products-table-search'>
 					<input
 						type='text'
-						placeholder='Search products...'
+						placeholder='Search matches...'
 						className='products-table-search-input'
 						onChange={handleSearch}
 						value={searchTerm}
@@ -50,45 +76,59 @@ const ProductsTable = () => {
 				<table className='products-table-content'>
 					<thead>
 						<tr>
-							<th className='products-table-header-cell'>Nom</th>
-							
-							<th className='products-table-header-cell'>Prix</th>
-							<th className='products-table-header-cell'>Stock</th>
-							<th className='products-table-header-cell'>Ventes</th>
+							<th className='products-table-header-cell'>Domicile</th>
+							<th className='products-table-header-cell'>Extérieur</th>
+							<th className='products-table-header-cell'>Stade ID</th>
+							<th className='products-table-header-cell'>Ligue</th>
+							<th className='products-table-header-cell'>Date & Heure</th>
 							<th className='products-table-header-cell'>Actions</th>
 						</tr>
 					</thead>
-
 					<tbody className='products-table-body'>
-						{filteredProducts.map((product) => (
-							<motion.tr
-								key={product.id}
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								transition={{ duration: 0.3 }}
-							>
-								<td className='products-table-cell products-table-cell-name'>
-									<img
-										src='https://images.unsplash.com/photo-1627989580309-bfaf3e58af6f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2lyZWxlc3MlMjBlYXJidWRzfGVufDB8fDB8fHww'
-										alt='Product img'
-										className='products-table-image'
-									/>
-									{product.name}
-								</td>
-								
-								<td className='products-table-cell'>${product.price.toFixed(2)}</td>
-								<td className='products-table-cell'>{product.stock}</td>
-								<td className='products-table-cell'>{product.sales}</td>
-								<td className='products-table-cell'>
-									<button className='products-table-action-edit'>
-										<Edit size={18} />
-									</button>
-									<button className='products-table-action-delete'>
-										<Trash2 size={18} />
-									</button>
-								</td>
-							</motion.tr>
-						))}
+						{loading ? (
+							<tr>
+								<td colSpan={6} className="products-table-cell">Chargement...</td>
+							</tr>
+						) : filteredMatches.length === 0 ? (
+							<tr>
+								<td colSpan={6} className="products-table-cell">Aucun match trouvé.</td>
+							</tr>
+						) : (
+							filteredMatches.map((match) => (
+								<motion.tr
+									key={match.id}
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									transition={{ duration: 0.3 }}
+								>
+									<td className='products-table-cell products-table-cell-name'>
+										{match.equipe1}
+									</td>
+									<td className='products-table-cell'>{match.equipe2}</td>
+									<td className='products-table-cell'>{match.stade_id}</td>
+									<td className='products-table-cell'>{match.league}</td>
+									<td className='products-table-cell'>
+										{match.date} {match.heure}
+									</td>
+									<td className='products-table-cell'>
+										<button
+											className='products-table-action-edit'
+											onClick={() => handleEdit(match.id)}
+											title="Modifier"
+										>
+											<Edit size={18} />
+										</button>
+										<button
+											className='products-table-action-delete'
+											onClick={() => handleDelete(match.id)}
+											title="Supprimer"
+										>
+											<Trash2 size={18} />
+										</button>
+									</td>
+								</motion.tr>
+							))
+						)}
 					</tbody>
 				</table>
 			</div>

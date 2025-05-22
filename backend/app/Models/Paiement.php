@@ -23,7 +23,7 @@ class Paiement extends Model
         return $this->belongsTo(Ticket::class, 'ticket_id');
     }
 
-    // Relation to User
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
