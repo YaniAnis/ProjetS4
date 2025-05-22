@@ -65,7 +65,8 @@ class AuthController extends Controller
 
             // Flush mail queue and send immediately (force sync)
             try {
-                Mail::mailer('smtp')->raw('Bienvenue chez FooTiX ! ⚽🎟️
+                Mail::mailer('smtp')->raw(
+                    "Bienvenue chez FooTiX ! ⚽🎟️
 
 Votre compte a été créé avec succès. Vous pouvez désormais réserver vos places pour les plus grands matchs et vibrer au rythme du football en quelques clics !
 
@@ -73,10 +74,12 @@ N’attendez plus pour consulter le calendrier des rencontres et profiter des me
 
 À très vite dans les tribunes avec FooTiX !
 
-- L’équipe FooTiX', function($msg) use ($user) {
-                    $msg->to($user->email)
-                        ->subject('Bienvenue chez FooTiX !');
-                });
+- L’équipe FooTiX",
+                    function($msg) use ($user) {
+                        $msg->to($user->email)
+                            ->subject('Bienvenue chez FooTiX !');
+                    }
+                );
                 Log::info('Welcome email sent', ['to' => $user->email]);
             } catch (\Exception $mailEx) {
                 Log::error('Erreur lors de l\'envoi du mail', ['error' => $mailEx->getMessage()]);
@@ -87,6 +90,9 @@ N’attendez plus pour consulter le calendrier des rencontres et profiter des me
             }
 
             Log::info('User created successfully', ['user' => $user]);
+
+            // Log in the user directly after registration
+            Auth::login($user);
 
             $token = $user->createToken('auth_token')->plainTextToken;
 

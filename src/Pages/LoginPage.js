@@ -32,35 +32,62 @@ function LoginPage() {
     setSuccess("")
 
     if (isLogin) {
-      // Vérification simple pour la démo
       if (email && password) {
-        // Vérifier si c'est un admin
-        if (ADMIN_EMAILS.includes(email.toLowerCase())) {
-          console.log("Admin login successful")
-          // Stocker l'information que l'utilisateur est un admin
-          localStorage.setItem("userRole", "admin")
+        try {
+          const res = await fetch("http://localhost:8000/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          })
+          const data = await res.json()
+          if (!res.ok) {
+            if (res.status === 401 || (data && data.message && data.message.toLowerCase().includes("invalid"))) {
+              setError("Aucun compte trouvé avec cet email ou mot de passe incorrect.")
+            } else if (data && data.message) {
+              setError(data.message)
+            } else {
+              setError("Erreur lors de la connexion.")
+            }
+            return
+          }
+          // Save user info and token
+          localStorage.setItem("userRole", data.user && data.user.role ? data.user.role : "user")
           localStorage.setItem("isLoggedIn", "true")
-          // Rediriger vers le tableau de bord d'administration
-          navigate("/admin")
-        } else {
-          console.log("User login successful")
-          // Stocker l'information que l'utilisateur est un utilisateur normal
-          localStorage.setItem("userRole", "user")
-          localStorage.setItem("isLoggedIn", "true")
-          // Rediriger vers la page d'accueil
-          navigate("/")
+          localStorage.setItem("authToken", data.token)
+          localStorage.setItem("userInfo", JSON.stringify(data.user))
+          // Redirect according to role
+          if (data.user && ADMIN_EMAILS.includes(data.user.email.toLowerCase())) {
+            navigate("/admin")
+          } else {
+            navigate("/")
+          }
+        } catch (err) {
+          setError("Erreur réseau lors de la connexion.")
         }
       } else {
         setError("Veuillez remplir tous les champs")
       }
     } else {
-      // Logique d'inscription
+      // Registration with email and password verification
       if (firstName && lastName && email && password && confirmPassword) {
         if (password !== confirmPassword) {
           setError("Les mots de passe ne correspondent pas")
           return
         }
+        // Check if email is already in use before registering
         try {
+          const checkRes = await fetch(`http://localhost:8000/api/check-email?email=${encodeURIComponent(email)}`)
+          if (checkRes.ok) {
+            const checkData = await checkRes.json()
+            if (checkData.exists) {
+              setError("Un compte avec cet email existe déjà.")
+              return
+            }
+          } else {
+            setError("Erreur lors de la vérification de l'email")
+            return
+          }
+          // Register user
           const res = await fetch("http://localhost:8000/api/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -72,9 +99,7 @@ function LoginPage() {
             }),
           })
           const data = await res.json()
-          console.log("Registration response:", data)
           if (!res.ok) {
-            // Show validation errors if present
             if (data.errors) {
               const messages = Object.values(data.errors).flat().join(" ")
               setError(messages)
@@ -86,8 +111,19 @@ function LoginPage() {
               setError("Échec de l'inscription")
             }
           } else {
-            setSuccess("Inscription réussie ! Vous pouvez maintenant vous connecter.")
-            setIsLogin(true)
+            // Automatically log in the user after registration
+            localStorage.setItem("userRole", data.user && data.user.role ? data.user.role : "user")
+            localStorage.setItem("isLoggedIn", "true")
+            localStorage.setItem("authToken", data.token)
+            localStorage.setItem("userInfo", JSON.stringify(data.user))
+            setSuccess("Inscription réussie ! Vous êtes maintenant connecté.")
+            setTimeout(() => {
+              if (data.user && ADMIN_EMAILS.includes(data.user.email.toLowerCase())) {
+                navigate("/admin")
+              } else {
+                navigate("/")
+              }
+            }, 1000)
           }
         } catch (err) {
           setError("Erreur réseau")
@@ -202,12 +238,21 @@ function LoginPage() {
           setError("Registration failed")
         }
       } else {
+        // Automatically log in the user after registration
+        localStorage.setItem("userRole", data.user && data.user.role ? data.user.role : "user")
+        localStorage.setItem("isLoggedIn", "true")
+        localStorage.setItem("authToken", data.token)
+        localStorage.setItem("userInfo", JSON.stringify(data.user))
         setAccountCreated(true)
         setTimeout(() => {
           setAccountCreated(false)
           setRegisterSuccess(false)
-          navigate("/")
-        }, 2000)
+          if (data.user && ADMIN_EMAILS.includes(data.user.email.toLowerCase())) {
+            navigate("/admin")
+          } else {
+            navigate("/")
+          }
+        }, 1000)
       }
     } catch (err) {
       setError("Network error")

@@ -12,22 +12,47 @@ function Navbar({ darkMode, setDarkMode }) {
 
   useEffect(() => {
     // Vérifier si l'utilisateur est connecté au chargement du composant
-    const loggedIn = localStorage.getItem("isLoggedIn") === "true"
-    const role = localStorage.getItem("userRole") || ""
-    setIsLoggedIn(loggedIn)
-    setUserRole(role)
-  }, [])
+    const checkLogin = () => {
+      const loggedIn =
+        localStorage.getItem("isLoggedIn") === "true" ||
+        (!!localStorage.getItem("authToken") || !!localStorage.getItem("token"));
+      const role = localStorage.getItem("userRole") || "";
+      setIsLoggedIn(!!loggedIn);
+      setUserRole(role);
+    };
+    checkLogin();
+    window.addEventListener("storage", checkLogin);
+    // Listen for login/logout events from other tabs/windows
+    return () => window.removeEventListener("storage", checkLogin);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const loggedIn =
+        localStorage.getItem("isLoggedIn") === "true" ||
+        (!!localStorage.getItem("authToken") || !!localStorage.getItem("token"));
+      if (!!loggedIn !== isLoggedIn) {
+        setIsLoggedIn(!!loggedIn);
+        setUserRole(localStorage.getItem("userRole") || "");
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn")
-    localStorage.removeItem("userRole")
-    setIsLoggedIn(false)
-    setUserRole("")
-    navigate("/")
+    if (window.confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
+      localStorage.removeItem("isLoggedIn")
+      localStorage.removeItem("userRole")
+      localStorage.removeItem("authToken")
+      localStorage.removeItem("userInfo")
+      setIsLoggedIn(false)
+      setUserRole("")
+      navigate("/")
+    }
   }
 
   const toggleDarkMode = () => {
@@ -120,24 +145,33 @@ function Navbar({ darkMode, setDarkMode }) {
             </div>
           </button>
 
-          {/* Icône Paramètres */}
-          <Link to="/parametres" className="settings-button" title="Paramètres" style={{ marginLeft: "10px" }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {/* Icône Paramètres - only show if logged in */}
+          {isLoggedIn && (
+            <Link
+              to="/profilesettings"
+              className="settings-button"
+              title="Paramètres"
+              style={{ marginLeft: "10px" }}
+              onClick={() => setIsMenuOpen(false)}
             >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 3.09V3a2 2 0 0 1 4 0v.09c.31.11.59.3.82.54.23.24.43.52.54.82h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09c.11.31.3.59.54.82.24.23.52.43.82.54h.09a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-          </Link>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 3.09V3a2 2 0 0 1 4 0v.09c.31.11.59.3.82.54.23.24.43.52.54.82h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09c.11.31.3.59.54.82.24.23.52.43.82.54h.09a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </Link>
+          )}
 
+          {/* Afficher les liens Admin et Déconnexion si l'utilisateur est connecté */}
           {isLoggedIn ? (
             <>
               {userRole === "admin" && (

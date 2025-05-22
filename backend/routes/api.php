@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use App\Models\User;
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (\Illuminate\Http\Request $request) {
     return $request->user();
 });
 
@@ -79,4 +79,69 @@ Route::post('/register-verify-code', [AuthController::class, 'verifyRegisterCode
 Route::get('/check-email', function (\Illuminate\Http\Request $request) {
     $exists = User::where('email', $request->query('email'))->exists();
     return response()->json(['exists' => $exists]);
+});
+
+Route::middleware('auth:sanctum')->put('/user/password', function (\Illuminate\Http\Request $request) {
+    $user = $request->user();
+    $request->validate([
+        'old_password' => 'required',
+        'password' => 'required|string|min:8|confirmed',
+    ]);
+    if (!\Illuminate\Support\Facades\Hash::check($request->old_password, $user->password)) {
+        return response()->json(['message' => 'Ancien mot de passe incorrect.'], 422);
+    }
+    $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+    $user->save();
+    return response()->json(['message' => 'Mot de passe mis à jour avec succès.']);
+});
+Route::middleware('auth:sanctum')->delete('/user/delete', function (\Illuminate\Http\Request $request) {
+    $user = $request->user();
+    $request->validate([
+        'password' => 'required',
+    ]);
+    if (!\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Mot de passe incorrect.'], 422);
+    }
+    $user->delete();
+    return response()->json(['message' => 'Compte supprimé avec succès.']);
+});
+Route::middleware('auth:sanctum')->put('/user/update', function (\Illuminate\Http\Request $request) {
+    $user = $request->user();
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+    ]);
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->save();
+    return response()->json(['message' => 'Profil mis à jour', 'user' => $user]);
+});
+
+// Send code to new email
+Route::post('/send-change-email-code', function (\Illuminate\Http\Request $request) {
+    $request->validate(['email' => 'required|email']);
+    $code = rand(100000, 999999);
+    \Illuminate\Support\Facades\Cache::put('change_email_code_' . $request->email, $code, 600);
+    \Illuminate\Support\Facades\Mail::raw("Votre code de vérification FooTiX pour changer d'email est : $code", function($msg) use ($request) {
+        $msg->to($request->email)->subject('Code de vérification changement d\'email FooTiX');
+    });
+    return response()->json(['message' => 'Code envoyé']);
+});
+
+// Change email after code verification
+Route::middleware('auth:sanctum')->put('/change-email', function (\Illuminate\Http\Request $request) {
+    $user = $request->user();
+    $request->validate([
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'code' => 'required'
+    ]);
+    $cachedCode = \Illuminate\Support\Facades\Cache::get('change_email_code_' . $request->email);
+    if ($cachedCode && strval($request->code) === strval($cachedCode)) {
+        $user->email = $request->email;
+        $user->save();
+        \Illuminate\Support\Facades\Cache::forget('change_email_code_' . $request->email);
+        return response()->json(['message' => 'Email mis à jour avec succès.']);
+    } else {
+        return response()->json(['message' => 'Code incorrect ou expiré.'], 400);
+    }
 });
