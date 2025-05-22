@@ -174,7 +174,7 @@ N’attendez plus pour consulter le calendrier des rencontres et profiter des me
                 });
             } catch (\Exception $mailEx) {
                 // Log but don't fail registration code sending for mailer config issues
-                \Log::error('Erreur lors de l\'envoi du mail de code d\'inscription', ['error' => $mailEx->getMessage()]);
+                Log::error('Erreur lors de l\'envoi du mail de code d\'inscription', ['error' => $mailEx->getMessage()]);
                 return response()->json([
                     'message' => 'Erreur lors de l\'envoi du mail : ' . $mailEx->getMessage(),
                     'error' => $mailEx->getMessage()
@@ -183,7 +183,7 @@ N’attendez plus pour consulter le calendrier des rencontres et profiter des me
 
             return response()->json(['message' => 'Code envoyé']);
         } catch (\Exception $e) {
-            \Log::error('Erreur lors de la génération du code d\'inscription', ['error' => $e->getMessage()]);
+            Log::error('Erreur lors de la génération du code d\'inscription', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Erreur serveur lors de l\'envoi du code.', 'error' => $e->getMessage()], 500);
         }
     }

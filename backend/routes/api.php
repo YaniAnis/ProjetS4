@@ -10,6 +10,7 @@ use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
+use App\Http\Controllers\TicketController;
 
 Route::middleware('auth:sanctum')->get('/user', function (\Illuminate\Http\Request $request) {
     return $request->user();
@@ -166,3 +167,6 @@ Route::middleware('auth:sanctum')->put('/change-email', function (\Illuminate\Ht
         return response()->json(['message' => 'Code incorrect ou expiré.'], 400);
     }
 });
+
+Route::middleware('auth:sanctum')->post('/tickets', [TicketController::class, 'store']);
+Route::middleware('auth:sanctum')->get('/my-tickets', [TicketController::class, 'userTickets']);

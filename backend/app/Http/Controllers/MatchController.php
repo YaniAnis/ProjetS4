@@ -85,7 +85,8 @@ class MatchController extends Controller
 
     public function show($id)
     {
-        return response()->json(Matches::with('stade')->findOrFail($id));
+        // Inclure les zones (et le stade) dans la réponse pour un match donné
+        return response()->json(Matches::with(['stade', 'zones'])->findOrFail($id));
     }
 
     public function update(Request $request, $id)

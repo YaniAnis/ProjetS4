@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom"
+
 function MatchCard({ match }) {
+  const navigate = useNavigate();
+
   // Correction: Calculer le prix minimum à partir des zones (si disponible)
   let minZonePrice = null;
   if (Array.isArray(match.zones) && match.zones.length > 0) {
@@ -17,6 +21,24 @@ function MatchCard({ match }) {
   if (minZonePrice !== null && !isNaN(minZonePrice) && minZonePrice > 0) {
     priceDisplay = `À partir de ${minZonePrice} DZD`;
   }
+
+  const handleBuyTickets = () => {
+    // Pass match info and zones via state
+    navigate("/tickets", {
+      state: {
+        matchId: match.id,
+        homeTeam: match.homeTeam?.name,
+        awayTeam: match.awayTeam?.name,
+        stadium: match.stadium,
+        league: match.league,
+        date: match.date,
+        time: match.time,
+        homeLogo: match.homeTeam?.logo,
+        awayLogo: match.awayTeam?.logo,
+        zones: match.zones || [],
+      }
+    });
+  };
 
   return (
     <div className="match-card">
@@ -45,9 +67,9 @@ function MatchCard({ match }) {
           </div>
           <div className="price">{priceDisplay}</div>
         </div>
-        <a href={`/purchase?id=${match.id}`} className="btn-primary">
+        <button className="btn-primary" onClick={handleBuyTickets}>
           Acheter des billets
-        </a>
+        </button>
       </div>
     </div>
   )
