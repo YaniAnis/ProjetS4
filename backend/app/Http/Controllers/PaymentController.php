@@ -53,45 +53,34 @@ class PaymentController extends Controller
                 $paiement->save();
 
                 try {
-                    // Get ticket with user relation
-                    $ticket = \App\Models\Ticket::with('user')->find($paiement->ticket_id);
+                    // Charger le ticket avec user ET match (et stade du match)
+                    $ticket = \App\Models\Ticket::with(['user', 'match.stade'])->find($paiement->ticket_id);
 
-                    if (!$ticket || !$ticket->user) {
-                        Log::error('Ticket or user not found', [
+                    if (!$ticket || !$ticket->user || !$ticket->match) {
+                        Log::error('Ticket, user ou match not found', [
                             'paiement_id' => $paiement->id,
                             'ticket_id' => $paiement->ticket_id
                         ]);
                         return response()->json([
                             'success' => false,
-                            'message' => 'Ticket ou utilisateur introuvable. Veuillez contacter le support.'
+                            'message' => 'Ticket, utilisateur ou match introuvable. Veuillez contacter le support.'
                         ], 500);
                     }
 
-                    // Use user's email from ticket relationship
                     $userEmail = $ticket->user->email;
-
-                    // Récupérer le match (Matches)
-                    $match = Matches::find($ticket->match_id);
-                    if (!$match) {
-                        Log::error('Match introuvable pour le ticket', ['ticket_id' => $ticket->id, 'match_id' => $ticket->match_id]);
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Paiement confirmé, mais le match associé au ticket est introuvable. Veuillez contacter le support.',
-                        ], 500);
-                    }
+                    $match = $ticket->match;
 
                     Log::info('Génération du PDF pour le paiement', ['paiement_id' => $paiement->id]);
                     try {
-                        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('ticket_pdf', [
+                        $pdf = Pdf::loadView('ticket_pdf', [
                             'paiement' => $paiement,
-                            'ticket' => $ticket->load('user'), // Charger la relation user
-                            'match' => $match->load('stade'), // Charger la relation stade
+                            'ticket' => $ticket,
+                            'match' => $match,
                             'logos' => [
                                 'home' => $this->getTeamLogoPath($match->equipe1),
                                 'away' => $this->getTeamLogoPath($match->equipe2)
                             ]
                         ]);
-
                         $pdfContent = $pdf->output();
                         Log::info('PDF rendu avec succès', ['paiement_id' => $paiement->id, 'pdf_size' => strlen($pdfContent)]);
                     } catch (\Exception $pdfEx) {
@@ -256,7 +245,8 @@ class PaymentController extends Controller
                 'selectedZones.*.count' => 'required|integer',
                 'selectedZones.*.price' => 'required|numeric',
                 'totalPlaces' => 'required|numeric',
-                'totalPrice' => 'required|numeric'
+                'totalPrice' => 'required|numeric',
+                'match_id' => 'required|exists:matches,id',
             ]);
 
             $user = \Illuminate\Support\Facades\Auth::user();
@@ -271,8 +261,8 @@ class PaymentController extends Controller
                 throw new \Exception('Carte bancaire invalide');
             }
 
-            // Get match_id from state if available
-            $match_id = $request->state['matchId'] ?? 1;
+            // Utilise le match_id envoyé par le front
+            $match_id = $request->match_id;
 
             // Create ticket
             $ticket = \App\Models\Ticket::create([
@@ -325,39 +315,25 @@ class PaymentController extends Controller
 
     private function getTeamLogoPath($teamName) {
         try {
-            // Format team name for file path
             $teamName = strtolower(str_replace(' ', '_', $teamName));
             $logoPath = public_path("logos/{$teamName}.png");
-            
-            Log::info('Trying to load logo', ['path' => $logoPath]);
-
             if (!file_exists($logoPath)) {
-                Log::warning('Logo not found', ['team' => $teamName]);
+                Log::warning('Logo not found', ['team' => $teamName, 'path' => $logoPath]);
                 return '';
             }
-
-            // Lecture de l'image et conversion en base64
             $imageContent = file_get_contents($logoPath);
-            if ($imageContent === false) {
-                Log::error('Cannot read logo file', ['path' => $logoPath]);
-                return '';
-            }
-
-            $imageSize = getimagesize($logoPath);
-            if ($imageSize === false) {
+            $imageInfo = getimagesize($logoPath);
+            if ($imageInfo === false) {
                 Log::error('Invalid image file', ['path' => $logoPath]);
                 return '';
             }
-
+            $mime = $imageInfo['mime'];
             $base64 = base64_encode($imageContent);
-            Log::info('Logo loaded successfully', [
-                'team' => $teamName, 
-                'size' => strlen($base64),
-                'mime' => $imageSize['mime']
-            ]);
-
-            // Construire l'URL data avec le bon type MIME
-            return "data:" . $imageSize['mime'] . ";base64," . $base64;
+            if ($mime !== 'image/png' && $mime !== 'image/jpeg') {
+                Log::error('Unsupported image mime type', ['mime' => $mime, 'path' => $logoPath]);
+                return '';
+            }
+            return "data:{$mime};base64,{$base64}";
         } catch (\Exception $e) {
             Log::error('Error in getTeamLogoPath', [
                 'team' => $teamName,

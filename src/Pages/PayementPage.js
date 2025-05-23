@@ -45,8 +45,8 @@ function PaymentPage() {
   // Ajout : récupération des zones sélectionnées depuis location.state
   const location = window.location || {}
   const navState = location.state || (window.history && window.history.state && window.history.state.usr) || {}
-  // Fallback pour React Router v6 ou navigation classique
   const selectedZones = navState.selectedZones || []
+  const match_id = navState.match_id // <-- Ajouté
 
   // Calcul du total des places et du prix total
   const totalPlaces = selectedZones.reduce((sum, z) => sum + (z.count || 0), 0)
@@ -82,6 +82,7 @@ function PaymentPage() {
           selectedZones, // on envoie la sélection au backend si besoin
           totalPlaces,
           totalPrice,
+          match_id // <-- Ajouté ici pour garantir l'envoi au backend
           // ...autres champs nécessaires...
         }),
       })
