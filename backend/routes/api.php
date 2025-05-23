@@ -31,6 +31,7 @@ Route::get('/user-stats', [UserController::class, 'getUserStats']);
 Route::post('/create-checkout-session', [PaymentController::class, 'createCheckoutSession']);
 Route::post('/verify-payment', [PaymentController::class, 'verifyPayment']);
 Route::post('/create-payment', [\App\Http\Controllers\PaymentController::class, 'createPayment']);
+Route::post('/send-ticket', [\App\Http\Controllers\PaymentController::class, 'sendTicketByEmail']);
 
 Route::get('/matches', [MatchController::class, 'index']);
 Route::post('/matches', [MatchController::class, 'store']);

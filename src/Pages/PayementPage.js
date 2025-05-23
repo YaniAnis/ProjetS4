@@ -19,7 +19,6 @@ function PaymentPage() {
   const [confirmationCode, setConfirmationCode] = React.useState("")
   const [codeSent, setCodeSent] = React.useState(false)
   const [codeConfirmed, setCodeConfirmed] = React.useState(false)
-  const [qrValue, setQrValue] = React.useState("")
   const [paiementId, setPaiementId] = React.useState(null)
   const [isVerifying, setIsVerifying] = React.useState(false)
   const [ticketSent, setTicketSent] = React.useState(false)
@@ -89,9 +88,6 @@ function PaymentPage() {
       const data = await response.json()
       if (data && data.paiement_id) {
         setPaiementId(data.paiement_id)
-        // Générer le QR code dès que le paiement est créé
-        const qr = "ticket-" + Date.now()
-        setQrValue(qr)
       }
     } catch (err) {
       // Gérer l'erreur
@@ -140,7 +136,6 @@ function PaymentPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           paiement_id: paiementId,
-          qr_value: qrValue,
         }),
       })
       const data = await res.json()
