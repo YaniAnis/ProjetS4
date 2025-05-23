@@ -26,4 +26,4 @@ function ContactMessage() {
     )
   }
   
-  export default ContactMessage
+  export default ContactMessage;
