@@ -16,8 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('ticket_id');
             $table->unsignedBigInteger('user_id');
             $table->string('mode_paiement');
-            $table->string('statut')->default('en attente');
+            $table->string('statut')->default('pending');
             $table->string('verification_code')->nullable();
+            $table->string('email')->nullable();
+            $table->decimal('montant', 10, 2)->default(0);
             $table->timestamps();
 
             $table->foreign('ticket_id')->references('id')->on('tickets')->onDelete('cascade');

@@ -138,9 +138,9 @@ function PaymentForm({ cardData, onInputChange, onInputFocus, selectedZones = []
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Vérifie que l'email est bien présent et valide
-    if (!cardData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cardData.email)) {
-      alert("Veuillez saisir un email valide pour recevoir le code de vérification.");
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+    if (!token) {
+      alert("Vous devez être connecté pour effectuer un paiement.");
       return;
     }
 
@@ -151,38 +151,39 @@ function PaymentForm({ cardData, onInputChange, onInputFocus, selectedZones = []
     try {
       const res = await fetch("http://localhost:8000/api/create-payment", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json"
+        },
         body: JSON.stringify({
-          card_number: cardData.number,
+          card_number: cardData.number.replace(/\s/g, ''),
           name: cardData.name,
           expiry: cardData.expiry,
           cvc: cardData.cvc,
-          email: cardData.email,
+          selectedZones,
+          totalPlaces,
+          totalPrice
         }),
       });
-      let data;
-      let rawText = "";
-      try {
-        rawText = await res.text();
-        try {
-          data = JSON.parse(rawText);
-        } catch (jsonErr) {
-          alert("Erreur lors de la création du paiement :\n" + rawText);
-          return;
-        }
-      } catch (streamErr) {
-        alert("Erreur lors de la lecture de la réponse : " + (streamErr.message || streamErr));
-        return;
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Erreur lors de la création du paiement");
       }
+
+      const data = await res.json();
+      
       if (data.success) {
         setPaiementId(data.paiement_id);
         setShowVerification(true);
-        alert("Un code de vérification a été envoyé à l'adresse email sélectionnée. Veuillez le saisir pour valider le paiement.");
+        alert("Un code de vérification a été envoyé à votre email.");
       } else {
         alert(data.message || "Erreur lors de la création du paiement.");
       }
     } catch (err) {
-      alert("Erreur lors de la création du paiement : " + (err.message || err));
+      console.error("Erreur:", err);
+      alert(err.message || "Erreur lors de la création du paiement.");
     }
   }
 
