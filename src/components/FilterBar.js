@@ -1,4 +1,5 @@
 "use client"
+import "./CategoryFilter.css"
 
 function FilterBar({ searchTerm, setSearchTerm, leagueFilter, setLeagueFilter }) {
   return (

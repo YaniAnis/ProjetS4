@@ -10,7 +10,7 @@ import Teams from "./Pages/Teams"
 import NewsPage from "./Pages/NewsPage"
 import NewsDetailPage from "./Pages/NewsDetailPage"
 import LoginPage from "./Pages/LoginPage"
-import HelpPage from "./Pages/HelpPage"
+import HelpPage from "./Pages/ContactMessage"
 import OverviewPage from "./admin/OverviewPage"
 import MatchPage from "./admin/MatchPage"
 import CommandePage from "./admin/CommandePage"
@@ -23,10 +23,12 @@ import AdminRoute from "./components/AdminRoute"
 import AdminLayout from "./components/AdminLayout"
 import ForgotPasswordPage from "./Pages/ForgotPasswordPage"
 import ActualitePage from "./admin/ActualitePage";
-import ContactMessage from './Pages/ContactMessage';
+import ContactPage from './Pages/ContactPage';
+import ContactMessage from "./Pages/ContactMessage";
 import PaymentPage from "./Pages/PayementPage"
 import StadiumPage from './Pages/StadiumPage';
 import ProfileSettings from "./Pages/ProfileSettings";
+import { Contact } from "lucide-react";
 
 
 
@@ -63,7 +65,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/help" element={<HelpPage />} />
-        <Route path="/contact" element={<ContactMessage />} /> {/* <-- Add this line */}
+        <Route path="/contact" element={<ContactPage />} /> {/* Page avec le bouton */}
+        <Route path="/contact-message" element={<ContactMessage />} /> {/* Page de message */}
         <Route path="/Payement" element={<PaymentPage />} />     
         <Route path="/tickets" element={<StadiumPage />} />  
         <Route path="/profilesettings" element={<ProfileSettings />} /> {/* <-- Add this line */}
