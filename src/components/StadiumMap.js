@@ -205,16 +205,14 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
             </div>
             <div className="tooltip-price">
               {getHoveredSection()?.maxPrice
-                ? `€${getHoveredSection()?.basePrice.toFixed(2)} - €${getHoveredSection()?.maxPrice.toFixed(2)}`
-                : `€${getHoveredSection()?.basePrice}`}
+                ? `${getHoveredSection()?.basePrice.toFixed(2)} - ${getHoveredSection()?.maxPrice.toFixed(2)} DZD`
+                : `${getHoveredSection()?.basePrice} DZD`}
             </div>
             <div className="tooltip-availability">{getHoveredSection()?.available || "120"} tickets available</div>
           </div>
           <div className="tooltip-arrow"></div>
         </div>
       )}
-
-
     </div>
   )
 }

@@ -10,7 +10,7 @@ function PaymentPage() {
     name: "",
     expiry: "",
     cvc: "",
-    email: "", // Assurez-vous que PaymentForm gère ce champ
+    email: "",
   })
 
   const [isFlipped, setIsFlipped] = React.useState(false)
@@ -25,7 +25,33 @@ function PaymentPage() {
   const [ticketSent, setTicketSent] = React.useState(false)
   const [ticketError, setTicketError] = React.useState("")
   const [confirmError, setConfirmError] = React.useState("")
-  // Ajoutez paiementId à l'état pour stocker l'id du paiement reçu après le paiement
+  // Supprimé : toute la logique liée aux sections et à la sélection de places
+
+  // idée de structure pour les données de section, si jamais nécessaire à l'avenir
+  // const sections = [
+  //   { id: "A", name: "Zone A", category: "Standard", basePrice: 20, available: 10 },
+  //   { id: "B", name: "Zone B", category: "VIP", basePrice: 40, available: 5 },
+  //   { id: "C", name: "Zone C", category: "Standard", basePrice: 15, available: 8 }
+  // ]
+
+  // Stocke le nombre de places sélectionnées par section : { [sectionId]: count }
+  // const [selectedCounts, setSelectedCounts] = React.useState(
+  //   sections.reduce((acc, s) => ({ ...acc, [s.id]: 0 }), {})
+  // )
+  // const [seatError, setSeatError] = React.useState("")
+
+  // Calcul du total sélectionné
+  // const totalSelected = Object.values(selectedCounts).reduce((sum, v) => sum + v, 0)
+
+  // Ajout : récupération des zones sélectionnées depuis location.state
+  const location = window.location || {}
+  const navState = location.state || (window.history && window.history.state && window.history.state.usr) || {}
+  // Fallback pour React Router v6 ou navigation classique
+  const selectedZones = navState.selectedZones || []
+
+  // Calcul du total des places et du prix total
+  const totalPlaces = selectedZones.reduce((sum, z) => sum + (z.count || 0), 0)
+  const totalPrice = selectedZones.reduce((sum, z) => sum + (z.count || 0) * (z.price || 0), 0)
 
   const handleInputChange = (field, value) => {
     setCardData({
@@ -54,6 +80,9 @@ function PaymentPage() {
         body: JSON.stringify({
           card_number: cardData.number,
           email: cardData.email,
+          selectedZones, // on envoie la sélection au backend si besoin
+          totalPlaces,
+          totalPrice,
           // ...autres champs nécessaires...
         }),
       })
@@ -132,12 +161,10 @@ function PaymentPage() {
           <h1>Finaliser votre paiement</h1>
           <p>Veuillez entrer vos informations de carte pour procéder au paiement</p>
         </div>
-
         <div className="payment-content">
           <div className="card-preview">
             <CreditCard cardData={cardData} isFlipped={isFlipped} focusedField={focusedField} />
           </div>
-
           <div className="payment-form-container">
             {/* Affiche le formulaire de paiement si le code n'est pas encore confirmé */}
             {!codeConfirmed && (
@@ -146,31 +173,53 @@ function PaymentPage() {
                   cardData={cardData}
                   onInputChange={handleInputChange}
                   onInputFocus={handleInputFocus}
-                  onPay={handlePayment}
+                  selectedZones={selectedZones}
+                  totalPlaces={totalPlaces}
+                  totalPrice={totalPrice}
                 />
+                {/* Affichage du récapitulatif juste après avoir cliqué sur "Payer" */}
                 {showCodeInput && (
-                  <div style={{ marginTop: "1rem" }}>
-                    <label>
-                      Entrez le code reçu par email :
-                      <input
-                        type="text"
-                        value={confirmationCode}
-                        onChange={(e) => setConfirmationCode(e.target.value)}
-                        style={{ marginLeft: "0.5rem" }}
-                        disabled={isVerifying}
-                      />
-                    </label>
-                    <button
-                      onClick={handleConfirmCode}
-                      style={{ marginLeft: "1rem" }}
-                      disabled={isVerifying || codeConfirmed}
-                    >
-                      Confirmer
-                    </button>
-                    {confirmError && (
-                      <div style={{ color: "red", marginTop: "0.5rem" }}>{confirmError}</div>
-                    )}
-                  </div>
+                  <>
+                    <div style={{ margin: "16px 0", padding: 12, background: "#f6f6f6", borderRadius: 8 }}>
+                      <div>
+                        <b>Résumé de votre sélection :</b>
+                      </div>
+                      <ul style={{ margin: "8px 0 0 0", padding: 0, listStyle: "none" }}>
+                        {selectedZones.map(z => (
+                          <li key={z.id} style={{ fontSize: "0.98em" }}>
+                            {z.name} : {z.count} × {z.price} DZD = <b>{z.count * z.price} DZD</b>
+                          </li>
+                        ))}
+                      </ul>
+                      <div style={{ marginTop: 8, fontWeight: 600 }}>
+                        Total places : <span style={{ color: "#1a472a" }}>{totalPlaces}</span>
+                        {" | "}
+                        Total à payer : <span style={{ color: "#1a472a" }}>{totalPrice} DZD</span>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: "1rem" }}>
+                      <label>
+                        Entrez le code reçu par email :
+                        <input
+                          type="text"
+                          value={confirmationCode}
+                          onChange={(e) => setConfirmationCode(e.target.value)}
+                          style={{ marginLeft: "0.5rem" }}
+                          disabled={isVerifying}
+                        />
+                      </label>
+                      <button
+                        onClick={handleConfirmCode}
+                        style={{ marginLeft: "1rem" }}
+                        disabled={isVerifying || codeConfirmed}
+                      >
+                        Confirmer
+                      </button>
+                      {confirmError && (
+                        <div style={{ color: "red", marginTop: "0.5rem" }}>{confirmError}</div>
+                      )}
+                    </div>
+                  </>
                 )}
               </>
             )}

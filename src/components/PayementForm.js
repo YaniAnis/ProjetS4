@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react"
 import "./styles/PaymentForm.css"
 
-function PaymentForm({ cardData, onInputChange, onInputFocus }) {
+function PaymentForm({ cardData, onInputChange, onInputFocus, selectedZones = [], totalPlaces = 0, totalPrice = 0 }) {
   const [showVerification, setShowVerification] = useState(false)
   const [verificationCode, setVerificationCode] = useState("")
   const [paiementId, setPaiementId] = useState(null)
   const [verificationMessage, setVerificationMessage] = useState("")
   const [paymentConfirmed, setPaymentConfirmed] = useState(false)
   const [qrInfoMessage, setQrInfoMessage] = useState("")
+
+  // Ajoutez ce log pour debug :
+  // console.log("selectedZones", selectedZones, "totalPlaces", totalPlaces, "totalPrice", totalPrice);
 
   const formatCardNumber = (value) => {
     if (!value) return ""
@@ -353,20 +356,26 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
         />
       </div>
 
-      <div className="payment-details">
-        <div className="payment-detail">
-          <span>prix-billet</span>
-          <span >89,99 €</span>
+      {/* Affichage dynamique du récapitulatif */}
+      {selectedZones && selectedZones.length > 0 && (
+        <div className="payment-details">
+          {selectedZones.map(z => (
+            <div className="payment-detail" key={z.id}>
+              <span>{z.name} ({z.count} × {z.price} DZD)</span>
+              <span>{z.count * z.price} DZD</span>
+            </div>
+          ))}
+          <div className="payment-detail total">
+            <span>Total places</span>
+            <span>{totalPlaces}</span>
+          </div>
+          <div className="payment-detail total">
+            <span>Total à payer</span>
+            <span>{totalPrice} DZD</span>
+          </div>
         </div>
-        <div className="payment-detail">
-          <span>nombre</span>
-          <span>2</span>
-        </div>
-        <div className="payment-detail total">
-          <span>Total</span>
-          <span>107,99 €</span>
-        </div>
-      </div>
+      )}
+
       <button type="submit" className="payment-button">
         Payer maintenant
       </button>
