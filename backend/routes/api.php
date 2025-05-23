@@ -30,7 +30,6 @@ Route::delete('/users/{id}', [UserController::class, 'destroy']);
 Route::get('/user-stats', [UserController::class, 'getUserStats']);
 Route::post('/create-checkout-session', [PaymentController::class, 'createCheckoutSession']);
 Route::post('/verify-payment', [PaymentController::class, 'verifyPayment']);
-Route::post('/create-payment', [\App\Http\Controllers\PaymentController::class, 'createPayment']);
 Route::post('/send-ticket', [\App\Http\Controllers\PaymentController::class, 'sendTicketByEmail']);
 
 Route::get('/matches', [MatchController::class, 'index']);
@@ -172,3 +171,7 @@ Route::middleware('auth:sanctum')->put('/change-email', function (\Illuminate\Ht
 
 Route::middleware('auth:sanctum')->post('/tickets', [TicketController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/my-tickets', [TicketController::class, 'userTickets']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/create-payment', [PaymentController::class, 'createPayment']);
+});

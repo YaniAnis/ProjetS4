@@ -52,31 +52,23 @@ class PaymentController extends Controller
                 $paiement->statut = 'validé';
                 $paiement->save();
 
-                // Ensure the email is set
-                $user = \App\Models\User::find($paiement->user_id);
-                if (!$user || empty($user->email)) {
-                    Log::error('Email is missing for the user', ['paiement_id' => $paiement->id, 'user_id' => $paiement->user_id]);
-                    return response()->json([
-                        'success' => false,
-                        'message' => "Aucune adresse email n'est associée à cet utilisateur."
-                    ], 422);
-                }
-
-                $paiement->email = $user->email;
-                $paiement->save();
-
-                // Envoi automatique du ticket PDF après validation du paiement
                 try {
-                    // Récupérer le ticket lié au paiement
-                    $ticket = \App\Models\Ticket::find($paiement->ticket_id);
+                    // Get ticket with user relation
+                    $ticket = \App\Models\Ticket::with('user')->find($paiement->ticket_id);
 
-                    if (!$ticket) {
-                        Log::error('Ticket introuvable pour le paiement', ['paiement_id' => $paiement->id]);
+                    if (!$ticket || !$ticket->user) {
+                        Log::error('Ticket or user not found', [
+                            'paiement_id' => $paiement->id,
+                            'ticket_id' => $paiement->ticket_id
+                        ]);
                         return response()->json([
                             'success' => false,
-                            'message' => 'Paiement confirmé, mais le ticket associé est introuvable. Veuillez contacter le support.',
+                            'message' => 'Ticket ou utilisateur introuvable. Veuillez contacter le support.'
                         ], 500);
                     }
+
+                    // Use user's email from ticket relationship
+                    $userEmail = $ticket->user->email;
 
                     // Récupérer le match (Matches)
                     $match = Matches::find($ticket->match_id);
@@ -106,17 +98,17 @@ class PaymentController extends Controller
                         ], 500);
                     }
 
-                    Log::info('Tentative d\'envoi du mail ticket PDF', ['to' => $paiement->email, 'paiement_id' => $paiement->id]);
+                    Log::info('Tentative d\'envoi du mail ticket PDF', ['to' => $userEmail, 'paiement_id' => $paiement->id]);
                     try {
-                        Mail::send([], [], function (Message $message) use ($paiement, $pdfContent) {
-                            $message->to($paiement->email)
+                        Mail::send([], [], function (Message $message) use ($userEmail, $pdfContent) {
+                            $message->to($userEmail)
                                 ->subject('Votre billet FooTiX - PDF')
                                 ->html("Merci pour votre achat !<br>Vous trouverez en pièce jointe votre ticket au format PDF. Présentez-le le jour du match.")
                                 ->attachData($pdfContent, 'ticket_footiX.pdf', [
                                     'mime' => 'application/pdf',
                                 ]);
                         });
-                        Log::info('Mail envoyé ticket PDF après validation paiement', ['to' => $paiement->email, 'paiement_id' => $paiement->id]);
+                        Log::info('Mail envoyé ticket PDF après validation paiement', ['to' => $userEmail, 'paiement_id' => $paiement->id]);
                     } catch (\Exception $mailEx) {
                         Log::error('Erreur lors de l\'envoi du mail ticket PDF après validation paiement', ['error' => $mailEx->getMessage(), 'paiement_id' => $paiement->id]);
                         return response()->json([
@@ -179,8 +171,17 @@ class PaymentController extends Controller
             Log::info('Paiement trouvé', ['paiement' => $paiement]);
 
             // Récupérer le ticket lié au paiement
-            $ticket = \App\Models\Ticket::find($paiement->ticket_id);
+            $ticket = \App\Models\Ticket::with('user')->find($paiement->ticket_id);
             Log::info('Ticket trouvé', ['ticket' => $ticket]);
+
+            if (!$ticket || !$ticket->user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Utilisateur introuvable pour ce ticket."
+                ], 422);
+            }
+
+            $userEmail = $ticket->user->email;
 
             // Générer le PDF avec DomPDF
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('ticket_pdf', [
@@ -193,16 +194,16 @@ class PaymentController extends Controller
 
             // Utiliser le mailer SMTP explicitement
             try {
-                Log::info('Tentative envoi mail ticket PDF', ['to' => $paiement->email]);
-                Mail::send([], [], function (Message $message) use ($paiement, $pdfContent) {
-                    $message->to($paiement->email)
+                Log::info('Tentative envoi mail ticket PDF', ['to' => $userEmail]);
+                Mail::send([], [], function (Message $message) use ($userEmail, $pdfContent) {
+                    $message->to($userEmail)
                         ->subject('Votre billet FooTiX - PDF')
                         ->html("Merci pour votre achat !<br>Vous trouverez en pièce jointe votre ticket au format PDF. Présentez-le le jour du match.")
                         ->attachData($pdfContent, 'ticket_footiX.pdf', [
                             'mime' => 'application/pdf',
                         ]);
                 });
-                Log::info('Mail envoyé ticket PDF', ['to' => $paiement->email]);
+                Log::info('Mail envoyé ticket PDF', ['to' => $userEmail]);
             } catch (\Exception $mailEx) {
                 Log::error('Erreur lors de l\'envoi du mail ticket PDF', ['error' => $mailEx->getMessage()]);
                 return response()->json([
@@ -226,102 +227,78 @@ class PaymentController extends Controller
 
     public function createPayment(Request $request)
     {
-        Log::info('createPayment called', ['data' => $request->all()]);
-
-        $request->validate([
-            'card_number' => 'required|string',
-            'email' => 'required|email',
-            // ...other validations...
-        ]);
-
-        if (!$request->email) {
-            Log::error('Email manquant dans la requête paiement');
-            return response()->json([
-                'success' => false,
-                'message' => "L'email est obligatoire pour recevoir le code de confirmation."
-            ], 422);
-        }
-
-        // Example: List of valid card numbers (for demo/testing)
-        $validCardNumbers = [
-            '4242424242424242',
-            '4000056655665556',
-            '5555555555554444',
-        ];
-
-        $cardNumber = str_replace(' ', '', $request->card_number);
-
-        if (!in_array($cardNumber, $validCardNumbers)) {
-            Log::warning('Carte bancaire inconnue ou invalide', ['card_number' => $cardNumber]);
-            return response()->json(['success' => false, 'message' => 'Carte bancaire inconnue ou invalide.'], 422);
-        }
-
-        // Générer le code de vérification à 6 chiffres
-        $verificationCode = rand(100000, 999999);
-
-        // Générer le ticket automatiquement (adaptez les champs selon votre modèle Ticket)
         try {
+            Log::info('createPayment called', ['data' => $request->all()]);
+
+            $request->validate([
+                'card_number' => 'required|string',
+                'name' => 'required|string',
+                'expiry' => 'required|string',
+                'cvc' => 'required|string',
+                'selectedZones' => 'required|array',
+                'totalPlaces' => 'required|numeric',
+                'totalPrice' => 'required|numeric'
+            ]);
+
+            $user = \Illuminate\Support\Facades\Auth::user();
+            if (!$user || !$user->email) {
+                throw new \Exception('Utilisateur non connecté ou sans email');
+            }
+
+            // Validate card number
+            $validCardNumbers = ['4242424242424242', '4000056655665556', '5555555555554444'];
+            $cardNumber = str_replace(' ', '', $request->card_number);
+            if (!in_array($cardNumber, $validCardNumbers)) {
+                throw new \Exception('Carte bancaire invalide');
+            }
+
+            // Create ticket
             $ticket = \App\Models\Ticket::create([
-                'user_id' => \Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::id() : 1, // ou autre logique pour lier l'utilisateur
-                'match_id' => 1, // à adapter
-                'prix' => 89.99, // à adapter
-                'statut' => null, // <-- Ajoutez cette ligne pour satisfaire la contrainte SQL
-                'numero_place' => 'A1', // <-- Ajoutez une valeur par défaut ou générez dynamiquement
-                // ...autres champs requis...
+                'user_id' => $user->id,
+                'match_id' => $request->selectedZones[0]['match_id'] ?? 1,
+                'prix' => $request->totalPrice,
+                'statut' => 'pending',
+                'numero_place' => implode(',', array_map(fn($z) => $z['name'], $request->selectedZones))
             ]);
-            $ticket_id = $ticket->id;
-        } catch (\Exception $e) {
-            Log::error('Erreur création ticket', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'message' => "Erreur lors de la création du ticket : " . $e->getMessage()
-            ], 500);
-        }
 
-        // Créer le paiement en base
-        try {
+            // Create payment
+            $verificationCode = rand(100000, 999999);
             $paiement = \App\Models\Paiement::create([
-                'ticket_id' => $ticket_id,
-                'user_id' => optional(auth())->id() ?? 1,
-                'mode_paiement' => 'carte', // <-- Ajoutez cette ligne pour satisfaire la contrainte SQL
-                // ...autres champs requis...
+                'ticket_id' => $ticket->id,
+                'user_id' => $user->id,
+                'mode_paiement' => 'carte',
                 'verification_code' => $verificationCode,
-                'email' => $request->email,
+                'email' => $user->email,
+                'montant' => $request->totalPrice,
+                'statut' => 'pending'
             ]);
+
+            // Send verification email
+            Mail::raw(
+                "Votre code de confirmation de paiement est : $verificationCode",
+                function($msg) use ($user) {
+                    $msg->to($user->email)
+                       ->subject('Code de confirmation de paiement');
+                }
+            );
+
+            return response()->json([
+                'success' => true,
+                'paiement_id' => $paiement->id,
+                'message' => 'Code de vérification envoyé'
+            ]);
+
         } catch (\Exception $e) {
-            Log::error('Erreur création paiement', ['error' => $e->getMessage()]);
+            Log::error('Erreur createPayment', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => "Erreur lors de la création du paiement : " . $e->getMessage()
+                'message' => $e->getMessage()
             ], 500);
         }
-
-        Log::info('Paiement créé', ['paiement_id' => $paiement->id, 'email' => $request->email]);
-
-        // ENVOI DU MAIL DE CODE DE CONFIRMATION
-        try {
-            Log::info('Tentative envoi mail paiement', [
-                'to' => $request->email,
-                'code' => $verificationCode,
-            ]);
-            Mail::send([], [], function (Message $message) use ($request, $verificationCode) {
-                $message->to($request->email)
-                    ->subject('Code de confirmation de paiement')
-                    ->html("Votre code de confirmation de paiement est : {$verificationCode}");
-            });
-            Log::info('Mail envoyé paiement');
-        } catch (\Exception $e) {
-            Log::error('Erreur envoi mail paiement', ['error' => $e->getMessage()]);
-            return response()->json([
-                'success' => false,
-                'message' => "Erreur lors de l'envoi du mail : " . $e->getMessage()
-            ], 500);
-        }
-
-        return response()->json([
-            'success' => true,
-            'paiement_id' => $paiement->id,
-        ]);
     }
 }
 
