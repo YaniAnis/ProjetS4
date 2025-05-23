@@ -23,7 +23,40 @@ function MatchCard({ match }) {
   }
 
   const handleBuyTickets = () => {
-    // Pass match info and zones via state
+    // Vérification login comme dans Navbar.js (isLoggedIn = isLoggedIn flag OU authToken/token présent)
+    const isLoggedIn =
+      localStorage.getItem("isLoggedIn") === "true" ||
+      !!localStorage.getItem("authToken") ||
+      !!localStorage.getItem("token");
+
+    if (!isLoggedIn) {
+      navigate("/login");
+      return;
+    }
+
+    // Vérification supplémentaire : user.email (optionnel, pour sécurité)
+    let user = null;
+    try {
+      const userStr = localStorage.getItem("user");
+      if (userStr && userStr !== "undefined" && userStr !== "null") {
+        user = JSON.parse(userStr);
+      }
+    } catch {
+      user = null;
+    }
+    if (
+      user &&
+      typeof user === "object" &&
+      user.email &&
+      typeof user.email === "string" &&
+      user.email.trim() !== ""
+    ) {
+      // OK, utilisateur connecté avec email
+    } else if (!isLoggedIn) {
+      // déjà géré ci-dessus
+      return;
+    }
+    // Autoriser tous les utilisateurs (admin inclus) à acheter des billets
     navigate("/tickets", {
       state: {
         matchId: match.id,

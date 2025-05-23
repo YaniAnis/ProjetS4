@@ -86,8 +86,7 @@ class PaymentController extends Controller
                 'success' => false,
                 'message' => "Aucune adresse email n'est associée à ce paiement."
             ], 422);
-        }
-
+        } 
         try {
             $qrValue = $request->qr_value;
             $tmpPng = tempnam(sys_get_temp_dir(), 'qr_') . '.png';
