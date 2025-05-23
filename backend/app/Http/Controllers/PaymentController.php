@@ -84,8 +84,12 @@ class PaymentController extends Controller
                     try {
                         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('ticket_pdf', [
                             'paiement' => $paiement,
-                            'ticket' => $ticket,
-                            'match' => $match,
+                            'ticket' => $ticket->load('user'), // Charger la relation user
+                            'match' => $match->load('stade'), // Charger la relation stade
+                            'logos' => [
+                                'home' => $this->getTeamLogoPath($match->equipe1),
+                                'away' => $this->getTeamLogoPath($match->equipe2)
+                            ]
                         ]);
 
                         $pdfContent = $pdf->output();
@@ -183,10 +187,21 @@ class PaymentController extends Controller
 
             $userEmail = $ticket->user->email;
 
+            // Récupérer le match (Matches)
+            $match = Matches::find($ticket->match_id);
+            if (!$match) {
+                Log::error('Match introuvable pour le ticket', ['ticket_id' => $ticket->id, 'match_id' => $ticket->match_id]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Le match associé au ticket est introuvable. Veuillez contacter le support.',
+                ], 500);
+            }
+
             // Générer le PDF avec DomPDF
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('ticket_pdf', [
                 'paiement' => $paiement,
-                'ticket' => $ticket,
+                'ticket' => $ticket->load('user'), // Charger la relation user
+                'match' => $match->load('stade'), // Charger la relation stade
                 'qrValue' => $qrValue,
             ]);
             $pdfContent = $pdf->output();
@@ -236,6 +251,10 @@ class PaymentController extends Controller
                 'expiry' => 'required|string',
                 'cvc' => 'required|string',
                 'selectedZones' => 'required|array',
+                'selectedZones.*.id' => 'required',
+                'selectedZones.*.name' => 'required',
+                'selectedZones.*.count' => 'required|integer',
+                'selectedZones.*.price' => 'required|numeric',
                 'totalPlaces' => 'required|numeric',
                 'totalPrice' => 'required|numeric'
             ]);
@@ -252,16 +271,19 @@ class PaymentController extends Controller
                 throw new \Exception('Carte bancaire invalide');
             }
 
+            // Get match_id from state if available
+            $match_id = $request->state['matchId'] ?? 1;
+
             // Create ticket
             $ticket = \App\Models\Ticket::create([
                 'user_id' => $user->id,
-                'match_id' => $request->selectedZones[0]['match_id'] ?? 1,
+                'match_id' => $match_id,
                 'prix' => $request->totalPrice,
                 'statut' => 'pending',
-                'numero_place' => implode(',', array_map(fn($z) => $z['name'], $request->selectedZones))
+                'numero_place' => implode(',', array_map(fn($z) => "{$z['name']}({$z['count']})", $request->selectedZones))
             ]);
 
-            // Create payment
+          
             $verificationCode = rand(100000, 999999);
             $paiement = \App\Models\Paiement::create([
                 'ticket_id' => $ticket->id,
@@ -298,6 +320,50 @@ class PaymentController extends Controller
                 'success' => false,
                 'message' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    private function getTeamLogoPath($teamName) {
+        try {
+            // Format team name for file path
+            $teamName = strtolower(str_replace(' ', '_', $teamName));
+            $logoPath = public_path("logos/{$teamName}.png");
+            
+            Log::info('Trying to load logo', ['path' => $logoPath]);
+
+            if (!file_exists($logoPath)) {
+                Log::warning('Logo not found', ['team' => $teamName]);
+                return '';
+            }
+
+            // Lecture de l'image et conversion en base64
+            $imageContent = file_get_contents($logoPath);
+            if ($imageContent === false) {
+                Log::error('Cannot read logo file', ['path' => $logoPath]);
+                return '';
+            }
+
+            $imageSize = getimagesize($logoPath);
+            if ($imageSize === false) {
+                Log::error('Invalid image file', ['path' => $logoPath]);
+                return '';
+            }
+
+            $base64 = base64_encode($imageContent);
+            Log::info('Logo loaded successfully', [
+                'team' => $teamName, 
+                'size' => strlen($base64),
+                'mime' => $imageSize['mime']
+            ]);
+
+            // Construire l'URL data avec le bon type MIME
+            return "data:" . $imageSize['mime'] . ";base64," . $base64;
+        } catch (\Exception $e) {
+            Log::error('Error in getTeamLogoPath', [
+                'team' => $teamName,
+                'error' => $e->getMessage()
+            ]);
+            return '';
         }
     }
 }
