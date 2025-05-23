@@ -8,23 +8,13 @@ function Footer({ darkMode }) {
         <div className="footer-grid">
           {/* Logo et description */}
           <div className="footer-section">
-            <div className="footer-logo">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                <path d="M2 12h20" />
-              </svg>
-              <span>FootTickets</span>
+            <div className="footer-logo" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <img
+                src="/logos/raw.png"
+                alt="FooTiX logo"
+                style={{ height: "40px", width: "40px", objectFit: "contain" }}
+              />
+              <span style={{ fontSize: "2rem", fontWeight: "bold", letterSpacing: "2px" }}>FooTiX</span>
             </div>
             <p className="footer-description">
               Votre plateforme de référence pour l'achat de billets de matchs de football.
@@ -121,7 +111,7 @@ function Footer({ darkMode }) {
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                   <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
-                <span>contact@foottickets.fr</span>
+                <span>contact@footix.fr</span>
               </li>
               <li>
                 <svg
@@ -144,7 +134,7 @@ function Footer({ darkMode }) {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} FootTickets. Tous droits réservés.</p>
+          <p>&copy; {new Date().getFullYear()} FooTiX. Tous droits réservés.</p>
         </div>
       </div>
     </footer>
