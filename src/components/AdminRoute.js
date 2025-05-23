@@ -1,32 +1,45 @@
 import { Navigate, Outlet } from "react-router-dom"
 
 // List of admin emails (must match your LoginPage.js)
-const ADMIN_EMAILS = ["admin@foottickets.com", "admin@admin.com"]
+// const ADMIN_EMAILS = ["admin@foottickets.com", "admin@admin.com"]
 
 const AdminRoute = ({ children }) => {
-  // TEMP: Autoriser l'accès admin si l'utilisateur est connecté (désactive la vérification d'email)
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true"
-  let isAdmin = false
+  // Accept both string and boolean true for isLoggedIn
+  const isLoggedIn =
+    localStorage.getItem("isLoggedIn") === "true" ||
+    localStorage.getItem("isLoggedIn") === true ||
+    !!localStorage.getItem("userToken");
 
-  if (isLoggedIn) {
+  let isAdmin = false;
+
+  let userInfoRaw = localStorage.getItem("userInfo");
+  let userInfo = {};
+  if (userInfoRaw && typeof userInfoRaw === "string") {
     try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}")
-      // Correction: vérifier que userInfo.email existe et est une string
-      if (typeof userInfo.email === "string" && ADMIN_EMAILS.includes(userInfo.email.toLowerCase())) {
-        isAdmin = true
-      }
+      userInfo = JSON.parse(userInfoRaw);
     } catch (e) {
-      // Si parsing échoue, isAdmin reste false
+      // If parsing fails, userInfo stays {}
     }
   }
 
-  // Si l'utilisateur n'est pas admin, rediriger vers la page de connexion
-  if (!isAdmin) {
-    return <Navigate to="/login" replace />
+  // Accept admin if role is "admin" (case-insensitive, trimmed)
+  if (
+    isLoggedIn &&
+    userInfo &&
+    typeof userInfo === "object" &&
+    typeof userInfo.role === "string" &&
+    userInfo.role.trim().toLowerCase() === "admin"
+  ) {
+    isAdmin = true;
   }
 
-  // Sinon, afficher le contenu protégé
-  return children ? children : <Outlet />
+  // Correction: if you are admin, always render children or <Outlet />
+  if (isAdmin) {
+    return children ? children : <Outlet />;
+  }
+
+  // If not admin, redirect to login
+  return <Navigate to="/login" replace />;
 }
 
 export default AdminRoute

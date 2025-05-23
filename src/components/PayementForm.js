@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./styles/PaymentForm.css"
 
 function PaymentForm({ cardData, onInputChange, onInputFocus }) {
@@ -6,6 +6,8 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
   const [verificationCode, setVerificationCode] = useState("")
   const [paiementId, setPaiementId] = useState(null)
   const [verificationMessage, setVerificationMessage] = useState("")
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false)
+  const [qrInfoMessage, setQrInfoMessage] = useState("")
 
   const formatCardNumber = (value) => {
     if (!value) return ""
@@ -58,47 +60,68 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
     onInputChange("cvc", e.target.value)
   }
 
+  // Récupère l'email du compte connecté au chargement du composant
+  useEffect(() => {
+    // Suppose que l'utilisateur est stocké dans localStorage sous la clé 'user'
+    const user = JSON.parse(localStorage.getItem("user") || "null")
+    if (user && user.email) {
+      onInputChange("email", user.email)
+    }
+    // NE PAS mettre else { onInputChange("email", "") } sinon ça efface la saisie manuelle
+  }, [onInputChange])
+
   const validateForm = () => {
     let isValid = true
 
     // Card number validation
     if (!/^(\d{4}\s){3}\d{4}$/.test(cardData.number)) {
       isValid = false
-      highlightError(document.getElementById("card-number"))
+      const el = document.getElementById("card-number")
+      if (el) highlightError(el)
     }
 
     // Name validation
     if (cardData.name.trim().length < 3) {
       isValid = false
-      highlightError(document.getElementById("card-name"))
+      const el = document.getElementById("card-name")
+      if (el) highlightError(el)
     }
 
     // Expiry validation
     if (!/^\d{2}\/\d{2}$/.test(cardData.expiry)) {
       isValid = false
-      highlightError(document.getElementById("card-expiry"))
+      const el = document.getElementById("card-expiry")
+      if (el) highlightError(el)
     } else {
       // Check if date is valid and not expired
       const [month, year] = cardData.expiry.split("/")
       const expiryDate = new Date("20" + year, month - 1)
       const currentDate = new Date()
-
       if (expiryDate < currentDate) {
         isValid = false
-        highlightError(document.getElementById("card-expiry"))
+        const el = document.getElementById("card-expiry")
+        if (el) highlightError(el)
       }
     }
 
     // CVC validation
     if (!/^\d{3}$/.test(cardData.cvc)) {
       isValid = false
-      highlightError(document.getElementById("card-cvc"))
+      const el = document.getElementById("card-cvc")
+      if (el) highlightError(el)
+    }
+
+    // Email validation (champ non visible, donc pas de highlight)
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cardData.email)) {
+      isValid = false
+      // pas de highlightError ici car pas de champ email dans le DOM
     }
 
     return isValid
   }
 
   const highlightError = (inputElement) => {
+    if (!inputElement) return
     inputElement.style.borderColor = "#dc3545"
     inputElement.style.boxShadow = "0 0 0 3px rgba(220, 53, 69, 0.25)"
 
@@ -112,33 +135,69 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
+    // Vérifie que l'email est bien présent et valide
+    if (!cardData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cardData.email)) {
+      alert("Veuillez saisir un email valide pour recevoir le code de vérification.");
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
 
-    // Simulate payment creation and receiving a paiementId and code
-    // In real app, call backend to create payment and get code
-    const fakePaiementId = 1 // Replace with real ID from backend
-    setPaiementId(fakePaiementId)
-    setShowVerification(true)
-    alert("Un code de vérification a été envoyé. Veuillez le saisir pour valider le paiement.")
-
-    // Optionally reset form fields
-    // onInputChange("number", "");
-    // onInputChange("name", "");
-    // onInputChange("expiry", "");
-    // onInputChange("cvc", "");
-    // e.target.reset();
+    try {
+      const res = await fetch("http://localhost:8000/api/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          card_number: cardData.number,
+          name: cardData.name,
+          expiry: cardData.expiry,
+          cvc: cardData.cvc,
+          email: cardData.email,
+        }),
+      });
+      let data;
+      let rawText = "";
+      try {
+        rawText = await res.text();
+        try {
+          data = JSON.parse(rawText);
+        } catch (jsonErr) {
+          alert("Erreur lors de la création du paiement :\n" + rawText);
+          return;
+        }
+      } catch (streamErr) {
+        alert("Erreur lors de la lecture de la réponse : " + (streamErr.message || streamErr));
+        return;
+      }
+      if (data.success) {
+        setPaiementId(data.paiement_id);
+        setShowVerification(true);
+        alert("Un code de vérification a été envoyé à l'adresse email sélectionnée. Veuillez le saisir pour valider le paiement.");
+      } else {
+        alert(data.message || "Erreur lors de la création du paiement.");
+      }
+    } catch (err) {
+      alert("Erreur lors de la création du paiement : " + (err.message || err));
+    }
   }
 
   const handleVerify = async (e) => {
     e.preventDefault()
     setVerificationMessage("")
 
+    if (!verificationCode || !paiementId) {
+      setVerificationMessage("Veuillez saisir le code de vérification.")
+      return
+    }
+
+    // Debug log
+    console.log("Vérification paiementId:", paiementId, "code:", verificationCode)
+
     // Call backend to verify payment
     try {
-      const res = await fetch("/api/verify-payment", {
+      const res = await fetch("http://localhost:8000/api/verify-payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -146,16 +205,42 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
           verification_code: verificationCode,
         }),
       })
-      const data = await res.json()
+      let data
+      let rawText = ""
+      try {
+        rawText = await res.text()
+        console.log("Réponse brute backend:", rawText) // <-- Ajoutez ce log
+        try {
+          data = JSON.parse(rawText)
+        } catch (jsonErr) {
+          setVerificationMessage("Erreur technique lors de la vérification. Veuillez réessayer plus tard.")
+          console.error("Réponse inattendue du backend:", rawText)
+          return
+        }
+      } catch (streamErr) {
+        setVerificationMessage("Erreur lors de la lecture de la réponse : " + (streamErr.message || streamErr))
+        return
+      }
       if (data.success) {
-        setVerificationMessage("Paiement vérifié avec succès !")
+        setVerificationMessage("")
         setShowVerification(false)
+        setPaymentConfirmed(true)
+        setQrInfoMessage(data.message || "Paiement confirmé ! Un email avec votre QR code a été envoyé.")
       } else {
         setVerificationMessage(data.message || "Code invalide.")
       }
-    } catch {
-      setVerificationMessage("Erreur lors de la vérification.")
+    } catch (err) {
+      setVerificationMessage("Erreur lors de la vérification : " + (err.message || err))
     }
+  }
+
+  if (paymentConfirmed) {
+    return (
+      <div className="payment-confirmed-message">
+        <h2>Paiement confirmé !</h2>
+        <p>{qrInfoMessage || "Un email avec votre QR code a été envoyé. Présentez-le le jour du match."}</p>
+      </div>
+    )
   }
 
   if (showVerification) {
@@ -171,7 +256,13 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
             required
           />
         </div>
-        <button type="submit" className="payment-button">Vérifier</button>
+        <button
+          type="submit"
+          className="payment-button"
+          disabled={!verificationCode || !paiementId}
+        >
+          Vérifier
+        </button>
         {verificationMessage && <div style={{ color: "red", marginTop: 10 }}>{verificationMessage}</div>}
       </form>
     )
@@ -187,7 +278,7 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
           name="card-number"
           placeholder="1234 5678 9012 3456"
           maxLength="19"
-          pattern="[\d| ]{16,22}"
+          pattern="(?:\d{4} ?){4}" // Accepte 16 chiffres avec ou sans espaces
           required
           value={cardData.number}
           onChange={handleCardNumberChange}
@@ -247,6 +338,21 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
         </div>
       </div>
 
+      <div className="form-input">
+        <label htmlFor="card-email">Email</label>
+        <input
+          type="email"
+          id="card-email"
+          name="card-email"
+          placeholder="Votre email pour recevoir le code"
+          required
+          value={cardData.email || ""}
+          onChange={e => onInputChange("email", e.target.value)}
+          onFocus={() => onInputFocus("email")}
+          style={{ color: "#000", background: "#f8f9fa" }}
+        />
+      </div>
+
       <div className="payment-details">
         <div className="payment-detail">
           <span>prix-billet</span>
@@ -261,11 +367,9 @@ function PaymentForm({ cardData, onInputChange, onInputFocus }) {
           <span>107,99 €</span>
         </div>
       </div>
-
       <button type="submit" className="payment-button">
         Payer maintenant
       </button>
-
       <div className="secure-payment">
         <svg
           xmlns="http://www.w3.org/2000/svg"

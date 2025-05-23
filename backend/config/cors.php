@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Cross-Origin Resource Sharing (CORS) Configuration
@@ -20,7 +19,6 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'http://localhost:5173',
         'http://localhost:3000',
     ],
 
@@ -33,5 +31,4 @@ return [
     'max_age' => 0,
 
     'supports_credentials' => false, // Set to false unless you need cookies/auth
-
 ];

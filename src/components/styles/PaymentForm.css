@@ -43,6 +43,12 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
   
+  .payment-form input,
+.payment-form textarea,
+.payment-form select {
+  color: #000 !important;
+}
+  
   .form-input input:focus {
     outline: none;
     border-color: #1a472a;
@@ -106,4 +112,3 @@
   .secure-payment svg {
     margin-right: 8px;
   }
-  

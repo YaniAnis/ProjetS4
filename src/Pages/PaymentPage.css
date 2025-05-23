@@ -46,6 +46,22 @@
     justify-content: center;
   }
   
+  .payment-form-container {
+    width: 100%;
+    /* Ajoute un min-height pour éviter que le contenu soit masqué lors du switch */
+    min-height: 220px;
+    /* S'assure que tout est visible */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+  
+  /* Pour éviter que le bouton ou le message soit masqué par un overflow */
+  .payment-form-container > div {
+    overflow: visible !important;
+  }
+  
   /* Responsive Styles */
   @media (min-width: 768px) {
     .payment-content {
@@ -59,4 +75,3 @@
       margin-right: 30px;
     }
   }
-  

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('match_id');
             $table->decimal('prix', 8, 2);
-            $table->string('statut');
+            $table->string('statut')->nullable(); // Rendre la colonne 'statut' nullable
             $table->string('numero_place');
             $table->timestamps();
 
