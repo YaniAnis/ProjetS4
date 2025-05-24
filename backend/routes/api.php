@@ -172,6 +172,7 @@ Route::middleware('auth:sanctum')->put('/change-email', function (\Illuminate\Ht
 
 Route::middleware('auth:sanctum')->post('/tickets', [TicketController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/my-tickets', [TicketController::class, 'userTickets']);
+Route::get('/user-tickets-count', [TicketController::class, 'userTicketsCount']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/create-payment', [PaymentController::class, 'createPayment']);

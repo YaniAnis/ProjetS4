@@ -1,4 +1,12 @@
 function MatchCard({ match }) {
+  // Correction : toujours utiliser le chemin relatif depuis public sans process.env.PUBLIC_URL
+  // car dans React, /logos/... pointe déjà sur public/logos/...
+  const homeLogo = typeof match.homeTeam?.logo === "string" && match.homeTeam.logo.trim() !== "" ? match.homeTeam.logo : "/placeholder.svg";
+  const awayLogo = typeof match.awayTeam?.logo === "string" && match.awayTeam.logo.trim() !== "" ? match.awayTeam.logo : "/placeholder.svg";
+
+  // DEBUG: Vérifie le chemin du logo et l'accessibilité du fichier
+  console.log("homeLogo path:", homeLogo, "| awayLogo path:", awayLogo);
+
   return (
     <div className="match-card">
       <div className="match-header">
@@ -10,12 +18,12 @@ function MatchCard({ match }) {
       <div className="match-content">
         <div className="teams">
           <div className="team">
-            <img src={match.homeTeam.logo || "/placeholder.svg"} alt={match.homeTeam.name} />
+            <img src={homeLogo} alt={match.homeTeam.name} />
             <div className="team-name">{match.homeTeam.name}</div>
           </div>
           <div className="versus">VS</div>
           <div className="team">
-            <img src={match.awayTeam.logo || "/placeholder.svg"} alt={match.awayTeam.name} />
+            <img src={awayLogo} alt={match.awayTeam.name} />
             <div className="team-name">{match.awayTeam.name}</div>
           </div>
         </div>

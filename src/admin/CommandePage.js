@@ -94,3 +94,23 @@ const CommandePage = () => {
 	);
 };
 export default CommandePage;
+
+// Dans OrdersTable.jsx, ajoute une colonne "Nombre de places" dans le tableau :
+/*
+<thead>
+  <tr>
+    <th>...</th>
+    <th>Nombre de places</th>
+    <th>...</th>
+  </tr>
+</thead>
+<tbody>
+  {orders.map(order => (
+    <tr key={order.id}>
+      <td>...</td>
+      <td>{order.nb_places}</td>
+      <td>...</td>
+    </tr>
+  ))}
+</tbody>
+*/

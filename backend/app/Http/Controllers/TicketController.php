@@ -48,4 +48,15 @@ class TicketController extends Controller
         $tickets = Ticket::where('user_id', $user->id)->with(['match', 'match.stade'])->get();
         return response()->json($tickets);
     }
+
+    public function userTicketsCount(Request $request)
+    {
+        $userId = $request->query('user_id');
+        $matchId = $request->query('match_id');
+        $count = \App\Models\Ticket::where('user_id', $userId)
+            ->where('match_id', $matchId)
+            ->where('statut', '!=', 'annulé') // optionnel : ne compte pas les tickets annulés
+            ->sum(\DB::raw("COALESCE(nb_places, 1)")); // si vous avez un champ nb_places, sinon count()
+        return response()->json(['count' => $count]);
+    }
 }
