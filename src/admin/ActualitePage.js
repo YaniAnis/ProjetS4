@@ -106,7 +106,7 @@ const ActualitePage = () => {
 							maxLength={64}
 						/>
 						<textarea
-							placeholder="Contenu Max 128 caractères"
+							placeholder="Description Max 128 caractères"
 							value={form.content}
 							onChange={e => setForm({ ...form, content: e.target.value })}
 							className="w-full bg-gray-700 text-white rounded-lg p-2"
@@ -114,7 +114,7 @@ const ActualitePage = () => {
 							maxLength={128}
 						/>
 						<textarea
-							placeholder="Description"
+							placeholder="Contenu"
 							value={form.description}
 							onChange={e => setForm({ ...form, description: e.target.value })}
 							className="w-full bg-gray-700 text-white rounded-lg p-4 min-h-[200px]"
