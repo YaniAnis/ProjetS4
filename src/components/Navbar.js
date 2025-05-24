@@ -87,6 +87,9 @@ function Navbar({ darkMode, setDarkMode }) {
           </Link>
           <Link to="/actualites" className="navbar-link">
             Actualités
+            </Link>
+            <Link to="/contact" className="navbar-link">
+            Help
           </Link>
         </nav>
 
