@@ -118,6 +118,7 @@ function StadiumPage() {
       state: {
         ...matchState,
         selectedZones,
+        match_id: matchState.matchId // <-- Ajouté pour garantir l'envoi du bon match_id
       }
     })
   }

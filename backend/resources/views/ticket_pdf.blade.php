@@ -91,22 +91,14 @@
             <div class="teams">
                 <div class="team">
                     <?php if (!empty($logos['home'])): ?>
-                    <img src="<?php echo $logos['home']; ?>" 
-                         alt="Logo <?php echo e($match->equipe1); ?>" 
-                         class="team-logo"
-                         width="40"
-                         height="40">
+                    <img src="<?php echo $logos['home']; ?>" alt="Logo <?php echo e($match->equipe1); ?>" class="team-logo" width="40" height="40">
                     <?php endif; ?>
                     <span><?php echo e($match->equipe1); ?></span>
                 </div>
                 <span class="vs">VS</span>
                 <div class="team">
                     <?php if (!empty($logos['away'])): ?>
-                    <img src="<?php echo $logos['away']; ?>" 
-                         alt="Logo <?php echo e($match->equipe2); ?>" 
-                         class="team-logo"
-                         width="40"
-                         height="40">
+                    <img src="<?php echo $logos['away']; ?>" alt="Logo <?php echo e($match->equipe2); ?>" class="team-logo" width="40" height="40">
                     <?php endif; ?>
                     <span><?php echo e($match->equipe2); ?></span>
                 </div>

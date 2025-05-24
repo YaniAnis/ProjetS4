@@ -1,11 +1,11 @@
 import TeamPage from "../components/TeamPage";
 import "../Pages/Teams.css";
 
-function Teams() {
+function Teams({ darkMode }) {
   return (
-    <div className="app">
+    <div className={`app ${darkMode ? "dark-mode" : ""}`}>
       <main className="main-content">
-        <TeamPage />
+        <TeamPage darkMode={darkMode} />
       </main>
     </div>
   );

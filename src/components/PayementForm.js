@@ -163,7 +163,8 @@ function PaymentForm({ cardData, onInputChange, onInputFocus, selectedZones = []
           cvc: cardData.cvc,
           selectedZones,
           totalPlaces,
-          totalPrice
+          totalPrice,
+          match_id: (window.location.state && window.location.state.match_id) || (window.history && window.history.state && window.history.state.usr && window.history.state.usr.match_id)
         }),
       });
 

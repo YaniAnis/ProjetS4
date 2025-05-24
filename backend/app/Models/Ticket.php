@@ -26,6 +26,6 @@ class Ticket extends Model
     // Relation to Match
     public function match()
     {
-        return $this->belongsTo(Matches::class, 'match_id');
+        return $this->belongsTo(\App\Models\Matches::class, 'match_id');
     }
 }

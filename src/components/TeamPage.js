@@ -66,7 +66,7 @@ const teamsData = [
 
 ]
 
-function TeamPage() {
+function TeamPage({ darkMode }) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [filteredTeams, setFilteredTeams] = useState(teamsData)
@@ -121,7 +121,7 @@ function TeamPage() {
         <div className="category-count">{getCategoryCount()}</div>
       </div>
 
-      <TeamGrid teams={filteredTeams} />
+      <TeamGrid teams={filteredTeams} darkMode={darkMode} />
     </div>
   )
 }

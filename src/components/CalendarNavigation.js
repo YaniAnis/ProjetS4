@@ -205,24 +205,44 @@ function CalendarNavigation({
 
   // Fonction pour naviguer vers le mois précédent
   const goToPreviousMonth = () => {
-    setCurrentMonth((prev) => {
-      if (prev === 0) {
-        setCurrentYear((year) => year - 1); // Only decrement by 1
-        return 11
-      }
-      return prev - 1
-    })
-  }
+    let newMonth = currentMonth - 1;
+    let newYear = currentYear;
+    if (newMonth < 0) {
+      newMonth = 11;
+      newYear = currentYear - 1;
+    }
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+  };
 
   // Fonction pour naviguer vers le mois suivant
   const goToNextMonth = () => {
-    setCurrentMonth((prev) => {
-      if (prev === 11) {
-        setCurrentYear((year) => year + 1); // Only increment by 1
-        return 0
-      }
-      return prev + 1
-    })
+    let newMonth = currentMonth + 1;
+    let newYear = currentYear;
+    if (newMonth > 11) {
+      newMonth = 0;
+      newYear = currentYear + 1;
+    }
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+  };
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11)
+      setCurrentYear(currentYear - 1)
+    } else {
+      setCurrentMonth(currentMonth - 1)
+    }
+  }
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0)
+      setCurrentYear(currentYear + 1)
+    } else {
+      setCurrentMonth(currentMonth + 1)
+    }
   }
 
   // Fonction pour faire défiler les jours vers la gauche

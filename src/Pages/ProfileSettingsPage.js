@@ -47,7 +47,7 @@ function ProfileSettingsPage() {
   }, []);
 
   return (
-    <div className="profile-settings-container">
+    <div className="profile-settings-container" style={{ marginBottom: "64px" }}>
       <div className="profile-header">
         <div className="profile-avatar-container">
           <div className="profile-avatar">

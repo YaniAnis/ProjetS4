@@ -41,13 +41,17 @@ function App() {
   useEffect(() => {
     const savedDarkMode = localStorage.getItem("darkMode") === "true"
     setDarkMode(savedDarkMode)
+  }, [])
 
-    if (savedDarkMode) {
+  // Appliquer la classe dark-mode sur le body à chaque changement de darkMode
+  useEffect(() => {
+    if (darkMode) {
       document.body.classList.add("dark-mode")
     } else {
       document.body.classList.remove("dark-mode")
     }
-  }, [])
+    localStorage.setItem("darkMode", darkMode)
+  }, [darkMode])
 
   // Vérifier si nous sommes sur une page admin
   const isAdminPage = location.pathname.startsWith("/admin")
@@ -59,7 +63,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/matches" element={<MatchesPage />} />
-        <Route path="/equipes" element={<Teams />} />
+        <Route path="/equipes" element={<Teams darkMode={darkMode} />} />
         <Route path="/actualites" element={<NewsPage />} />
         <Route path="/actualites/:id" element={<NewsDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -102,5 +106,3 @@ function App() {
 }
 
 export default App
-
-
