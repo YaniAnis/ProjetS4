@@ -90,10 +90,17 @@ function Matches() {
         league: m.league,
         date: m.date,
         time: m.heure,
-        homeTeam: { name: m.equipe1, logo: clubLogo(m.equipe1) },
-        awayTeam: { name: m.equipe2, logo: clubLogo(m.equipe2) },
+        homeTeam: {
+          name: m.equipe1,
+          logo: m.homeTeam?.logo || m.equipe1_logo || m.equipe1Logo || m.logo_equipe1 || "" // essaie plusieurs clés
+        },
+        awayTeam: {
+          name: m.equipe2,
+          logo: m.awayTeam?.logo || m.equipe2_logo || m.equipe2Logo || m.logo_equipe2 || ""
+        },
         stadium: m.stade?.nom || "",
         price: m.zones && m.zones.length > 0 ? Math.min(...m.zones.map(z => z.prix)) : "",
+        zones: m.zones || [],
         // ...add more fields as needed
       }));
       setMatches(mapped);
@@ -122,8 +129,8 @@ function Matches() {
 
     const filtered = matches.filter((match) => {
       if (!match || typeof match !== 'object') return false;
+      
 
-      // Defensive: ensure all fields are strings before .toLowerCase()
       const safeToString = v => (typeof v === "string" ? v : "");
       const homeName = safeToString(match.homeTeam?.name);
       const awayName = safeToString(match.awayTeam?.name);

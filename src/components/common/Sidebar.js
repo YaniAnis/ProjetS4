@@ -1,4 +1,4 @@
-import { BarChart2, DollarSign, Menu, Settings, ShoppingBag, ShoppingCart,  Users } from "lucide-react";
+import { BarChart2, DollarSign, Menu, LogOut, ShoppingBag, ShoppingCart,  Users } from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
@@ -17,7 +17,8 @@ const SIDEBAR_ITEMS = [
     { name: "Ventes", icon: DollarSign, color: "#10B981", href: "/admin/ventes" },
     { name: "Commande", icon: ShoppingCart, color: "#F59E0B", href: "/admin/commande" },
     { name: "Actualite", icon: Newspaper, color: "#F87171", href: "/admin/actualite" },
-    { name: "Paramètre", icon: Settings, color: "#6EE7B7", href: "/admin/parametre" },
+    { name: "Quitter", icon: LogOut, color: "#FF0000", href: "/" }
+
 
 ];
 
@@ -86,46 +87,7 @@ const Sidebar = () => {
                 </div>
                 <nav className="sidebar-nav">
                     {/* Bouton pour revenir à l'accueil du site */}
-                    <Link
-                        to="/"
-                        style={{
-                            textDecoration: "none",
-                            marginBottom: 12,
-                            display: "flex",
-                            alignItems: "center",
-                            color: "#fff"
-                        }}
-                    >
-                        <motion.div
-                            className="sidebar-item"
-                            style={{ color: "#fff" }}
-                            whileHover={{ scale: 1.05 }}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                fill="none"
-                                stroke="#10B981"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                style={{ minWidth: "20px" }}
-                                viewBox="0 0 24 24"
-                            >
-                                <path d="M3 12L12 3l9 9" />
-                                <path d="M9 21V9h6v12" />
-                            </svg>
-                            {isSidebarOpen && (
-                                <span
-                                    className="sidebar-item-text"
-                                    style={{ color: "#fff", marginLeft: 16, fontWeight: 500, fontSize: 16 }}
-                                >
-                                    Accueil site
-                                </span>
-                            )}
-                        </motion.div>
-                    </Link>
+
                     {SIDEBAR_ITEMS.map((item) => {
                         const isActive = location.pathname === item.href;
                         return (
