@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 
-function MatchCard({ match }) {
+function MatchCard({ match,darkMode }) {
   const navigate = useNavigate();
 
   // DEBUG: Affiche la structure complète du match et des zones AVANT tout calcul
