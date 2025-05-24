@@ -46,6 +46,13 @@ const OrdersTable = () => {
                     if (arr) payments = arr;
                 }
 
+                // Tri du plus récent au plus ancien (par updated_at ou created_at)
+                payments.sort((a, b) => {
+                    const dateA = new Date(a.updated_at || a.created_at || 0);
+                    const dateB = new Date(b.updated_at || b.created_at || 0);
+                    return dateB - dateA;
+                });
+
                 // Si aucun paiement trouvé, affiche un log d'aide
                 if (!payments.length) {
                     console.warn("Aucun paiement trouvé. Structure reçue :", data);
@@ -100,13 +107,14 @@ const OrdersTable = () => {
                 <table className="orders-table-content">
                     <thead>
                         <tr>
-                            <th>ID PAIEMENT</th>
-                            <th>NOM</th>
-                            <th>PRIX</th>
-                            <th>ID TICKET</th>
-                            <th>MODE DE PAIEMENT</th>
-                            <th>DATE</th>
-                            <th>STATUS</th>
+                            <th>ID Paiement</th>
+                            <th>Nom</th>
+                            <th>Prix</th>
+                            <th>ID Ticket</th>
+                            <th>Nombre de places</th>
+                            <th>Mode de paiement</th>
+                            <th>Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
 
@@ -119,38 +127,50 @@ const OrdersTable = () => {
                                 transition={{ duration: 0.3 }}
                             >
                                 <td>{order.id}</td>
-                                <td>{order.user?.name || "Admin"}</td>
+                                <td>{order.user?.name || "N/A"}</td>
                                 <td>
-                                    {order.ticket?.prix != null
+                                    {order.ticket?.prix
                                         ? `${order.ticket.prix} DZD`
-                                        : order.montant != null
+                                        : (order.montant
                                             ? `${order.montant} DZD`
-                                            : ""}
+                                            : "N/A")}
                                 </td>
-                                <td>{order.ticket_id}</td>
-                                <td>{order.mode_paiement || "carte"}</td>
+                                <td>{order.ticket_id || "N/A"}</td>
                                 <td>
-                                    {order.created_at
-                                        ? new Date(order.created_at).toLocaleString("fr-FR")
-                                        : ""}
+                                    {order.nb_places !== undefined
+                                        ? order.nb_places
+                                        : (
+                                            // fallback: calculer à partir de ticket.numero_place si possible
+                                            order.ticket && order.ticket.numero_place
+                                                ? (() => {
+                                                    const matches = [];
+                                                    const str = order.ticket.numero_place || "";
+                                                    const found = str.match(/\((\d+)\)/g);
+                                                    if (found) {
+                                                        return found.map(s => parseInt(s.replace(/[^\d]/g, ""), 10)).reduce((a, b) => a + b, 0);
+                                                    }
+                                                    return 1;
+                                                })()
+                                                : 1
+                                        )
+                                    }
+                                </td>
+                                <td>{order.mode_paiement || "N/A"}</td>
+                                <td>
+                                    {order.updated_at
+                                        ? new Date(order.updated_at).toLocaleString()
+                                        : "N/A"}
                                 </td>
                                 <td>
-                                    <span
-                                        className={
-                                            "status-badge " +
-                                            (order.statut === "validé"
-                                                ? "delivered"
-                                                : "pending")
-                                        }
-                                    >
-                                        {order.statut === "validé" ? "Validé" : "En attente"}
-                                    </span>
+                                    <button className="view-button">
+                                        <Eye size={18} />
+                                    </button>
                                 </td>
                             </motion.tr>
                         ))}
                         {filteredOrders.length === 0 && (
                             <tr>
-                                <td colSpan={7} style={{ textAlign: "center", color: "#888" }}>
+                                <td colSpan={8} style={{ textAlign: "center", color: "#888" }}>
                                     Aucun paiement trouvé.
                                 </td>
                             </tr>

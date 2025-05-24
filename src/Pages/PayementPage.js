@@ -106,6 +106,26 @@ function PaymentPage() {
       setIsVerifying(true)
       setConfirmError("")
       try {
+        // AJOUT : Vérification du nombre de billets déjà achetés avant de confirmer le paiement
+        let user = null
+        const userStr = localStorage.getItem("user")
+        if (userStr && userStr !== "undefined" && userStr !== "null") {
+          user = JSON.parse(userStr)
+        }
+        const matchId = match_id
+        if (user && user.id && matchId) {
+          // Appel API pour vérifier le nombre de billets déjà achetés
+          const countRes = await fetch(`/api/user-tickets-count?user_id=${user.id}&match_id=${matchId}`)
+          const countData = await countRes.json()
+          const billetsDejaAchetes = Number(countData.count) || 0
+          const placesVoulu = totalPlaces
+          if (billetsDejaAchetes + placesVoulu > 4) {
+            setConfirmError("Limite de 4 billets atteinte pour ce match. Vous ne pouvez pas acheter plus de billets.")
+            setIsVerifying(false)
+            return
+          }
+        }
+        // ...suite logique normale...
         const res = await fetch("/api/verify-payment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -132,16 +152,41 @@ function PaymentPage() {
   const handleSendTicket = async () => {
     setTicketError("")
     try {
+      // Pour compatibilité backend, il faut envoyer aussi un qr_value (dummy si non utilisé)
       const res = await fetch("/api/send-ticket", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           paiement_id: paiementId,
+          qr_value: paiementId ? String(paiementId) : "qr" // valeur factice si non utilisée
         }),
       })
       const data = await res.json()
       if (data.success) {
         setTicketSent(true)
+        // AJOUT : Mettre à jour le nombre de billets achetés dans localStorage
+        try {
+          let user = null
+          const userStr = localStorage.getItem("user")
+          if (userStr && userStr !== "undefined" && userStr !== "null") {
+            user = JSON.parse(userStr)
+          }
+          const matchId = match_id
+          const placesAchetees = totalPlaces
+          if (user && user.email && matchId && placesAchetees > 0) {
+            const ticketKey = `tickets_${user.email}_${matchId}`
+            const current = localStorage.getItem(ticketKey)
+            let total = current ? Number(current) : 0
+            if (isNaN(total)) total = 0
+            total += placesAchetees
+            if (total > 4) total = 4
+            localStorage.setItem(ticketKey, total)
+            // Force le rafraîchissement des autres composants qui écoutent 'storage'
+            window.dispatchEvent(new Event('storage'))
+          }
+        } catch (e) {
+          // ignore erreur stockage
+        }
       } else {
         setTicketError(data.message || "Erreur lors de l'envoi du ticket.")
       }

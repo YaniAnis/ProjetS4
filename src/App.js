@@ -61,7 +61,7 @@ function App() {
       {!isAdminPage && <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />}
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage darkMode={darkMode} />} />
         <Route path="/matches" element={<MatchesPage />} />
         <Route path="/equipes" element={<Teams darkMode={darkMode} />} />
         <Route path="/actualites" element={<NewsPage />} />

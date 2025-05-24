@@ -79,31 +79,14 @@ function StadiumPage() {
 
   // Gestion du changement de nombre de places pour chaque zone
   const totalSelected = Object.values(selectedCounts).reduce((sum, v) => sum + v, 0)
-  const handleCountChange = async (section, value) => {
-    const otherTotal = totalSelected - (selectedCounts[section.id] || 0);
+  const handleCountChange = (section, value) => {
+    const otherTotal = totalSelected - (selectedCounts[section.id] || 0)
     if (value + otherTotal > 4) {
-      setSeatError("Vous ne pouvez pas sélectionner plus de 4 places au total.");
-      return;
+      setSeatError("Vous ne pouvez pas sélectionner plus de 4 places au total.")
+      return
     }
-    setSeatError("");
-
-    // Update the selected count locally
-    setSelectedCounts({ ...selectedCounts, [section.id]: value });
-
-    // Synchronize with the backend
-    try {
-      const response = await fetch(`http://localhost:8000/api/zones/${section.id}/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ selectedCount: value }),
-      });
-      if (!response.ok) {
-        throw new Error("Erreur lors de la mise à jour des places.");
-      }
-    } catch (err) {
-      console.error(err.message);
-      setSeatError("Erreur technique lors de la mise à jour des places.");
-    }
+    setSeatError("")
+    setSelectedCounts({ ...selectedCounts, [section.id]: value })
   }
 
   // Pour la sélection visuelle (optionnel, peut être gardé ou retiré)
@@ -111,10 +94,9 @@ function StadiumPage() {
     setSections(
       sections.map((section) => ({
         ...section,
-        selected: section.id === sectionId, // Select only the clicked section
-      }))
-    );
-    setSelectedCounts({ [sectionId]: selectedCounts[sectionId] || 0 }); // Reset counts for other zones
+        selected: section.id === sectionId,
+      })),
+    )
   }
 
   const handleNextClick = () => {

@@ -336,8 +336,27 @@ class PaymentController extends Controller
     // AJOUTE OU VÉRIFIE BIEN CETTE MÉTHODE
     public function index()
     {
-        // Retourne tous les paiements avec relations ticket et user
-        return \App\Models\Paiement::with(['ticket', 'user'])->get();
+        // Retourne tous les paiements avec relations ticket et user, et ajoute le nombre de billets achetés
+        $paiements = \App\Models\Paiement::with(['ticket', 'user'])->get();
+
+        $paiements = $paiements->map(function($paiement) {
+            // Si le ticket a un champ nb_places, on l'utilise, sinon on compte 1
+            $nb_places = 1;
+            if ($paiement->ticket && isset($paiement->ticket->nb_places)) {
+                $nb_places = $paiement->ticket->nb_places;
+            } elseif ($paiement->ticket && isset($paiement->ticket->numero_place)) {
+                // Si numero_place est une chaîne comme "Zone A(2),Zone B(1)", on additionne les quantités
+                $matches = [];
+                preg_match_all('/\((\d+)\)/', $paiement->ticket->numero_place, $matches);
+                if (!empty($matches[1])) {
+                    $nb_places = array_sum(array_map('intval', $matches[1]));
+                }
+            }
+            $paiement->nb_places = $nb_places;
+            return $paiement;
+        });
+
+        return response()->json($paiements);
     }
 
     private function getTeamLogoPath($teamName) {
