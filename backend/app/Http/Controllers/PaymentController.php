@@ -70,45 +70,29 @@ class PaymentController extends Controller
                     $userEmail = $ticket->user->email;
                     $match = $ticket->match;
 
-                    Log::info('Génération du PDF pour le paiement', ['paiement_id' => $paiement->id]);
-                    try {
-                        $pdf = Pdf::loadView('ticket_pdf', [
-                            'paiement' => $paiement,
-                            'ticket' => $ticket,
-                            'match' => $match,
-                            'logos' => [
-                                'home' => $this->getTeamLogoPath($match->equipe1),
-                                'away' => $this->getTeamLogoPath($match->equipe2)
-                            ]
-                        ]);
-                        $pdfContent = $pdf->output();
-                        Log::info('PDF rendu avec succès', ['paiement_id' => $paiement->id, 'pdf_size' => strlen($pdfContent)]);
-                    } catch (\Exception $pdfEx) {
-                        Log::error('Erreur lors du rendu du PDF', ['error' => $pdfEx->getMessage(), 'paiement_id' => $paiement->id]);
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Paiement confirmé, mais une erreur est survenue lors de la génération du ticket PDF. Veuillez contacter le support.',
-                        ], 500);
-                    }
+                    // Get team logos
+                    $logos = [
+                        'home' => $this->getTeamLogoPath($match->equipe1),
+                        'away' => $this->getTeamLogoPath($match->equipe2),
+                    ];
 
-                    Log::info('Tentative d\'envoi du mail ticket PDF', ['to' => $userEmail, 'paiement_id' => $paiement->id]);
-                    try {
-                        Mail::send([], [], function (Message $message) use ($userEmail, $pdfContent) {
-                            $message->to($userEmail)
-                                ->subject('Votre billet FooTiX - PDF')
-                                ->html("Merci pour votre achat !<br>Vous trouverez en pièce jointe votre ticket au format PDF. Présentez-le le jour du match.")
-                                ->attachData($pdfContent, 'ticket_footiX.pdf', [
-                                    'mime' => 'application/pdf',
-                                ]);
-                        });
-                        Log::info('Mail envoyé ticket PDF après validation paiement', ['to' => $userEmail, 'paiement_id' => $paiement->id]);
-                    } catch (\Exception $mailEx) {
-                        Log::error('Erreur lors de l\'envoi du mail ticket PDF après validation paiement', ['error' => $mailEx->getMessage(), 'paiement_id' => $paiement->id]);
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Paiement confirmé, mais une erreur est survenue lors de l\'envoi du ticket PDF. Veuillez contacter le support.',
-                        ], 500);
-                    }
+                    // Generate PDF with logos
+                    $pdf = Pdf::loadView('ticket_pdf', [
+                        'paiement' => $paiement,
+                        'ticket' => $ticket,
+                        'match' => $match,
+                        'logos' => $logos, // Pass logos to the PDF view
+                    ]);
+                    $pdfContent = $pdf->output();
+
+                    Mail::send([], [], function (Message $message) use ($userEmail, $pdfContent) {
+                        $message->to($userEmail)
+                            ->subject('Votre billet FooTiX - PDF')
+                            ->html("Merci pour votre achat !<br>Vous trouverez en pièce jointe votre ticket au format PDF. Présentez-le le jour du match.")
+                            ->attachData($pdfContent, 'ticket_footiX.pdf', [
+                                'mime' => 'application/pdf',
+                            ]);
+                    });
 
                     return response()->json([
                         'success' => true,
@@ -175,50 +159,36 @@ class PaymentController extends Controller
             }
 
             $userEmail = $ticket->user->email;
-
-            // Récupérer le match (Matches)
             $match = Matches::find($ticket->match_id);
-            if (!$match) {
-                Log::error('Match introuvable pour le ticket', ['ticket_id' => $ticket->id, 'match_id' => $ticket->match_id]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Le match associé au ticket est introuvable. Veuillez contacter le support.',
-                ], 500);
-            }
 
-            // Générer le PDF avec DomPDF
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('ticket_pdf', [
+            // Get team logos
+            $logos = [
+                'home' => $this->getTeamLogoPath($match->equipe1),
+                'away' => $this->getTeamLogoPath($match->equipe2),
+            ];
+
+            // Generate PDF with logos
+            $pdf = Pdf::loadView('ticket_pdf', [
                 'paiement' => $paiement,
-                'ticket' => $ticket->load('user'), // Charger la relation user
-                'match' => $match->load('stade'), // Charger la relation stade
-                'qrValue' => $qrValue,
+                'ticket' => $ticket->load('user'),
+                'match' => $match->load('stade'),
+                'qrValue' => $request->qr_value,
+                'logos' => $logos, // Pass logos to the PDF view
             ]);
             $pdfContent = $pdf->output();
-            Log::info('PDF généré');
 
-            // Utiliser le mailer SMTP explicitement
-            try {
-                Log::info('Tentative envoi mail ticket PDF', ['to' => $userEmail]);
-                Mail::send([], [], function (Message $message) use ($userEmail, $pdfContent) {
-                    $message->to($userEmail)
-                        ->subject('Votre billet FooTiX - PDF')
-                        ->html("Merci pour votre achat !<br>Vous trouverez en pièce jointe votre ticket au format PDF. Présentez-le le jour du match.")
-                        ->attachData($pdfContent, 'ticket_footiX.pdf', [
-                            'mime' => 'application/pdf',
-                        ]);
-                });
-                Log::info('Mail envoyé ticket PDF', ['to' => $userEmail]);
-            } catch (\Exception $mailEx) {
-                Log::error('Erreur lors de l\'envoi du mail ticket PDF', ['error' => $mailEx->getMessage()]);
-                return response()->json([
-                    'success' => false,
-                    'message' => "Erreur lors de l'envoi du ticket PDF : " . $mailEx->getMessage()
-                ], 500);
-            }
+            Mail::send([], [], function (Message $message) use ($userEmail, $pdfContent) {
+                $message->to($userEmail)
+                    ->subject('Votre billet FooTiX - PDF')
+                    ->html("Merci pour votre achat !<br>Vous trouverez en pièce jointe votre ticket au format PDF. Présentez-le le jour du match.")
+                    ->attachData($pdfContent, 'ticket_footiX.pdf', [
+                        'mime' => 'application/pdf',
+                    ]);
+            });
 
             return response()->json([
                 'success' => true,
-                'message' => 'Le ticket PDF a été envoyé par email.'
+                'message' => 'Le ticket PDF a été envoyé par email.',
             ]);
         } catch (\Exception $e) {
             Log::error('Erreur envoi mail PDF ticket', ['error' => $e->getMessage()]);
@@ -363,22 +333,32 @@ class PaymentController extends Controller
         try {
             $teamName = strtolower(str_replace(' ', '_', $teamName));
             $logoPath = public_path("logos/{$teamName}.png");
+            
+            // Check if the file exists
             if (!file_exists($logoPath)) {
                 Log::warning('Logo not found', ['team' => $teamName, 'path' => $logoPath]);
                 return '';
             }
+
+            // Read the file content
             $imageContent = file_get_contents($logoPath);
             $imageInfo = getimagesize($logoPath);
+
+            // Validate the image file
             if ($imageInfo === false) {
                 Log::error('Invalid image file', ['path' => $logoPath]);
                 return '';
             }
+
             $mime = $imageInfo['mime'];
             $base64 = base64_encode($imageContent);
+
+            // Ensure the file is a supported image type
             if ($mime !== 'image/png' && $mime !== 'image/jpeg') {
                 Log::error('Unsupported image mime type', ['mime' => $mime, 'path' => $logoPath]);
                 return '';
             }
+
             return "data:{$mime};base64,{$base64}";
         } catch (\Exception $e) {
             Log::error('Error in getTeamLogoPath', [

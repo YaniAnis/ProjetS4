@@ -8,7 +8,7 @@ function HomePage({ darkMode }) {
       <HeroCarousel />
       <div className="news-section">
         <h2 className="news-title">Actualités de la Ligue</h2>
-        <NewsCards />
+        <NewsCards limit={3} /> {/* Pass the limit prop */}
       </div>
       <div className="player-section">
         <PlayerCarousel darkMode={darkMode} />
