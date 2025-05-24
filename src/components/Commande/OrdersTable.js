@@ -100,13 +100,13 @@ const OrdersTable = () => {
                 <table className="orders-table-content">
                     <thead>
                         <tr>
-                            <th>ID Paiement</th>
-                            <th>Nom</th>
-                            <th>Prix</th>
-                            <th>ID Ticket</th>
-                            <th>Mode de paiement</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+                            <th>ID PAIEMENT</th>
+                            <th>NOM</th>
+                            <th>PRIX</th>
+                            <th>ID TICKET</th>
+                            <th>MODE DE PAIEMENT</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
                         </tr>
                     </thead>
 
@@ -119,25 +119,32 @@ const OrdersTable = () => {
                                 transition={{ duration: 0.3 }}
                             >
                                 <td>{order.id}</td>
-                                <td>{order.user?.name || "N/A"}</td>
+                                <td>{order.user?.name || "Admin"}</td>
                                 <td>
-                                    {order.ticket?.prix
+                                    {order.ticket?.prix != null
                                         ? `${order.ticket.prix} DZD`
-                                        : (order.montant
+                                        : order.montant != null
                                             ? `${order.montant} DZD`
-                                            : "N/A")}
+                                            : ""}
                                 </td>
-                                <td>{order.ticket_id || "N/A"}</td>
-                                <td>{order.mode_paiement || "N/A"}</td>
+                                <td>{order.ticket_id}</td>
+                                <td>{order.mode_paiement || "carte"}</td>
                                 <td>
-                                    {order.updated_at
-                                        ? new Date(order.updated_at).toLocaleString()
-                                        : "N/A"}
+                                    {order.created_at
+                                        ? new Date(order.created_at).toLocaleString("fr-FR")
+                                        : ""}
                                 </td>
                                 <td>
-                                    <button className="view-button">
-                                        <Eye size={18} />
-                                    </button>
+                                    <span
+                                        className={
+                                            "status-badge " +
+                                            (order.statut === "validé"
+                                                ? "delivered"
+                                                : "pending")
+                                        }
+                                    >
+                                        {order.statut === "validé" ? "Validé" : "En attente"}
+                                    </span>
                                 </td>
                             </motion.tr>
                         ))}

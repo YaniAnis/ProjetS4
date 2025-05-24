@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import "./sales.css";
 
-// Agrège le total encaissé par jour (YYYY-MM-DD)
+// Agrège le total encaissé par jour (YYYY-MM-DD) pour les paiements validés uniquement
 function aggregateSalesByDay(payments) {
 	const map = {};
 	payments.forEach((p) => {
+		if (p.statut !== "validé") return; // Ne compter que les paiements validés
 		let date = null;
 		if (p.created_at) {
 			if (typeof p.created_at === "string" && /^\d{4}-\d{2}-\d{2}/.test(p.created_at)) {

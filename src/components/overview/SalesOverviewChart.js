@@ -1,23 +1,70 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import "./Overview.css";
 
-const salesData = [
-	{ name: "Jul", sales: 4200 },
-	{ name: "Aug", sales: 3800 },
-	{ name: "Sep", sales: 5100 },
-	{ name: "Oct", sales: 4600 },
-	{ name: "Nov", sales: 5400 },
-	{ name: "Dec", sales: 7200 },
-	{ name: "Jan", sales: 6100 },
-	{ name: "Feb", sales: 5900 },
-	{ name: "Mar", sales: 6800 },
-	{ name: "Apr", sales: 6300 },
-	{ name: "May", sales: 7100 },
-	{ name: "Jun", sales: 7500 },
-];
+// Helper to get month label in French
+function getMonthLabel(date) {
+	const months = [
+		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	];
+	return months[date.getMonth()];
+}
+
+// Aggregate validated payments per month for the last 12 months
+function aggregateSalesByMonth(payments) {
+	const now = new Date();
+	const months = [];
+	const monthMap = {};
+
+	// Prepare last 12 months
+	for (let i = 11; i >= 0; i--) {
+		const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+		const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+		months.push({ key, label: getMonthLabel(d), sales: 0 });
+		monthMap[key] = months[months.length - 1];
+	}
+
+	payments.forEach((p) => {
+		if (p.statut !== "validé") return;
+		let dateStr = p.created_at || p.date || p.paid_at;
+		if (!dateStr) return;
+		let d = new Date(dateStr);
+		if (isNaN(d.getTime())) return;
+		const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+		if (monthMap[key]) {
+			monthMap[key].sales += 1;
+		}
+	});
+
+	return months;
+}
 
 const SalesOverviewChart = () => {
+	const [salesData, setSalesData] = useState([]);
+
+	useEffect(() => {
+		const fetchPayments = async () => {
+			try {
+				const res = await fetch("http://localhost:8000/api/payments");
+				const data = await res.json();
+				let payments = [];
+				if (Array.isArray(data)) payments = data;
+				else if (Array.isArray(data.data)) payments = data.data;
+				else if (Array.isArray(data.paiements)) payments = data.paiements;
+				else if (typeof data === "object") {
+					const arr = Object.values(data).find((v) => Array.isArray(v));
+					if (arr) payments = arr;
+				}
+				setSalesData(aggregateSalesByMonth(payments));
+			} catch {
+				setSalesData([]);
+			}
+		};
+		fetchPayments();
+	}, []);
+
 	return (
 		<motion.div
 			className='sales-overview-chart'
@@ -31,7 +78,7 @@ const SalesOverviewChart = () => {
 				<ResponsiveContainer width={"100%"} height={"100%"}>
 					<LineChart data={salesData}>
 						<CartesianGrid strokeDasharray='3 3' stroke='#4B5563' />
-						<XAxis dataKey={"name"} stroke='#9ca3af' />
+						<XAxis dataKey={"label"} stroke='#9ca3af' />
 						<YAxis stroke='#9ca3af' />
 						<Tooltip
 							contentStyle={{
@@ -39,6 +86,7 @@ const SalesOverviewChart = () => {
 								borderColor: "#4B5563",
 							}}
 							itemStyle={{ color: "#E5E7EB" }}
+							formatter={(value) => [`${value} ventes`, "Ventes"]}
 						/>
 						<Line
 							type='monotone'
