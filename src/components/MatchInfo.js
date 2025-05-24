@@ -1,7 +1,6 @@
 import "./MatchInfo.css"
 
-function MatchInfo(props) {
-  const { homeTeam, awayTeam, date, time, stadium, homeTeamLogo, awayTeamLogo } = props;
+function MatchInfo({ homeTeam, awayTeam, date, time, stadium, homeTeamLogo, awayTeamLogo }) {
   return (
     <div className="match-info-wrapper">
       <div className="container">

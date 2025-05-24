@@ -73,6 +73,7 @@ function App() {
         <Route path="/contact-message" element={<ContactMessage />} /> {/* Page de message */}
         <Route path="/Payement" element={<PaymentPage />} />     
         <Route path="/tickets" element={<StadiumPage />} />  
+        <Route path="/stadiums" element={<StadiumPage />} /> {/* <-- Ajout du lien vers StadiumPage */}
         <Route path="/profilesettings" element={<ProfileSettings />} /> {/* <-- Add this line */}
 
         {/* Routes Admin protégées */}

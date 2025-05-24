@@ -87,13 +87,13 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
           <div className="section-row section-top-row">
             {/* Zone E - Top Left */}
             <div
-              className={`section ${getSectionClasses("G")}`}
-              onClick={() => onSectionSelect("G")}
-              onMouseMove={(e) => handleSectionHover("G", e)}
+              className={`section ${getSectionClasses("E")}`}
+              onClick={() => onSectionSelect("E")}
+              onMouseMove={(e) => handleSectionHover("E", e)}
               onMouseLeave={handleSectionLeave}
               style={{ width: "25%" }}
             >
-              <span className="section-label">G</span>
+              <span className="section-label">E</span>
             </div>
 
             {/* Zone A - Top Center (spans 2/4) */}
@@ -109,13 +109,13 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
 
             {/* Zone C - Top Right */}
             <div
-              className={`section ${getSectionClasses("B")}`}
-              onClick={() => onSectionSelect("B")}
-              onMouseMove={(e) => handleSectionHover("B", e)}
+              className={`section ${getSectionClasses("C")}`}
+              onClick={() => onSectionSelect("C")}
+              onMouseMove={(e) => handleSectionHover("C", e)}
               onMouseLeave={handleSectionLeave}
               style={{ width: "25%" }}
             >
-              <span className="section-label">B</span>
+              <span className="section-label">C</span>
             </div>
           </div>
 
@@ -123,13 +123,13 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
           <div className="section-row section-middle-row">
             {/* Zone H - Left Side */}
             <div
-              className={`section ${getSectionClasses("F")}`}
-              onClick={() => onSectionSelect("F")}
-              onMouseMove={(e) => handleSectionHover("F", e)}
+              className={`section ${getSectionClasses("H")}`}
+              onClick={() => onSectionSelect("H")}
+              onMouseMove={(e) => handleSectionHover("H", e)}
               onMouseLeave={handleSectionLeave}
               style={{ width: "125px" }}
             >
-              <span className="section-label">F</span>
+              <span className="section-label">H</span>
             </div>
 
             {/* Center Space (for field) */}
@@ -137,13 +137,13 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
 
             {/* Zone B - Right Side */}
             <div
-              className={`section ${getSectionClasses("C")}`}
-              onClick={() => onSectionSelect("C")}
-              onMouseMove={(e) => handleSectionHover("C", e)}
+              className={`section ${getSectionClasses("B")}`}
+              onClick={() => onSectionSelect("B")}
+              onMouseMove={(e) => handleSectionHover("B", e)}
               onMouseLeave={handleSectionLeave}
               style={{ width: "125px" }}
             >
-              <span className="section-label">C</span>
+              <span className="section-label">B</span>
             </div>
           </div>
 
@@ -151,13 +151,13 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
           <div className="section-row section-bottom-row">
             {/* Zone F - Bottom Left */}
             <div
-              className={`section ${getSectionClasses("E")}`}
-              onClick={() => onSectionSelect("E")}
-              onMouseMove={(e) => handleSectionHover("E", e)}
+              className={`section ${getSectionClasses("F")}`}
+              onClick={() => onSectionSelect("F")}
+              onMouseMove={(e) => handleSectionHover("F", e)}
               onMouseLeave={handleSectionLeave}
               style={{ width: "25%" }}
             >
-              <span className="section-label">E</span>
+              <span className="section-label">F</span>
             </div>
 
             {/* Zone VIP - Bottom Center (spans 2/4) */}
@@ -205,14 +205,15 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
             </div>
             <div className="tooltip-price">
               {getHoveredSection()?.maxPrice
-                ? `${getHoveredSection()?.basePrice.toFixed(2)} - ${getHoveredSection()?.maxPrice.toFixed(2)} DZD`
-                : `${getHoveredSection()?.basePrice} DZD`}
+                ? `€${getHoveredSection()?.basePrice.toFixed(2)} - €${getHoveredSection()?.maxPrice.toFixed(2)}`
+                : `€${getHoveredSection()?.basePrice}`}
             </div>
             <div className="tooltip-availability">{getHoveredSection()?.available || "120"} tickets available</div>
           </div>
           <div className="tooltip-arrow"></div>
         </div>
       )}
+
     </div>
   )
 }

@@ -1,81 +1,77 @@
-import React from "react"
+"use client"
+import { useState } from "react"
 import "./SectionSelector.css"
 
-function SectionSelector({ section, selectedCount = 0, onCountChange, maxSelectable = 4, onSelect, onHover, onLeave }) {
-  // Calcul du maximum sélectionnable pour cette section
-  const maxForThisSection = Math.min(section.available, maxSelectable);
+function SectionSelector({ section, onSelect, onHover, onLeave }) {
+  const [ticketCount, setTicketCount] = useState(1)
 
-  // Correction : empêcher la propagation ET empêcher le onClick du parent de s'exécuter sur le select et le label
-  const handleSelectChange = (e) => {
-    e.stopPropagation();
-    if (onCountChange) onCountChange(section, parseInt(e.target.value, 10));
-  };
+  // Get classes based on selection state and section type
+  const getSectionClasses = () => {
+    let classes = "section-selector "
 
-  const handleLabelClick = (e) => {
-    e.stopPropagation();
-  };
+    if (section.id === "VIP") {
+      classes += "vip-section "
+      if (section.selected) classes += "selected"
+    } else {
+      classes += "regular-section "
+      if (section.selected) classes += "selected"
+    }
+
+    return classes
+  }
+
+  const handleTicketChange = (e) => {
+    setTicketCount(Number.parseInt(e.target.value))
+  }
 
   return (
-    <div
-      className={`section-selector ${section.category === "VIP" ? "vip-section" : "regular-section"}${section.selected ? " selected" : ""}`}
-      onClick={onSelect}
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
-    >
+    <div className={getSectionClasses()} onMouseEnter={onHover} onMouseLeave={onLeave} onClick={onSelect}>
       <div className="section-selector-content">
         <div className="section-selector-left">
           <input
             type="radio"
-            className="section-radio"
+            id={`section-${section.id}`}
+            name="section"
             checked={section.selected}
-            readOnly
+            onChange={() => {}}
+            className="section-radio"
           />
           <div className="section-info">
-            <div className="section-title">
-              {section.name}
-            </div>
-            <div className="section-category">{section.category}</div>
+            <h3 className="section-title">{section.id === "VIP" ? "Zone VIP" : `Zone ${section.name}`}</h3>
+            {/* <p className="section-category">{section.category}</p> */}
           </div>
         </div>
         <div className="section-price-container">
-          <div className="section-price-label">Price</div>
-          <div className="section-price">
-            {section.basePrice ? `${section.basePrice} DZD` : "N/A"}
-          </div>
-          <div className="section-availability">
-            {section.available} Available
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", marginLeft: "1rem" }}>
-          <label
-            htmlFor={`seat-count-${section.id || section.name}`}
-            style={{ marginRight: "0.3rem", fontSize: "0.95em" }}
-            onClick={handleLabelClick}
-          >
-            Places :
-          </label>
-          <select
-            id={`seat-count-${section.id || section.name}`}
-            value={selectedCount}
-            onClick={e => e.stopPropagation()}
-            onChange={handleSelectChange}
-            style={{
-              minWidth: 32,
-              width: 48,
-              height: 24,
-              fontSize: "0.95em",
-              padding: "0 4px",
-              borderRadius: 4
-            }}
-          >
-            {[...Array(maxForThisSection + 1)].map((_, i) => (
-              <option key={i} value={i}>{i}</option>
-            ))}
-          </select>
+          <div className="section-price-label">Prix</div>
+          <div className="section-price">€{section.basePrice}</div>
+          <div className="section-availability">{section.available} Disponible/es</div>
         </div>
       </div>
+
+      {section.selected && (
+        <div className="ticket-selector">
+          <div className="ticket-selector-label">Nombre de tickets: {ticketCount}</div>
+          <div className="slider-container">
+            <input
+              type="range"
+              min="1"
+              max="4"
+              value={ticketCount}
+              onChange={handleTicketChange}
+              className="ticket-slider"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <div className="slider-labels">
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
 export default SectionSelector

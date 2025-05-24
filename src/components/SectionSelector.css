@@ -1,304 +1,176 @@
-.stadium-container {
-  position: relative;
-  width: 100%;
-  max-width: 700px;
-  height: 600px;
-  background-color: #f7fafc;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+.section-selector {
+  border: 1px solid transparent;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-.stadium-structure {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 650px;
-  height: 500px;
+.section-selector-content {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 20px; /* Add this line */
-  margin: 20px;
-}
-
-.field {
-  position: relative;
-  width: 400px;
-  height: 240px;
-  background-color: #6a9c5d;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.field-markings {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.center-circle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 70px;
-  height: 70px;
-  border: 2px solid white;
-  border-radius: 50%;
-}
-
-.center-line {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 100%;
-  background-color: white;
-}
-
-.field-outline {
-  position: absolute;
-  inset: 10px;
-  border: 2px solid white;
-}
-
-.penalty-area-left {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  width: 70px;
-  height: 120px;
-  border: 2px solid white;
-}
-
-.penalty-area-right {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  width: 70px;
-  height: 120px;
-  border: 2px solid white;
-}
-
-.goal-area-left {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  width: 30px;
-  height: 70px;
-  border: 2px solid white;
-}
-
-.goal-area-right {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  width: 30px;
-  height: 70px;
-  border: 2px solid white;
-}
-
-.penalty-spot-left {
-  position: absolute;
-  top: 50%;
-  left: 50px;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 4px;
-  background-color: white;
-  border-radius: 50%;
-}
-
-.penalty-spot-right {
-  position: absolute;
-  top: 50%;
-  right: 50px;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 4px;
-  background-color: white;
-  border-radius: 50%;
-}
-
-.stadium-sections {
-  position: absolute;
-  inset: 0;
-  border-radius: 40px;
-  overflow: hidden;
-}
-
-.section-row {
-  display: flex;
-  width: 100%;
-}
-
-.section-top-row,
-.section-bottom-row {
-  height: 125px;
-}
-
-.section-middle-row {
-  height: 250px;
-  display: flex;
   justify-content: space-between;
 }
 
-.section-middle-space {
-  flex: 1;
-}
-
-.section {
-  border: 2px solid white;
+.section-selector-left {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 
-.section-label {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #4a5568;
+.section-radio {
+  margin-right: 0.2rem;
+  accent-color: #1a472a;
 }
 
-.vip-label {
+.section-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
-.vip-text {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #975a16;
-}
-
-.vip-zone {
-  font-size: 0.875rem;
+.section-title {
   font-weight: 500;
-  color: #975a16;
-}
-
-/* Section states */
-.section-default {
-  background-color: #d1d5db;
-}
-
-.section-default:hover {
-  background-color: rgba(26, 71, 42, 0.3);
-}
-
-.section-hovered {
-  background-color: rgba(26, 71, 42, 0.4);
-}
-
-.section-selected {
-  background-color: rgba(26, 71, 42, 0.7);
-  box-shadow: inset 0 0 10px rgba(26, 71, 42, 0.5);
-}
-
-.vip-default {
-  background-color: #fef3c7;
-}
-
-.vip-default:hover {
-  background-color: #fde68a;
-}
-
-.vip-hovered {
-  background-color: #fcd34d;
-}
-
-.vip-selected {
-  background-color: #f59e0b;
-  box-shadow: inset 0 0 10px rgba(146, 64, 14, 0.3);
-}
-
-/* Tooltip */
-.tooltip {
-  position: absolute;
-  z-index: 10;
-  background-color: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.375rem;
-  padding: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  pointer-events: none;
-  transform: translate(-50%, -110%);
-}
-
-.tooltip-content {
-  text-align: center;
-}
-
-.tooltip-title {
-  font-weight: 700;
+  font-size: 1.5rem;
   color: #1a472a;
 }
 
-.tooltip-vip {
-  color: #975a16;
+.section-price-container {
+  text-align: right;
 }
 
-.tooltip-price {
+.section-price-label {
   font-size: 0.875rem;
-  font-weight: 600;
+  color: #6b7280;
 }
 
-.tooltip-availability {
-  font-size: 0.75rem;
+.section-price {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.section-availability {
+  font-size: 0.875rem;
   color: #1a472a;
+  font-weight: 500;
 }
 
-.tooltip-arrow {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%) translateY(50%) rotate(45deg);
-  width: 1rem;
-  height: 1rem;
-  background-color: white;
-  border-right: 1px solid #e2e8f0;
-  border-bottom: 1px solid #e2e8f0;
+/* Ticket Selector */
+.ticket-selector {
+  border-top: 1px solid #e5e7eb;
 }
 
-/* Zoom controls */
-.zoom-controls {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  border-radius: 0.375rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+.ticket-selector-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.2rem;
+  font-weight: 500;
 }
 
-.zoom-button {
-  padding: 0.5rem;
-  border: none;
-  background-color: transparent;
+.slider-container {
+  position: relative;
+}
+
+.ticket-slider {
+  width: 100%;
+  height: 7px;
+  min-height: 0; 
+  border-radius: 3px;
+  background: #d5d6da;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
   cursor: pointer;
+  padding: 0;
+  border: none;
+  margin: 0;
+}
+
+.ticket-slider:focus {
+  border: none;
+  outline: none;
+  height: 7px;
+  min-height: 7px;
+}
+
+.ticket-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1a472a;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.ticket-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.ticket-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1a472a;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.ticket-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.slider-labels {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: #6b7280;
 }
 
-.zoom-button:first-child {
-  border-bottom: 1px solid #e2e8f0;
+/* VIP Section Styles */
+.vip-section .section-title,
+.vip-section .section-price {
+  color: #975a16;
 }
 
-.zoom-button:hover {
-  background-color: #f7fafc;
+.vip-section.selected {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.vip-section:hover:not(.selected) {
+  background-color: #fef9e7;
+  border-color: #fde68a;
+}
+
+.vip-section .ticket-slider {
+  background: #fde68a;
+}
+
+.vip-section .ticket-slider::-webkit-slider-thumb {
+  background: #975a16;
+}
+
+.vip-section .ticket-slider::-moz-range-thumb {
+  background: #975a16;
+}
+
+/* Regular Section Styles */
+.regular-section.selected {
+  background-color: rgba(26, 71, 42, 0.1);
+  border-color: rgba(26, 71, 42, 0.3);
+}
+
+.regular-section:hover:not(.selected) {
+  background-color: rgba(26, 71, 42, 0.05);
+  border-color: rgba(26, 71, 42, 0.2);
+}
+
+.regular-section.selected .section-title {
+  color: #1a472a;
 }

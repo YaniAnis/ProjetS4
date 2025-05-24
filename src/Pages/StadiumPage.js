@@ -1,75 +1,22 @@
-import { useState, useEffect } from "react"
-import StadiumMap from "../components/StadiumMap"
-import SectionSelector from "../components/SectionSelector"
-import { useNavigate, useLocation } from "react-router-dom"
-import MatchInfo from "../components/MatchInfo"
-import "./StadiumPage.css"
+"use client"
 
-function StadiumPage() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const matchState = location.state || {}
+import { useState } from "react"
+import StadiumMap from "../components/StadiumMap.js"
+import SectionSelector from "../components/SectionSelector.js"
+import MatchInfo from "../components/MatchInfo.js"
+import "../Pages/StadiumPage.css"
 
-  const [sections, setSections] = useState([])
-  // Ajout : state pour le nombre de places sélectionnées par zone
-  const [selectedCounts, setSelectedCounts] = useState({})
-  const [seatError, setSeatError] = useState("")
-
-  useEffect(() => {
-    // Si les zones sont déjà passées via matchState (depuis MatchCard), on les utilise directement
-    if (Array.isArray(matchState.zones) && matchState.zones.length > 0) {
-      setSections(
-        matchState.zones.map((zone, idx) => ({
-          id: zone.name === "VIP" ? "VIP" : (zone.name.replace(/^Zone\s/, "") || String.fromCharCode(65 + idx)),
-          name: zone.name,
-          basePrice: Number(zone.price),
-          maxPrice: null,
-          available: Number(zone.places),
-          selected: idx === 0,
-          category: zone.name === "VIP" ? "VIP" : "Standard",
-        }))
-      )
-      // Initialiser selectedCounts pour chaque zone à 0
-      const counts = {}
-      matchState.zones.forEach((zone, idx) => {
-        const id = zone.name === "VIP" ? "VIP" : (zone.name.replace(/^Zone\s/, "") || String.fromCharCode(65 + idx))
-        counts[id] = 0
-      })
-      setSelectedCounts(counts)
-    } else if (matchState.matchId) {
-      // Sinon, on va chercher les zones du match via l'API backend
-      fetch(`http://localhost:8000/api/matches/${matchState.matchId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data.zones) && data.zones.length > 0) {
-            setSections(
-              data.zones.map((zone, idx) => ({
-                id: zone.name === "VIP" ? "VIP" : (zone.name.replace(/^Zone\s/, "") || String.fromCharCode(65 + idx)),
-                name: zone.name,
-                basePrice: Number(zone.price),
-                maxPrice: null,
-                available: Number(zone.places),
-                selected: idx === 0,
-                category: zone.name === "VIP" ? "VIP" : "Standard",
-              }))
-            )
-            // Initialiser selectedCounts pour chaque zone à 0
-            const counts = {}
-            data.zones.forEach((zone, idx) => {
-              const id = zone.name === "VIP" ? "VIP" : (zone.name.replace(/^Zone\s/, "") || String.fromCharCode(65 + idx))
-              counts[id] = 0
-            })
-            setSelectedCounts(counts)
-          } else {
-            setSections([])
-            setSelectedCounts({})
-          }
-        })
-    } else {
-      setSections([])
-      setSelectedCounts({})
-    }
-  }, [matchState.zones, matchState.matchId])
+function App() {
+  const [sections, setSections] = useState([
+    { id: "A", name: "A", basePrice: 120, maxPrice: null, available: 184, selected: false, category: "Premium" },
+    { id: "B", name: "B", basePrice: 90, maxPrice: null, available: 150, selected: false, category: "Side Premium" },
+    { id: "C", name: "C", basePrice: 90, maxPrice: null, available: 145, selected: false, category: "Side Premium" },
+    { id: "D", name: "D", basePrice: 90, maxPrice: null, available: 148, selected: false, category: "Side Premium" },
+    { id: "E", name: "E", basePrice: 90, maxPrice: null, available: 142, selected: false, category: "Side Premium" },
+    { id: "F", name: "F", basePrice: 90, maxPrice: null, available: 152, selected: false, category: "Side Premium" },
+    { id: "H", name: "H", basePrice: 90, maxPrice: null, available: 154, selected: false, category: "Side Premium" },
+    { id: "VIP", name: "VIP", basePrice: 150, maxPrice: null, available: 60, selected: true, category: "VIP" },
+  ])
 
   const [hoveredSection, setHoveredSection] = useState(null)
 
@@ -77,19 +24,6 @@ function StadiumPage() {
     setHoveredSection(sectionId)
   }
 
-  // Gestion du changement de nombre de places pour chaque zone
-  const totalSelected = Object.values(selectedCounts).reduce((sum, v) => sum + v, 0)
-  const handleCountChange = (section, value) => {
-    const otherTotal = totalSelected - (selectedCounts[section.id] || 0)
-    if (value + otherTotal > 4) {
-      setSeatError("Vous ne pouvez pas sélectionner plus de 4 places au total.")
-      return
-    }
-    setSeatError("")
-    setSelectedCounts({ ...selectedCounts, [section.id]: value })
-  }
-
-  // Pour la sélection visuelle (optionnel, peut être gardé ou retiré)
   const handleSectionSelect = (sectionId) => {
     setSections(
       sections.map((section) => ({
@@ -100,42 +34,26 @@ function StadiumPage() {
   }
 
   const handleNextClick = () => {
-    if (totalSelected < 1 || totalSelected > 4) {
-      setSeatError("Veuillez sélectionner entre 1 et 4 places au total.")
-      return
-    }
-    // Préparer la sélection pour la page suivante
-    const selectedZones = sections
-      .filter(section => (selectedCounts[section.id] || 0) > 0)
-      .map(section => ({
-        id: section.id,
-        name: section.name,
-        count: selectedCounts[section.id],
-        price: section.basePrice,
-        category: section.category
-      }))
-    navigate('/payement', {
-      state: {
-        ...matchState,
-        selectedZones,
-        match_id: matchState.matchId // <-- Ajouté pour garantir l'envoi du bon match_id
-      }
-    })
+    const selectedSection = sections.find((section) => section.selected)
+    alert(
+      `Proceeding with ${selectedSection?.id === "VIP" ? "VIP Zone" : `Zone ${selectedSection?.name}`} at €${selectedSection?.basePrice}`,
+    )
   }
 
-  // Match information (from state or fallback)
+  // Match information
   const matchInfo = {
-    homeTeam: matchState.homeTeam || "USM Alger",
-    awayTeam: matchState.awayTeam || "MC Alger",
-    date: matchState.date || "May 20, 2025",
-    time: matchState.time || "20:45",
-    stadium: matchState.stadium || "5th July Stadium",
-    homeTeamLogo: matchState.homeLogo || "/placeholder.svg?height=80&width=80&text=MCA",
-    awayTeamLogo: matchState.awayLogo || "/placeholder.svg?height=80&width=80&text=USMA",
+    homeTeam: "USM Alger",
+    awayTeam: "MC Alger",
+    date: "May 20, 2025",
+    time: "20:45",
+    stadium: "5th July Stadium",
+    homeTeamLogo: "/placeholder.svg?height=80&width=80&text=MCA",
+    awayTeamLogo: "/placeholder.svg?height=80&width=80&text=USMA",
   }
 
   return (
     <div className="app-container">
+      
       <main className="main-content">
         <MatchInfo
           homeTeam={matchInfo.homeTeam}
@@ -150,57 +68,44 @@ function StadiumPage() {
         <div className="container">
           <div className="booking-container">
             <div className="map-container">
-              {sections.length === 0 ? (
-                <div>Chargement des zones...</div>
-              ) : (
-                <StadiumMap
-                  sections={sections}
-                  hoveredSection={hoveredSection}
-                  onSectionHover={handleSectionHover}
-                  onSectionSelect={handleSectionSelect}
-                />
-              )}
+              <StadiumMap
+                sections={sections}
+                hoveredSection={hoveredSection}
+                onSectionHover={handleSectionHover}
+                onSectionSelect={handleSectionSelect}
+              />
             </div>
             <div className="selector-container">
               <div className="selector-header">
-                <h1 className="selector-title">Select Your Seats</h1>
+                <h1 className="selector-title">Select Your Seat</h1>
               </div>
+
               <div className="sections-list">
-                {sections.length === 0 ? (
-                  <div>Chargement des zones...</div>
-                ) : (
-                  sections.map((section, index) => (
-                    <div key={section.id}>
-                      <SectionSelector
-                        section={section}
-                        selectedCount={selectedCounts[section.id] || 0}
-                        onCountChange={handleCountChange}
-                        maxSelectable={Math.min(4 - (totalSelected - (selectedCounts[section.id] || 0)), section.available)}
-                        onSelect={() => handleSectionSelect(section.id)}
-                        onHover={() => handleSectionHover(section.id)}
-                        onLeave={() => handleSectionHover(null)}
-                      />
-                      {index < sections.length - 1 && <div className="separator"></div>}
-                    </div>
-                  ))
-                )}
+                {sections.map((section, index) => (
+                  <div key={section.id}>
+                    <SectionSelector
+                      section={section}
+                      onSelect={() => handleSectionSelect(section.id)}
+                      onHover={() => handleSectionHover(section.id)}
+                      onLeave={() => handleSectionHover(null)}
+                    />
+                    {index < sections.length - 1 && <div className="separator"></div>}
+                  </div>
+                ))}
               </div>
-              <div style={{ margin: "12px 0", color: "#1a472a", fontWeight: 600 }}>
-                Total sélectionné : <b>{totalSelected}</b> / 4
-              </div>
-              {seatError && (
-                <div style={{ color: "red", marginBottom: 8 }}>{seatError}</div>
-              )}
+
               <button className="checkout-button" onClick={handleNextClick}>
                 CONTINUE TO CHECKOUT
               </button>
+
               <p className="terms-text">By proceeding, you agree to our Terms of Service and Privacy Policy</p>
             </div>
           </div>
         </div>
       </main>
+
     </div>
   )
 }
 
-export default StadiumPage
+export default App
