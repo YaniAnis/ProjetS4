@@ -60,20 +60,59 @@ function aggregatePaymentsByHourToday(payments) {
     return Object.values(map).sort((a, b) => a.hour.localeCompare(b.hour));
 }
 
+// Agrège les paiements de la semaine courante par jour (YYYY-MM-DD)
+function aggregatePaymentsByDayThisWeek(payments) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // Trouve le lundi de la semaine courante
+    const firstDayOfWeek = new Date(today);
+    firstDayOfWeek.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    // Prépare les jours de la semaine (lundi à dimanche)
+    const days = [];
+    const dayMap = {};
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(firstDayOfWeek);
+        d.setDate(firstDayOfWeek.getDate() + i);
+        const key = d.toISOString().slice(0, 10);
+        days.push({ day: key, orders: 0 });
+        dayMap[key] = days[days.length - 1];
+    }
+    payments.forEach((p) => {
+        let date = null;
+        if (p.created_at) {
+            if (typeof p.created_at === "string" && /^\d{4}-\d{2}-\d{2}/.test(p.created_at)) {
+                date = p.created_at.slice(0, 10);
+            } else {
+                try {
+                    const d = new Date(p.created_at);
+                    if (!isNaN(d.getTime())) {
+                        date = d.toISOString().slice(0, 10);
+                    }
+                } catch {
+                    // fallback
+                }
+            }
+        }
+        if (!date || !dayMap[date]) return;
+        dayMap[date].orders += 1;
+    });
+    return days;
+}
+
 const DailyOrders = () => {
-    const [hourlyOrdersData, setHourlyOrdersData] = useState([]);
+    const [dailyOrdersData, setDailyOrdersData] = useState([]);
 
     useEffect(() => {
         const fetchPayments = async () => {
             try {
                 const res = await fetch("http://localhost:8000/api/payments");
                 if (!res.ok) {
-                    setHourlyOrdersData([]);
+                    setDailyOrdersData([]);
                     return;
                 }
                 const contentType = res.headers.get("content-type");
                 if (!contentType || !contentType.includes("application/json")) {
-                    setHourlyOrdersData([]);
+                    setDailyOrdersData([]);
                     return;
                 }
                 const data = await res.json();
@@ -91,17 +130,21 @@ const DailyOrders = () => {
                     if (arr) payments = arr;
                 }
 
-                // DEBUG: Affiche le nombre de paiements par heure du jour courant
-                const grouped = aggregatePaymentsByHourToday(payments);
-                console.log("Paiements groupés par heure du jour courant :", grouped);
-
-                setHourlyOrdersData(grouped);
+                // DEBUG: Affiche le nombre de paiements par jour de la semaine courante
+                const grouped = aggregatePaymentsByDayThisWeek(payments);
+                setDailyOrdersData(grouped);
             } catch (err) {
-                setHourlyOrdersData([]);
+                setDailyOrdersData([]);
             }
         };
         fetchPayments();
     }, []);
+
+    // Pour l'affichage, on veut des labels courts (Lun, Mar, ...)
+    function getDayLabel(dateStr) {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString("fr-FR", { weekday: "short" });
+    }
 
     return (
         <motion.div
@@ -110,12 +153,17 @@ const DailyOrders = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
         >
-            <h2 className="daily-orders-title">Paiements par heure (aujourd'hui)</h2>
+            <h2 className="daily-orders-title">Paiements par jour (cette semaine)</h2>
             <div style={{ width: "100%", height: 300 }}>
                 <ResponsiveContainer>
-                    <LineChart data={hourlyOrdersData}>
+                    <LineChart data={dailyOrdersData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="hour" stroke="#9CA3AF" label={{ value: "Heure", position: "insideBottomRight", offset: -5 }} />
+                        <XAxis
+                            dataKey="day"
+                            stroke="#9CA3AF"
+                            label={{ value: "Jour", position: "insideBottomRight", offset: -5 }}
+                            tickFormatter={getDayLabel}
+                        />
                         <YAxis stroke="#9CA3AF" allowDecimals={false} />
                         <Tooltip
                             contentStyle={{
@@ -128,6 +176,7 @@ const DailyOrders = () => {
                                     ? [`${value} paiements`, "Paiements"]
                                     : [value, name]
                             }
+                            labelFormatter={getDayLabel}
                         />
                         <Legend />
                         <Line

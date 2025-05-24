@@ -65,9 +65,9 @@ function Navbar({ darkMode, setDarkMode }) {
         <div className="navbar-logo">
           <Link to="/" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <img
-              src="/logos/raw.webp"
+              src="/logos/raw.png"
               alt="FooTiX logo"
-              style={{ height: "40px", width: "40px", objectFit: "contain" }}
+              style={{ height: "75px", width: "75px", objectFit: "contain" }}
             />
             <span className="navbar-logo-text" style={{ fontSize: "2rem", fontWeight: "bold", letterSpacing: "2px" }}>
               FooTiX

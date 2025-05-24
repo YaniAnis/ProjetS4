@@ -37,20 +37,20 @@ function SectionSelector({ section, onSelect, onHover, onLeave }) {
             className="section-radio"
           />
           <div className="section-info">
-            <h3 className="section-title">{section.id === "VIP" ? "Zone VIP" : `Zone ${section.name}`}</h3>
-            {/* <p className="section-category">{section.category}</p> */}
+            <h3 className="section-title">{section.id === "VIP" ? "VIP Zone" : `Zone ${section.name}`}</h3>
+            <p className="section-category">{section.category}</p>
           </div>
         </div>
         <div className="section-price-container">
-          <div className="section-price-label">Prix</div>
+          <div className="section-price-label">Price</div>
           <div className="section-price">€{section.basePrice}</div>
-          <div className="section-availability">{section.available} Disponible/es</div>
+          <div className="section-availability">{section.available} Available</div>
         </div>
       </div>
 
       {section.selected && (
         <div className="ticket-selector">
-          <div className="ticket-selector-label">Nombre de tickets: {ticketCount}</div>
+          <div className="ticket-selector-label">Number of tickets: {ticketCount}</div>
           <div className="slider-container">
             <input
               type="range"

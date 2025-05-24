@@ -39,3 +39,19 @@
     gap: 15px;
   }
 }
+
+.team-card {
+  /* ...existing code... */
+}
+
+.team-card.dark-mode {
+  background: #1E1E1E;
+  /* Les autres styles glassmorphisme restent, mais le fond est #1E1E1E opaque */
+}
+
+.team-card.dark-mode .team-logo-container {
+  background: #fff;
+  /* Coins blancs pour le contraste */
+  border-radius: 16px;
+  padding: 8px;
+}

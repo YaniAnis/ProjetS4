@@ -174,3 +174,58 @@
 .regular-section.selected .section-title {
   color: #1a472a;
 }
+
+.tooltip-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%) translateY(50%) rotate(45deg);
+  width: 1rem;
+  height: 1rem;
+  background-color: white;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Zoom controls */
+.zoom-controls {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.zoom-button {
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-button:first-child {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.zoom-button:hover {
+  background-color: #f7fafc;
+}
+
+.section-selector input[type="range"] {
+  width: 80px;
+  accent-color: #166534;
+  margin: 0 8px;
+  vertical-align: middle;
+  height: 2.5px;
+}
+
+.section-selector input[type="range"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #16653433;
+}

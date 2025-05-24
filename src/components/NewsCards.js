@@ -59,11 +59,11 @@ function NewsCards() {
           id: `actuality-${a.id}`,
           title: a.title,
           excerpt: a.content,
-          image: a.image_url || "/images/news/default.jpg",
+          image: a.image_url ? (a.image_url.startsWith('http') ? a.image_url : `http://localhost:8000${a.image_url}`) : "/images/news/default.jpg",
           date: a.created_at ? new Date(a.created_at).toLocaleDateString("fr-FR") : "",
           readTime: a.readTime ? `${a.readTime} min` : "3 min",
           type: "actuality"
-        }))
+        }));
         setNews(actualities)
       } catch {
         setNews([])
@@ -123,8 +123,8 @@ function NewsCards() {
                 <span>{newsItem.readTime}</span>
               </div>
             </div>
-            <h3 className="news-card-title">{newsItem.title}</h3>
-            <p className="news-card-excerpt">{newsItem.excerpt}</p>
+            <h3 className="news-card-title two-lines">{newsItem.title}</h3>
+            <p className="news-card-excerpt two-lines">{newsItem.excerpt}</p>
           </div>
           <div className="news-card-footer">
             <Link to={`/actualites/${newsItem.id.replace("actuality-", "")}`} className="news-card-link">

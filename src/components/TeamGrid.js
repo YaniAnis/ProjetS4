@@ -1,11 +1,11 @@
 import TeamCard from "./TeamCard"
 import "./TeamGrid.css"
 
-function TeamGrid({ teams }) {
+function TeamGrid({ teams, darkMode }) {
   return (
     <div className="team-grid">
       {teams.length > 0 ? (
-        teams.map((team) => <TeamCard key={team.id} team={team} />)
+        teams.map((team) => <TeamCard key={team.id} team={team} darkMode={darkMode} />)
       ) : (
         <div className="no-results">Aucune équipe trouvée</div>
       )}

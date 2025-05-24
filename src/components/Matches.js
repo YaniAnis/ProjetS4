@@ -6,7 +6,7 @@ import FilterBar from "./FilterBar"
 import MatchCard from "./MatchCard"
 import ActiveFilters from "./ActiveFilters"
 
-function Matches() {
+function Matches({ darkMode }) {
   const [matches, setMatches] = useState([])
   const [filteredMatches, setFilteredMatches] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -102,7 +102,36 @@ function Matches() {
         price: m.zones && m.zones.length > 0 ? Math.min(...m.zones.map(z => z.prix)) : "",
         zones: m.zones || [],
         // ...add more fields as needed
-      }));
+      }))
+      // Filtrer les matchs dont la date est passée
+      .filter(match => {
+        if (!match.date) return false;
+        // On suppose que match.date est au format "DD Month YYYY" ou "YYYY-MM-DD"
+        let matchDate;
+        if (/^\d{4}-\d{2}-\d{2}/.test(match.date)) {
+          matchDate = new Date(match.date);
+        } else {
+          // Format "DD Month YYYY"
+          const parts = match.date.split(" ");
+          if (parts.length === 3) {
+            const [day, monthStr, year] = parts;
+            const monthNames = {
+              janvier: 0, février: 1, mars: 2, avril: 3, mai: 4, juin: 5,
+              juillet: 6, août: 7, septembre: 8, octobre: 9, novembre: 10, décembre: 11
+            };
+            const month = monthNames[monthStr.toLowerCase()];
+            if (month !== undefined) {
+              matchDate = new Date(Number(year), month, Number(day));
+            }
+          }
+        }
+        if (!matchDate || isNaN(matchDate.getTime())) return false;
+        // On ne garde que les matchs dont la date n'est pas passée (>= aujourd'hui)
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        return matchDate >= today;
+      });
+
       setMatches(mapped);
       setFilteredMatches(mapped);
     } catch {
@@ -129,8 +158,8 @@ function Matches() {
 
     const filtered = matches.filter((match) => {
       if (!match || typeof match !== 'object') return false;
+      
 
-      // Defensive: ensure all fields are strings before .toLowerCase()
       const safeToString = v => (typeof v === "string" ? v : "");
       const homeName = safeToString(match.homeTeam?.name);
       const awayName = safeToString(match.awayTeam?.name);
@@ -205,7 +234,7 @@ function Matches() {
   const sortedMatches = [...filteredMatches].sort((a, b) => new Date(b.date) - new Date(a.date))
 
   return (
-    <section className="matches" id="matches-section">
+    <section className={`matches${darkMode ? " dark-mode" : ""}`} id="matches-section">
       <div className="container">
         <h2>Matchs Disponibles</h2>
         {/* <button onClick={fetchMatches} className="btn-refresh">Rafraîchir la liste</button> */}
@@ -239,7 +268,7 @@ function Matches() {
         <div className="matches-grid" id="matches-container">
           {/* Retour à l'ancien design : affichage sous forme de cartes */}
           {sortedMatches.map((match) => (
-            <MatchCard key={match.id} match={match} />
+            <MatchCard key={match.id} match={match} darkMode={darkMode} />
           ))}
         </div>
 

@@ -82,3 +82,25 @@
   background-color: #e8f0eb;
   color: #1a472a;
 }
+
+.team-card.dark-mode {
+  background-color: #1e1e1e;
+  border-color: #232323;
+}
+
+.team-card.dark-mode .team-logo-container {
+  background-color: #232323; /* Un peu plus clair que le fond de la carte */
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Optionnel : contraste pour le nom et la catégorie */
+.team-card.dark-mode .team-name {
+  color: #fff;
+}
+
+.team-card.dark-mode .team-category {
+  background-color: #232323;
+  color: #e5e7eb;
+}
