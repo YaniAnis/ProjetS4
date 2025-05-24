@@ -302,3 +302,16 @@
 .zoom-button:hover {
   background-color: #f7fafc;
 }
+
+.section-selector input[type="range"] {
+  width: 80px;
+  accent-color: #166534;
+  margin: 0 8px;
+  vertical-align: middle;
+  height: 2.5px;
+}
+
+.section-selector input[type="range"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #16653433;
+}

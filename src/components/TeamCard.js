@@ -3,7 +3,7 @@
 import { useState } from "react"
 import "./TeamCard.css"
 
-function TeamCard({ team }) {
+function TeamCard({ team, darkMode }) {
   const [imageError, setImageError] = useState(false)
 
   const handleImageError = () => {
@@ -11,7 +11,7 @@ function TeamCard({ team }) {
   }
 
   return (
-    <div className="team-card">
+    <div className={`team-card${darkMode ? " dark-mode" : ""}`}>
       <div className="team-logo-container">
         <img
           src={imageError ? "/logos/placeholder.png" : team.logo}

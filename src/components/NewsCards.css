@@ -148,7 +148,12 @@
 }
 
 .news-cards.dark-mode {
-  background-color: #121212;
+  background-color: #121212 !important;
+}
+
+/* Ajout pour uniformiser toute la section actualités en dark mode */
+.news-section.dark-mode {
+  background-color: #121212 !important;
 }
 
 .two-lines {
