@@ -355,23 +355,18 @@
   box-shadow: var(--shadow);
 }
 
-.no-matches i {
-  font-size: 3rem;
-  color: var(--gray-color);
-  margin-bottom: 20px;
+/* Dark mode: fond #1E1E1E et texte blanc */
+body.dark-mode .no-matches {
+  background-color: #1e1e1e !important;
+  color: #fff !important;
 }
 
-.no-matches h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: var(--dark-color);
+body.dark-mode .no-matches h3,
+body.dark-mode .no-matches p {
+  color: #fff !important;
 }
 
-.no-matches p {
-  color: var(--gray-color);
-  margin-bottom: 20px;
-}
-
+/* btn-secondary : même fond que .days-navigation en dark mode, texte blanc */
 .btn-secondary {
   background-color: var(--light-gray);
   color: var(--dark-color);
@@ -383,8 +378,18 @@
   transition: var(--transition);
 }
 
+body.dark-mode .btn-secondary {
+  background-color: #23272A !important;
+  color: #fff !important;
+}
+
 .btn-secondary:hover {
   background-color: #ddd;
+}
+
+body.dark-mode .btn-secondary:hover {
+  background-color: #23272A !important;
+  opacity: 0.85;
 }
 
 /* Navigation par mois et jours */
@@ -394,6 +399,12 @@
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   padding: 20px;
+}
+
+/* Ajout : fond gris foncé en dark mode */
+body.dark-mode .calendar-navigation {
+  background-color: #1e1e1e !important;
+  color: #e5e7eb;
 }
 
 .month-selector {
@@ -561,4 +572,62 @@ font-size: 1.5rem;
     align-items: center;
     gap: 10px;
   }
+}
+
+/* Ajout : styles dark mode pour .days-navigation et .day-item */
+body.dark-mode .days-navigation {
+  background: #23272A !important;
+  border-radius: 20px;
+}
+
+body.dark-mode .day-item {
+  color: #CCCCCC !important;
+  background: transparent !important;
+  transition: background 0.2s;
+}
+
+/* Filtres : input et texte plus foncé en dark mode */
+body.dark-mode .filter-bar .search input,
+body.dark-mode .filter-bar .search input::placeholder {
+  background-color: #23272A !important;
+  color: #e5e7eb !important;
+  font-weight: 600;
+  border: 1.5px solid #374151;
+}
+
+body.dark-mode .filter-bar .search button {
+  background-color: #1a472a !important;
+  color: #fff !important;
+}
+
+body.dark-mode .filters,
+body.dark-mode .filters select,
+body.dark-mode .filters option {
+  color: #e5e7eb !important;
+  background-color: #23272A !important;
+  font-weight: 600;
+}
+
+/* Active filters (composant sous la barre de recherche) : texte blanc en dark mode */
+body.dark-mode .active-filters,
+body.dark-mode .active-filters .filter-tag,
+body.dark-mode .active-filters .filter-tag span,
+body.dark-mode .active-filters .remove-filter {
+  color: #fff !important;
+  font-weight: 600;
+}
+
+body.dark-mode .active-filters .filter-tag {
+  background: #23272A !important;
+  border: 1.5px solid #23272A;
+}
+
+body.dark-mode .active-filters .remove-filter {
+  color: #fff !important;
+  opacity: 0.8;
+}
+
+body.dark-mode .active-filters .remove-filter:hover {
+  color: #ff6b6b !important;
+  opacity: 1;
 }

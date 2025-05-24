@@ -107,7 +107,7 @@ function TeamPage({ darkMode }) {
 
   return (
     <div className="team-page">
-      <div className="filters-container">
+      <div className="team-filters-row">
         <SearchBar onSearch={handleSearch} />
         <CategoryFilter
           categories={categories}
@@ -117,8 +117,8 @@ function TeamPage({ darkMode }) {
       </div>
 
       <div>
-        <h2 className="category-title">{selectedCategory || "Toutes les équipes"}</h2>
-        <div className="category-count">{getCategoryCount()}</div>
+        <h2 className={`category-title${darkMode ? " dark-mode" : ""}`}>{selectedCategory || "Toutes les équipes"}</h2>
+        <span className={`category-count team-category-margin${darkMode ? " dark-mode" : ""}`}>{getCategoryCount()}</span>
       </div>
 
       <TeamGrid teams={filteredTeams} darkMode={darkMode} />

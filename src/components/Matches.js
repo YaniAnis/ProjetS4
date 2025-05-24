@@ -6,7 +6,7 @@ import FilterBar from "./FilterBar"
 import MatchCard from "./MatchCard"
 import ActiveFilters from "./ActiveFilters"
 
-function Matches() {
+function Matches({ darkMode }) {
   const [matches, setMatches] = useState([])
   const [filteredMatches, setFilteredMatches] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -234,7 +234,7 @@ function Matches() {
   const sortedMatches = [...filteredMatches].sort((a, b) => new Date(b.date) - new Date(a.date))
 
   return (
-    <section className="matches" id="matches-section">
+    <section className={`matches${darkMode ? " dark-mode" : ""}`} id="matches-section">
       <div className="container">
         <h2>Matchs Disponibles</h2>
         {/* <button onClick={fetchMatches} className="btn-refresh">Rafraîchir la liste</button> */}
@@ -268,7 +268,7 @@ function Matches() {
         <div className="matches-grid" id="matches-container">
           {/* Retour à l'ancien design : affichage sous forme de cartes */}
           {sortedMatches.map((match) => (
-            <MatchCard key={match.id} match={match} />
+            <MatchCard key={match.id} match={match} darkMode={darkMode} />
           ))}
         </div>
 

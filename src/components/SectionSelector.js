@@ -2,11 +2,11 @@ import React from "react"
 import "./SectionSelector.css"
 
 function SectionSelector({ section, selectedCount = 0, onCountChange, maxSelectable = 4, onSelect, onHover, onLeave }) {
-  // Calcul du maximum sélectionnable pour cette section
-  const maxForThisSection = Math.min(section.available, maxSelectable);
+  // Limite max à 5 pour le slider
+  const maxForThisSection = Math.min(section.available, maxSelectable, 5);
 
-  // Correction : empêcher la propagation ET empêcher le onClick du parent de s'exécuter sur le select et le label
-  const handleSelectChange = (e) => {
+  // Correction : empêcher la propagation ET empêcher le onClick du parent de s'exécuter sur le range et le label
+  const handleRangeChange = (e) => {
     e.stopPropagation();
     if (onCountChange) onCountChange(section, parseInt(e.target.value, 10));
   };
@@ -46,7 +46,7 @@ function SectionSelector({ section, selectedCount = 0, onCountChange, maxSelecta
             {section.available} Available
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", marginLeft: "1rem" }}>
+        <div style={{ display: "flex", alignItems: "center", marginLeft: "1rem", minWidth: 120 }}>
           <label
             htmlFor={`seat-count-${section.id || section.name}`}
             style={{ marginRight: "0.3rem", fontSize: "0.95em" }}
@@ -54,24 +54,16 @@ function SectionSelector({ section, selectedCount = 0, onCountChange, maxSelecta
           >
             Places :
           </label>
-          <select
+          <input
+            type="range"
             id={`seat-count-${section.id || section.name}`}
+            min={0}
+            max={maxForThisSection}
             value={selectedCount}
-            onClick={e => e.stopPropagation()}
-            onChange={handleSelectChange}
-            style={{
-              minWidth: 32,
-              width: 48,
-              height: 24,
-              fontSize: "0.95em",
-              padding: "0 4px",
-              borderRadius: 4
-            }}
-          >
-            {[...Array(maxForThisSection + 1)].map((_, i) => (
-              <option key={i} value={i}>{i}</option>
-            ))}
-          </select>
+            onChange={handleRangeChange}
+            style={{ width: 80, margin: "0 8px" }}
+          />
+          <span style={{ minWidth: 18, textAlign: "center", fontWeight: 600 }}>{selectedCount}</span>
         </div>
       </div>
     </div>

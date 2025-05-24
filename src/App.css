@@ -45,6 +45,10 @@ body {
   padding: 3rem 1rem;
 }
 
+.news-section.dark-mode {
+  background-color: #121212 !important;
+}
+
 .news-title {
   font-size: 2rem;
   font-weight: 700;
