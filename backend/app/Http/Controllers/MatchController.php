@@ -13,6 +13,20 @@ class MatchController extends Controller
     {
         // Eager load stade and zones
         $matches = Matches::with(['stade', 'zones'])->get();
+
+        // Log la structure des zones pour chaque match (optionnel)
+        foreach ($matches as $match) {
+            foreach ($match->zones as $zone) {
+                \Log::info('Zone pour match ' . $match->id, [
+                    'zone_id' => $zone->id,
+                    'zone_name' => $zone->name,
+                    'places' => $zone->places,
+                    'zone_full' => $zone->toArray()
+                ]);
+            }
+        }
+
+        // Plus besoin de forcer la clé 'zones' si elle est toujours présente
         return response()->json($matches);
     }
 

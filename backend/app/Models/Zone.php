@@ -16,6 +16,12 @@ class Zone extends Model
         'places',
     ];
 
+    // Ajoute une méthode d'accès pour garantir que places est toujours un entier >= 0
+    public function getPlacesAttribute($value)
+    {
+        return max(0, (int) $value);
+    }
+
     public function match()
     {
         return $this->belongsTo(Matches::class, 'match_id');

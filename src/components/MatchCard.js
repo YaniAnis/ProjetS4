@@ -3,23 +3,79 @@ import { useNavigate } from "react-router-dom"
 function MatchCard({ match }) {
   const navigate = useNavigate();
 
-  // Correction: Calculer le prix minimum à partir des zones (si disponible)
+  // DEBUG: Affiche la structure complète du match et des zones AVANT tout calcul
+  console.log("MatchCard match prop:", match);
+  if (!Array.isArray(match.zones)) {
+    console.warn("ATTENTION: match.zones est", match.zones, "pour le match id:", match.id);
+  } else {
+    console.log("Zones pour ce match:", match.zones);
+  }
+
+  // DEBUG: Affiche la structure complète des zones pour vérifier les clés
+  if (Array.isArray(match.zones)) {
+    console.log("Structure complète des zones:", match.zones);
+    match.zones.forEach((z, i) => {
+      console.log(`Zone ${i} keys:`, Object.keys(z));
+    });
+  }
+
+  // Calcul du nombre total de places disponibles (clé dynamique)
+  let totalPlaces = 0;
+  let hasZones = Array.isArray(match.zones) && match.zones.length > 0;
+  if (!hasZones) {
+    // Affiche un message d'erreur clair si zones est undefined ou vide
+    console.error(
+      "Aucune donnée de zones reçue pour le match id:",
+      match.id,
+      "| match.zones =",
+      match.zones,
+      "| match complet =",
+      match
+    );
+  } else {
+    // Affiche la première zone pour voir la clé et sa valeur
+    if (match.zones.length > 0) {
+      console.log("Exemple de zone:", match.zones[0]);
+    }
+    const zoneValues = match.zones.map((z, i) => {
+      // Affiche toutes les clés et valeurs de la zone pour debug
+      console.log(`Zone ${i} structure:`, z);
+      // Essaye toutes les clés possibles pour le nombre de places
+      let raw = z.places;
+      if (raw === undefined) raw = z.available;
+      if (raw === undefined) raw = z.nbPlaces;
+      if (raw === undefined) raw = z.nombre_places;
+      if (raw === undefined) raw = z.nb_places;
+      if (raw === undefined) raw = z.capacite;
+      const val = Number(raw);
+      console.log(`Zone ${i} (${z.name}): valeur brute=`, raw, "=> val comptée:", val);
+      return !isNaN(val) && val >= 0 ? val : 0;
+    });
+    console.log("Valeurs des places par zone:", zoneValues, "Total attendu:", zoneValues.reduce((a, b) => a + b, 0));
+    totalPlaces = zoneValues.reduce((sum, p) => sum + p, 0);
+  }
+
+  // DEBUG: Affiche le total des places calculé
+  console.log("Total places calculé:", totalPlaces);
+
+  // Calcul du prix minimum à partir des zones (si disponible)
   let minZonePrice = null;
-  if (Array.isArray(match.zones) && match.zones.length > 0) {
-    const prices = match.zones
-      .map(z => typeof z.price === "number" ? z.price : Number(z.price))
-      .filter(p => !isNaN(p) && p > 0);
+  if (hasZones) {
+    const prices = match.zones.map(z => Number(z.price)).filter(p => !isNaN(p) && p > 0);
     if (prices.length > 0) {
       minZonePrice = Math.min(...prices);
     }
-  } else if (typeof match.price === "number" && !isNaN(match.price) && match.price > 0) {
-    // fallback for legacy data
-    minZonePrice = match.price;
   }
 
   let priceDisplay = "Non disponible";
   if (minZonePrice !== null && !isNaN(minZonePrice) && minZonePrice > 0) {
     priceDisplay = `À partir de ${minZonePrice} DZD`;
+  }
+  let placesDisplay = "";
+  if (hasZones && totalPlaces > 0) {
+    placesDisplay = `${totalPlaces} places encore disponibles`;
+  } else {
+    placesDisplay = "Aucune place disponible";
   }
 
   const handleBuyTickets = () => {
@@ -98,6 +154,7 @@ function MatchCard({ match }) {
             <i className="fas fa-map-marker-alt"></i>
             <span>{match.stadium}</span>
           </div>
+          <div className="places">{placesDisplay}</div>
           <div className="price">{priceDisplay}</div>
         </div>
         <button className="btn-primary" onClick={handleBuyTickets}>

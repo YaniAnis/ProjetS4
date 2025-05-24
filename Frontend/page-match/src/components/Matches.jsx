@@ -21,16 +21,25 @@ function Matches() {
       try {
         const res = await fetch("http://localhost:8000/api/matches");
         const data = await res.json();
+        // Ajoute ce log pour voir la structure brute
+        console.log("Réponse brute API /api/matches :", data);
         // Map backend fields to frontend model
         const mapped = (Array.isArray(data) ? data : data.data || []).map(m => ({
           id: m.id,
           league: m.league,
           date: m.date,
           time: m.heure,
-          homeTeam: { name: m.equipe1, logo: "" }, // Add logo if available
-          awayTeam: { name: m.equipe2, logo: "" },
+          homeTeam: {
+            name: m.equipe1,
+            logo: m.equipe1_logo || m.logo_equipe1 || m.home_logo || m.homeTeam?.logo || "" // adapte selon la vraie clé backend
+          },
+          awayTeam: {
+            name: m.equipe2,
+            logo: m.equipe2_logo || m.logo_equipe2 || m.away_logo || m.awayTeam?.logo || ""
+          },
           stadium: m.stade?.nom || "",
           price: m.zones && m.zones.length > 0 ? Math.min(...m.zones.map(z => z.prix)) : "",
+          zones: m.zones || [], // <-- cette ligne doit être présente
           // ...add more fields as needed
         }));
         setMatches(mapped);
