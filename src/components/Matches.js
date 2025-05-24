@@ -102,7 +102,36 @@ function Matches({ darkMode }) {
         price: m.zones && m.zones.length > 0 ? Math.min(...m.zones.map(z => z.prix)) : "",
         zones: m.zones || [],
         // ...add more fields as needed
-      }));
+      }))
+      // Filtrer les matchs dont la date est passée
+      .filter(match => {
+        if (!match.date) return false;
+        // On suppose que match.date est au format "DD Month YYYY" ou "YYYY-MM-DD"
+        let matchDate;
+        if (/^\d{4}-\d{2}-\d{2}/.test(match.date)) {
+          matchDate = new Date(match.date);
+        } else {
+          // Format "DD Month YYYY"
+          const parts = match.date.split(" ");
+          if (parts.length === 3) {
+            const [day, monthStr, year] = parts;
+            const monthNames = {
+              janvier: 0, février: 1, mars: 2, avril: 3, mai: 4, juin: 5,
+              juillet: 6, août: 7, septembre: 8, octobre: 9, novembre: 10, décembre: 11
+            };
+            const month = monthNames[monthStr.toLowerCase()];
+            if (month !== undefined) {
+              matchDate = new Date(Number(year), month, Number(day));
+            }
+          }
+        }
+        if (!matchDate || isNaN(matchDate.getTime())) return false;
+        // On ne garde que les matchs dont la date n'est pas passée (>= aujourd'hui)
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        return matchDate >= today;
+      });
+
       setMatches(mapped);
       setFilteredMatches(mapped);
     } catch {

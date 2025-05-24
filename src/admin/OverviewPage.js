@@ -12,6 +12,9 @@ import "./Pages.css";
 const OverviewPage = () => {
 	const [users, setUsers] = useState([]);
 	const [actualities, setActualities] = useState([]);
+	const [tickets, setTickets] = useState([]);
+	const [matches, setMatches] = useState([]);
+	const [payments, setPayments] = useState([]);
 
 	useEffect(() => {
 		const fetchUsers = async () => {
@@ -40,8 +43,60 @@ const OverviewPage = () => {
 		fetchActualities();
 	}, []);
 
+	useEffect(() => {
+		const fetchTickets = async () => {
+			try {
+				const res = await fetch("http://localhost:8000/api/tickets");
+				const data = await res.json();
+				setTickets(Array.isArray(data) ? data : data.data || []);
+			} catch {
+				setTickets([]);
+			}
+		};
+		fetchTickets();
+	}, []);
+
+	useEffect(() => {
+		const fetchMatches = async () => {
+			try {
+				const res = await fetch("http://localhost:8000/api/matches");
+				const data = await res.json();
+				setMatches(Array.isArray(data) ? data : data.data || []);
+			} catch {
+				setMatches([]);
+			}
+		};
+		fetchMatches();
+	}, []);
+
+	useEffect(() => {
+		const fetchPayments = async () => {
+			try {
+				const res = await fetch("http://localhost:8000/api/payments");
+				const data = await res.json();
+				let paymentsArr = [];
+				if (Array.isArray(data)) paymentsArr = data;
+				else if (Array.isArray(data.data)) paymentsArr = data.data;
+				else if (Array.isArray(data.paiements)) paymentsArr = data.paiements;
+				else if (typeof data === "object") {
+					const arr = Object.values(data).find((v) => Array.isArray(v));
+					if (arr) paymentsArr = arr;
+				}
+				setPayments(paymentsArr);
+			} catch {
+				setPayments([]);
+			}
+		};
+		fetchPayments();
+	}, []);
+
 	const formatNumber = (num) =>
-		num.toLocaleString("fr-FR").replace(/,/g, " ").replace(/\s/g, " ");
+		typeof num === "number"
+			? num.toLocaleString("fr-FR").replace(/,/g, " ").replace(/\s/g, " ")
+			: num;
+
+	const totalTickets = payments.filter(p => p.statut === "validé").length;
+	const totalMatches = matches.length;
 
 	return (
 		<div className='overview-page'>
@@ -55,7 +110,7 @@ const OverviewPage = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
 				>
-					<StatCard name='Ventes Total' icon={Zap} value='$12,345' color='#6366F1' />
+					<StatCard name='Ventes Total' icon={Zap} value={formatNumber(totalTickets)} color='#6366F1' />
 					<StatCard
 						name='Nouveaux Utilisateur'
 						icon={Users}
@@ -66,7 +121,7 @@ const OverviewPage = () => {
 						}
 						color='#8B5CF6'
 					/>
-					<StatCard name='Nombre de Matchs' icon={ShoppingBag} value='567' color='#EC4899' />
+					<StatCard name='Nombre de Matchs' icon={ShoppingBag} value={formatNumber(totalMatches)} color='#EC4899' />
 				</motion.div>
 
 				{/* Actualities Preview */}
@@ -75,8 +130,18 @@ const OverviewPage = () => {
 					<ul className="space-y-4">
 						{actualities.slice(0, 3).map((a, idx) => (
 							<li key={a.id || idx} className="border-b border-gray-700 pb-2">
-								<div className="text-indigo-400 font-bold">{a.title}</div>
-								<div className="text-gray-300">{a.content}</div>
+								<div
+									className="text-indigo-400 font-bold overview-news-title"
+									title={a.title}
+								>
+									{a.title}
+								</div>
+								<div
+									className="text-gray-300 overview-news-content"
+									title={a.content}
+								>
+									{a.content}
+								</div>
 							</li>
 						))}
 						{actualities.length === 0 && <li className="text-gray-400">Aucune actualité.</li>}
