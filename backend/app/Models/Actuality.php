@@ -14,7 +14,6 @@ class Actuality extends Model
         'content',
         'description',
         'readTime',
-        'image',
-        'type',
+        'image_url',
     ];
 }

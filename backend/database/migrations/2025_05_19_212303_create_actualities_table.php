@@ -11,10 +11,10 @@ return new class extends Migration
         Schema::create('actualities', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('content');
+            $table->text('content'); // Remplace string par text pour permettre plus de texte
             $table->text('description')->nullable();
             $table->string('readTime')->nullable();
-            $table->string('image')->nullable();
+            $table->string('image_url')->nullable(); // Remplace 'image' par 'image_url'
             $table->string('type')->nullable();
             $table->timestamps();
         });

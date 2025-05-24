@@ -10,37 +10,44 @@ class ActualityController extends Controller
 {
     public function index()
     {
-        // Only return news (not matches)
-        return response()->json(
-            Actuality::where(function($q) {
-                $q->where('type', 'news')->orWhereNull('type');
-            })
-            ->orderBy('created_at', 'desc')
-            ->get()
-        );
+        $actualities = \App\Models\Actuality::orderBy('created_at', 'desc')->get();
+        // Ajoute le champ image_url complet pour chaque actualité
+        $actualities->transform(function ($a) {
+            if ($a->image_url && !str_starts_with($a->image_url, '/storage/')) {
+                $a->image_url = '/storage/' . ltrim($a->image_url, '/');
+            }
+            return $a;
+        });
+        return response()->json($actualities);
     }
 
     public function store(Request $request)
     {
-        // Validate input for news
-        $data = $request->validate([
-            'title' => 'required|string|max:20',
-            'content' => 'required|string|max:32',
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string', // autorise du texte long
             'description' => 'nullable|string',
-            'readTime' => 'nullable|integer',
-            'image' => 'nullable|image|max:2048',
+            'readTime' => 'nullable|string',
+            'image' => 'nullable|image|max:4096',
         ]);
 
-        // Always set type to 'news' for actualities from ActualitePage.jsx
-        $data['type'] = 'news';
+        $actuality = new \App\Models\Actuality();
+        $actuality->title = $request->title;
+        $actuality->content = $request->content;
+        $actuality->description = $request->description;
+        $actuality->readTime = $request->readTime;
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('actualities', 'public');
+            $path = $request->file('image')->store('actualities', 'public');
+            $actuality->image_url = '/storage/' . $path;
         }
 
-        $actuality = Actuality::create($data);
+        $actuality->save();
 
-        return response()->json($actuality, 201);
+        return response()->json([
+            'success' => true,
+            'actuality' => $actuality
+        ]);
     }
 
     public function show($id)

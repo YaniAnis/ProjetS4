@@ -43,10 +43,18 @@ const ActualitePage = () => {
 			formData.append("image", form.image);
 		}
 
-		await fetch("http://localhost:8000/api/actualities", {
-			method: "POST",
-			body: formData,
-		});
+		try {
+			const res = await fetch("http://localhost:8000/api/actualities", {
+				method: "POST",
+				body: formData,
+			});
+			if (!res.ok) {
+				const data = await res.json().catch(() => ({}));
+				alert(data.message || "Erreur lors de l'ajout de l'actualité.");
+			}
+		} catch (err) {
+			alert("Erreur réseau lors de l'ajout de l'actualité.");
+		}
 		setForm({ title: "", content: "", description: "", readTime: "", image: null });
 		setLoading(false);
 	};
@@ -90,20 +98,20 @@ const ActualitePage = () => {
 					<form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
 						<input
 							type="text"
-							placeholder="Titre Max 26 caractères"
+							placeholder="Titre Max 64 caractères"
 							value={form.title}
 							onChange={e => setForm({ ...form, title: e.target.value })}
 							className="w-full bg-gray-700 text-white rounded-lg p-2"
 							required
-							maxLength={26}
+							maxLength={64}
 						/>
 						<textarea
-							placeholder="Contenu Max 32 caractères"
+							placeholder="Contenu Max 128 caractères"
 							value={form.content}
 							onChange={e => setForm({ ...form, content: e.target.value })}
 							className="w-full bg-gray-700 text-white rounded-lg p-2"
 							required
-							maxLength={32}
+							maxLength={128}
 						/>
 						<textarea
 							placeholder="Description"
@@ -145,7 +153,7 @@ const ActualitePage = () => {
 									className="hidden"
 								/>
 								<span className="ml-4 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-white text-sm font-medium transition-colors">
-									Parcourir
+									Parcourir Max 2MO
 								</span>
 							</label>
 						</div>

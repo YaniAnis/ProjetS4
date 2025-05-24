@@ -40,7 +40,7 @@ function NewsDetailPage() {
   return (
     <div className="news-detail-page">
       <Link to="/actualites" className="news-detail-back">&larr; Retour aux actualités</Link>
-      <h1 className="news-detail-title">{actuality.title}</h1>
+      <h1 className="news-detail-title centered-title">{actuality.title}</h1>
       <div className="news-detail-meta">
         <span>
           <svg
@@ -83,7 +83,16 @@ function NewsDetailPage() {
       </div>
       {actuality.image_url &&
         <div className="news-detail-image-container">
-          <img src={actuality.image_url} alt={actuality.title} className="news-detail-image" />
+          <img
+            src={
+              actuality.image_url.startsWith("http")
+                ? actuality.image_url
+                : `http://localhost:8000${actuality.image_url}`
+            }
+            alt={actuality.title}
+            className="news-detail-image"
+            style={{ objectFit: "cover", width: "100%", maxHeight: 350 }}
+          />
         </div>
       }
       {!actuality.image_url &&
@@ -94,9 +103,6 @@ function NewsDetailPage() {
       <div className="news-detail-description">
         <h3>Description</h3>
         <p>{actuality.description}</p>
-      </div>
-      <div className="news-detail-content">
-        <p>{actuality.content}</p>
       </div>
     </div>
   )

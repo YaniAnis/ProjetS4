@@ -122,8 +122,8 @@ function Matches() {
 
     const filtered = matches.filter((match) => {
       if (!match || typeof match !== 'object') return false;
+      
 
-      // Defensive: ensure all fields are strings before .toLowerCase()
       const safeToString = v => (typeof v === "string" ? v : "");
       const homeName = safeToString(match.homeTeam?.name);
       const awayName = safeToString(match.awayTeam?.name);
