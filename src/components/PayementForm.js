@@ -240,9 +240,9 @@ function PaymentForm({ cardData, onInputChange, onInputFocus, selectedZones = []
 
   if (paymentConfirmed) {
     return (
-      <div className="payment-confirmed-message">
+      <div className="payment-confirmed-message" style={{ color: "#38a169", fontWeight: "bold", textAlign: "center", marginTop: "2rem" }}>
         <h2>Paiement confirmé !</h2>
-        <p>{qrInfoMessage || "Un email avec votre QR code a été envoyé. Présentez-le le jour du match."}</p>
+        <p>{qrInfoMessage || "Votre paiement a été confirmé et votre ticket a été envoyé par email. Merci pour votre achat !"}</p>
       </div>
     )
   }

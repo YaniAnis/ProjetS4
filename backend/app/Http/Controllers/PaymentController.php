@@ -274,6 +274,27 @@ class PaymentController extends Controller
             // Get match_id from state if available
             $match_id = $request->state['matchId'] ?? 1;
 
+            // --- Décrémenter les places disponibles pour chaque zone sélectionnée ---
+            foreach ($request->selectedZones as $zone) {
+                // Recherche par match_id + name si l'id n'est pas numérique
+                if (is_numeric($zone['id'])) {
+                    $zoneModel = \App\Models\Zone::find($zone['id']);
+                } else {
+                    $zoneModel = \App\Models\Zone::where('match_id', $match_id)
+                        ->where('name', $zone['name'])
+                        ->first();
+                }
+                if (!$zoneModel) {
+                    throw new \Exception("Zone non trouvée (ID: {$zone['id']}, Nom: {$zone['name']})");
+                }
+                if ($zoneModel->places < $zone['count']) {
+                    throw new \Exception("Pas assez de places disponibles pour la zone {$zoneModel->name}");
+                }
+                $zoneModel->places -= $zone['count'];
+                $zoneModel->save();
+            }
+            // --- Fin décrémentation ---
+
             // Create ticket
             $ticket = \App\Models\Ticket::create([
                 'user_id' => $user->id,
@@ -283,7 +304,6 @@ class PaymentController extends Controller
                 'numero_place' => implode(',', array_map(fn($z) => "{$z['name']}({$z['count']})", $request->selectedZones))
             ]);
 
-          
             $verificationCode = rand(100000, 999999);
             $paiement = \App\Models\Paiement::create([
                 'ticket_id' => $ticket->id,
@@ -321,6 +341,13 @@ class PaymentController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    // AJOUTE OU VÉRIFIE BIEN CETTE MÉTHODE
+    public function index()
+    {
+        // Retourne tous les paiements avec relations ticket et user
+        return \App\Models\Paiement::with(['ticket', 'user'])->get();
     }
 
     private function getTeamLogoPath($teamName) {

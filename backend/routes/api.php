@@ -175,3 +175,4 @@ Route::middleware('auth:sanctum')->get('/my-tickets', [TicketController::class, 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/create-payment', [PaymentController::class, 'createPayment']);
 });
+Route::get('/payments', [PaymentController::class, 'index']);
