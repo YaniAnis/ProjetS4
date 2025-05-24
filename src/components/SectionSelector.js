@@ -38,7 +38,6 @@ function SectionSelector({ section, onSelect, onHover, onLeave }) {
           />
           <div className="section-info">
             <h3 className="section-title">{section.id === "VIP" ? "VIP Zone" : `Zone ${section.name}`}</h3>
-            <p className="section-category">{section.category}</p>
           </div>
         </div>
         <div className="section-price-container">
@@ -47,7 +46,8 @@ function SectionSelector({ section, onSelect, onHover, onLeave }) {
           <div className="section-availability">{section.available} Available</div>
         </div>
       </div>
-
+      {/* Ligne séparatrice très fine */}
+      <hr className="section-separator" />
       {section.selected && (
         <div className="ticket-selector">
           <div className="ticket-selector-label">Number of tickets: {ticketCount}</div>
