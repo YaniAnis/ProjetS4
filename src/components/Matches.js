@@ -158,7 +158,6 @@ function Matches({ darkMode }) {
 
     const filtered = matches.filter((match) => {
       if (!match || typeof match !== 'object') return false;
-      
 
       const safeToString = v => (typeof v === "string" ? v : "");
       const homeName = safeToString(match.homeTeam?.name);
@@ -182,39 +181,9 @@ function Matches({ darkMode }) {
 
       let matchesDay = true;
       if (selectedDate !== "all" && match.date) {
-        try {
-          const dateParts = (typeof match.date === "string" ? match.date : "").split(" ");
-          if (!dateParts[1] || typeof dateParts[1] !== "string") {
-            matchesDay = false;
-          } else {
-            const day = Number.parseInt(dateParts[0]);
-            const monthNames = {
-              janvier: "01",
-              février: "02",
-              mars: "03",
-              avril: "04",
-              mai: "05",
-              juin: "06",
-              juillet: "07",
-              août: "08",
-              septembre: "09",
-              octobre: "10",
-              novembre: "11",
-              décembre: "12",
-            };
-            const monthKey = dateParts[1].toLowerCase();
-            const month = monthNames[monthKey];
-            const year = Number.parseInt(dateParts[2]);
-            if (!month || isNaN(day) || isNaN(year)) {
-              matchesDay = false;
-            } else {
-              const formattedDate = `${year}-${month}-${day < 10 ? "0" + day : day}`;
-              matchesDay = formattedDate === selectedDate;
-            }
-          }
-        } catch (e) {
-          matchesDay = false;
-        }
+        // Normalize the match date to YYYY-MM-DD format
+        const matchDate = new Date(match.date).toISOString().split("T")[0];
+        matchesDay = matchDate === selectedDate;
       }
 
       return matchesSearch && matchesLeague && matchesDay;
