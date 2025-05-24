@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import PlayerCard from "./PlayerCard"
 import { players } from "./player"
 import "./Player.css"
-const PlayerCarousel = () => {
+const PlayerCarousel = ({ darkMode }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [itemsPerView, setItemsPerView] = useState(4)
   const [maxIndex, setMaxIndex] = useState(0)
@@ -72,7 +72,7 @@ const PlayerCarousel = () => {
   const showNavigation = players.length > itemsPerView
 
   return (
-    <section className="players-section">
+    <section className={`players-section${darkMode ? " dark-mode" : ""}`}>
       <div className="container">
         {/* Section Header */}
         <div className="section-header">
@@ -80,7 +80,7 @@ const PlayerCarousel = () => {
             <i className="fas fa-trophy"></i>
             Nos Joueurs Vedettes
           </div>
-          <h2>L'Excellence sur le Terrain</h2>
+          <h2 className="excellence-text">L'Excellence sur le Terrain</h2>
           <p>Découvrez les talents exceptionnels qui font la fierté des Équipes cette saison</p>
         </div>
 

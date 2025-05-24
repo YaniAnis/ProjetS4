@@ -25,6 +25,11 @@ body {
   overflow: hidden;
 }
 
+.players-section.dark-mode {
+  background: #181a1b;
+  color: #eff6f0;
+}
+
 /* Section Header */
 .section-header {
   text-align: center;
@@ -47,7 +52,7 @@ body {
 .section-header h2 {
   font-size: 3rem;
   font-weight: bold;
-  color: #111827;
+  color: #111827; /* <-- ceci écrase la couleur verte */
   margin-bottom: 1.5rem;
 }
 
@@ -322,6 +327,12 @@ body {
   width: 2rem;
 }
 
+/* Excellence Text */
+.excellence-text {
+  color: #1a472a!important; /* Vert fluo, prioritaire */
+  font-weight: bold;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .player-card {
@@ -375,4 +386,9 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.players-section.dark-mode .player-card {
+  background: #23262b;
+  color: #39ff14;
 }

@@ -2,7 +2,7 @@ import HeroCarousel from "../components/HeroCarousel"
 import NewsCards from "../components/NewsCards"
 import PlayerCarousel from "../Pages/PlayerCarousel" // Ajout de l'import
 
-function HomePage() {
+function HomePage({ darkMode }) {
   return (
     <main>
       <HeroCarousel />
@@ -10,8 +10,9 @@ function HomePage() {
         <h2 className="news-title">Actualités de la Ligue</h2>
         <NewsCards />
       </div>
-      {/* Ajout du PlayerCarousel juste en dessous des actualités */}
-      <PlayerCarousel />
+      <div className="player-section">
+        <PlayerCarousel darkMode={darkMode} />
+      </div>
     </main>
   )
 }
