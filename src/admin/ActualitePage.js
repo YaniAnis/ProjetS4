@@ -13,6 +13,16 @@ const ActualitePage = () => {
 		total: 0,
 		today: 0,
 	});
+	const [playerForm, setPlayerForm] = useState({
+		name: "",
+		poste: "",
+		matches: "",
+		passes: "",
+		buts: "",
+		note: "",
+		maillot: "",
+		image: null,
+	});
 
 	useEffect(() => {
 		const fetchActualities = async () => {
@@ -77,6 +87,69 @@ const ActualitePage = () => {
 		} catch (error) {
 			console.error("Failed to fetch actualities:", error);
 		}
+		setLoading(false);
+	};
+
+	const handlePlayerSubmit = async (e) => {
+		e.preventDefault();
+		setLoading(true);
+
+		try {
+			let res;
+			// If image is present, use FormData
+			if (playerForm.image) {
+				const formData = new FormData();
+				formData.append("name", playerForm.name);
+				formData.append("poste", playerForm.poste);
+				formData.append("matches", playerForm.matches);
+				formData.append("passes", playerForm.passes);
+				formData.append("buts", playerForm.buts);
+				formData.append("note", playerForm.note);
+				formData.append("maillot", playerForm.maillot);
+				formData.append("image", playerForm.image);
+
+				res = await fetch("http://localhost:8000/api/players", {
+					method: "POST",
+					body: formData,
+				});
+			} else {
+				res = await fetch("http://localhost:8000/api/players", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						name: playerForm.name,
+						poste: playerForm.poste,
+						matches: playerForm.matches,
+						passes: playerForm.passes,
+						buts: playerForm.buts,
+						note: playerForm.note,
+						maillot: playerForm.maillot,
+					}),
+				});
+			}
+
+			if (!res.ok) {
+				const data = await res.json().catch(() => ({}));
+				alert(data.message || "Erreur lors de l'ajout du joueur.");
+			} else {
+				alert("Joueur ajouté avec succès !");
+			}
+		} catch (err) {
+			alert("Erreur réseau lors de l'ajout du joueur.");
+		}
+
+		setPlayerForm({
+			name: "",
+			poste: "",
+			matches: "",
+			passes: "",
+			buts: "",
+			note: "",
+			maillot: "",
+			image: null,
+		});
 		setLoading(false);
 	};
 
@@ -177,6 +250,121 @@ const ActualitePage = () => {
 									Parcourir
 								</span>
 							</label>
+						</div>
+						<button
+							type="submit"
+							disabled={loading}
+							className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg"
+						>
+							{loading ? "Ajout..." : "Ajouter"}
+						</button>
+					</form>
+				</motion.div>
+
+				{/* Add Player Form */}
+				<motion.div
+					style={{
+						background: "rgba(31,41,55,0.5)",
+						backdropFilter: "blur(10px)",
+						boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+						borderRadius: "0.75rem",
+						border: "none",
+						padding: "1.5rem",
+						marginBottom: "2rem",
+					}}
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5 }}
+				>
+					<h2 className="text-xl font-semibold text-gray-100 mb-6">Ajouter un Joueur</h2>
+					<form onSubmit={handlePlayerSubmit} className="space-y-4" encType="multipart/form-data">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<input
+								type="text"
+								placeholder="Nom"
+								value={playerForm.name}
+								onChange={(e) => setPlayerForm({ ...playerForm, name: e.target.value })}
+								className="w-full rounded-lg p-2"
+								style={{ backgroundColor: "#374151", color: "#fff", border: "none" }}
+								required
+							/>
+							<input
+								type="text"
+								placeholder="Poste"
+								value={playerForm.poste}
+								onChange={(e) => setPlayerForm({ ...playerForm, poste: e.target.value })}
+								className="w-full rounded-lg p-2"
+								style={{ backgroundColor: "#374151", color: "#fff", border: "none" }}
+								required
+							/>
+							<input
+								type="number"
+								placeholder="Nombre de matchs joués"
+								value={playerForm.matches}
+								onChange={(e) => setPlayerForm({ ...playerForm, matches: e.target.value })}
+								className="w-full rounded-lg p-2"
+								style={{ backgroundColor: "#374151", color: "#fff", border: "none" }}
+								required
+								min="0"
+							/>
+							<input
+								type="number"
+								placeholder="Nombre de passes décisives"
+								value={playerForm.passes}
+								onChange={(e) => setPlayerForm({ ...playerForm, passes: e.target.value })}
+								className="w-full rounded-lg p-2"
+								style={{ backgroundColor: "#374151", color: "#fff", border: "none" }}
+								required
+								min="0"
+							/>
+							<input
+								type="number"
+								placeholder="Nombre de buts"
+								value={playerForm.buts}
+								onChange={(e) => setPlayerForm({ ...playerForm, buts: e.target.value })}
+								className="w-full rounded-lg p-2"
+								style={{ backgroundColor: "#374151", color: "#fff", border: "none" }}
+								required
+								min="0"
+							/>
+							<input
+								type="number"
+								placeholder="Note"
+								value={playerForm.note}
+								onChange={(e) => setPlayerForm({ ...playerForm, note: e.target.value })}
+								className="w-full rounded-lg p-2"
+								style={{ backgroundColor: "#374151", color: "#fff", border: "none" }}
+								required
+								min="0"
+							/>
+							<input
+								type="number"
+								placeholder="Numéro de maillot"
+								value={playerForm.maillot}
+								onChange={(e) => setPlayerForm({ ...playerForm, maillot: e.target.value })}
+								className="w-full rounded-lg p-2"
+								style={{ backgroundColor: "#374151", color: "#fff", border: "none" }}
+								required
+								min="0"
+							/>
+							<div className="flex flex-col justify-end">
+								<label className="block text-sm font-medium text-gray-400 mb-2">Image du joueur</label>
+								<label className="w-full flex items-center rounded-lg p-2 cursor-pointer hover:bg-gray-600 transition-colors"
+									style={{ backgroundColor: "#374151", color: "#fff", border: "none" }}>
+									<span className="flex-1 truncate">
+										{playerForm.image ? playerForm.image.name : "Choisir un fichier Max 2MO..."}
+									</span>
+									<input
+										type="file"
+										accept="image/*"
+										onChange={e => setPlayerForm({ ...playerForm, image: e.target.files[0] })}
+										className="hidden"
+									/>
+									<span className="ml-4 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-white text-sm font-medium transition-colors">
+										Parcourir
+									</span>
+								</label>
+							</div>
 						</div>
 						<button
 							type="submit"

@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react"
 import PlayerCard from "./PlayerCard"
-import { players } from "./player"
+import { usePlayers } from "./player"
 import "./Player.css"
 const PlayerCarousel = ({ darkMode }) => {
+  const players = usePlayers() // Use the custom hook to fetch players
   const [currentIndex, setCurrentIndex] = useState(0)
   const [itemsPerView, setItemsPerView] = useState(4)
   const [maxIndex, setMaxIndex] = useState(0)
@@ -42,7 +43,7 @@ const PlayerCarousel = ({ darkMode }) => {
 
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
-  }, [])
+  }, [players])
 
   // Navigation functions
   const prevSlide = () => {

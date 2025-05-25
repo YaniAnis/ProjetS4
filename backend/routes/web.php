@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\PlayerController;
 
 Route::get('/test-db', function () {
     try {
@@ -29,4 +30,7 @@ Route::get('/test-insert', function () {
 Route::get('/', function () {
     return view('welcome'); // Ensure a 'welcome.blade.php' exists in the resources/views directory
 });
+
+Route::post('/api/players', [PlayerController::class, 'store']);
+Route::get('/api/players', [PlayerController::class, 'index']);
 
