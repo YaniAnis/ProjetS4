@@ -12,7 +12,6 @@ class CreatePlayersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('poste');
-            $table->integer('numero');
             $table->integer('matches');
             $table->integer('passes');
             $table->integer('buts');

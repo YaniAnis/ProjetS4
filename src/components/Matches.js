@@ -1,15 +1,19 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import CalendarNavigation from "./CalendarNavigation"
 import FilterBar from "./FilterBar"
 import MatchCard from "./MatchCard"
 import ActiveFilters from "./ActiveFilters"
 
 function Matches({ darkMode }) {
+  const location = useLocation()
   const [matches, setMatches] = useState([])
   const [filteredMatches, setFilteredMatches] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState(() =>
+    location.state && location.state.searchTeam ? location.state.searchTeam : ""
+  )
   const [leagueFilter, setLeagueFilter] = useState("")
   const [selectedDate, setSelectedDate] = useState("all")
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
@@ -140,6 +144,13 @@ function Matches({ darkMode }) {
   useEffect(() => {
     fetchMatches();
   }, []);
+
+  // Update searchTerm if redirected from TeamsPage (on mount or location.state change)
+  useEffect(() => {
+    if (location.state && location.state.searchTeam) {
+      setSearchTerm(location.state.searchTeam)
+    }
+  }, [location.state])
 
   // Filtrer les matchs lorsque les filtres changent
   useEffect(() => {

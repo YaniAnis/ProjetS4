@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import SearchBar from "./SearchBar"
 import CategoryFilter from "./CategoryFilter"
 import TeamGrid from "./TeamGrid"
@@ -70,6 +71,7 @@ function TeamPage({ darkMode }) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [filteredTeams, setFilteredTeams] = useState(teamsData)
+  const navigate = useNavigate()
 
   const categories = ["Ligue 1 Mobilis", "Ligue 2 Mobilis Est", "Ligue 2 Mobilis Ouest"]
 
@@ -97,6 +99,10 @@ function TeamPage({ darkMode }) {
     setSelectedCategory(category)
   }
 
+  const handleTeamClick = (teamName) => {
+    navigate("/matches", { state: { searchTeam: teamName } })
+  }
+
   // Obtenir le nombre d'équipes par catégorie
   const getCategoryCount = () => {
     if (selectedCategory) {
@@ -121,7 +127,7 @@ function TeamPage({ darkMode }) {
         <span className={`category-count team-category-margin${darkMode ? " dark-mode" : ""}`}>{getCategoryCount()}</span>
       </div>
 
-      <TeamGrid teams={filteredTeams} darkMode={darkMode} />
+      <TeamGrid teams={filteredTeams} darkMode={darkMode} onTeamClick={handleTeamClick} />
     </div>
   )
 }
