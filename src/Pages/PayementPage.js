@@ -47,10 +47,14 @@ function PaymentPage() {
   const navState = location.state || (window.history && window.history.state && window.history.state.usr) || {}
   const selectedZones = navState.selectedZones || []
   const match_id = navState.match_id // <-- Ajouté
+  const additionalOptions = navState.additionalOptions || {}
 
   // Calcul du total des places et du prix total
   const totalPlaces = selectedZones.reduce((sum, z) => sum + (z.count || 0), 0)
-  const totalPrice = selectedZones.reduce((sum, z) => sum + (z.count || 0) * (z.price || 0), 0)
+  let totalPrice = selectedZones.reduce((sum, z) => sum + (z.count || 0) * (z.price || 0), 0)
+  if (additionalOptions.parking) {
+    totalPrice += 500
+  }
 
   const handleInputChange = (field, value) => {
     setCardData({
@@ -79,11 +83,11 @@ function PaymentPage() {
         body: JSON.stringify({
           card_number: cardData.number,
           email: cardData.email,
-          selectedZones, // on envoie la sélection au backend si besoin
+          selectedZones,
           totalPlaces,
           totalPrice,
-          match_id // <-- Ajouté ici pour garantir l'envoi au backend
-          // ...autres champs nécessaires...
+          match_id,
+          additionalOptions // <-- parking inclus ici
         }),
       })
       const data = await response.json()
@@ -231,6 +235,11 @@ function PaymentPage() {
                             {z.name} : {z.count} × {z.price} DZD = <b>{z.count * z.price} DZD</b>
                           </li>
                         ))}
+                        {additionalOptions.parking && (
+                          <li style={{ fontSize: "0.98em" }}>
+                            Place de parking : Oui
+                          </li>
+                        )}
                       </ul>
                       <div style={{ marginTop: 8, fontWeight: 600 }}>
                         Total places : <span style={{ color: "#1a472a" }}>{totalPlaces}</span>

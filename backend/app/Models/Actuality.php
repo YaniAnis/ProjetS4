@@ -14,6 +14,6 @@ class Actuality extends Model
         'content',
         'description',
         'readTime',
-        'image_url',
+        'image_url', // Make sure image_url is in fillable
     ];
 }

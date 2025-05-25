@@ -70,6 +70,34 @@ class PaymentController extends Controller
                     $userEmail = $ticket->user->email;
                     $match = $ticket->match;
 
+                    // --- Correction parking : détection et décrémentation ---
+                    // On récupère le ticket et on vérifie si la colonne parking est bien renseignée
+                    // Si le champ est absent ou "non", on tente de le corriger à partir du paiement (si possible)
+                    if ($ticket->parking !== 'oui') {
+                        // On tente de retrouver l'info parking dans le paiement ou dans la requête (si transmise)
+                        $hasParking = false;
+                        // Si le ticket a un champ parking, on le garde, sinon on regarde dans le paiement ou la requête
+                        if ($request->has('additionalOptions')) {
+                            $additionalOptions = $request->input('additionalOptions', []);
+                            if (is_array($additionalOptions)) {
+                                $hasParking = isset($additionalOptions['parking']) && $additionalOptions['parking'];
+                            } elseif (is_object($additionalOptions)) {
+                                $hasParking = isset($additionalOptions->parking) && $additionalOptions->parking;
+                            }
+                        }
+                        // Si on a détecté parking, on met à jour le ticket
+                        if ($hasParking) {
+                            $ticket->parking = 'oui';
+                            $ticket->save();
+                        }
+                    }
+
+                    // Décrémentation parking_places si le ticket a parking = 'oui'
+                    if ($ticket->parking === 'oui' && $match->parking_places > 0) {
+                        $match->parking_places -= 1;
+                        $match->save();
+                    }
+
                     // Get team logos
                     $logos = [
                         'home' => $this->getTeamLogoPath($match->equipe1),
@@ -217,6 +245,7 @@ class PaymentController extends Controller
                 'totalPlaces' => 'required|numeric',
                 'totalPrice' => 'required|numeric',
                 'match_id' => 'required|exists:matches,id',
+                'additionalOptions' => 'nullable|array',
             ]);
 
             $user = \Illuminate\Support\Facades\Auth::user();
@@ -233,6 +262,29 @@ class PaymentController extends Controller
 
             // Utilise le match_id envoyé par le front
             $match_id = $request->match_id;
+
+            // Correction ici : bien récupérer l'option parking (supporte array ou object)
+            $additionalOptions = $request->input('additionalOptions', []);
+            $hasParking = false;
+            if (is_array($additionalOptions)) {
+                $hasParking = isset($additionalOptions['parking']) && $additionalOptions['parking'];
+            } elseif (is_object($additionalOptions)) {
+                $hasParking = isset($additionalOptions->parking) && $additionalOptions->parking;
+            }
+
+            $parkingPrice = $hasParking ? 500 : 0;
+            $totalPrice = $request->totalPrice + $parkingPrice;
+
+            // Décrémenter parking_places si parking sélectionné
+            if ($hasParking) {
+                $match = \App\Models\Matches::find($request->match_id);
+                if ($match && $match->parking_places > 0) {
+                    $match->parking_places -= 1;
+                    $match->save();
+                } else {
+                    throw new \Exception('Plus de places de parking disponibles.');
+                }
+            }
 
             // --- Décrémenter les places disponibles pour chaque zone sélectionnée ---
             foreach ($request->selectedZones as $zone) {
@@ -255,13 +307,14 @@ class PaymentController extends Controller
             }
             // --- Fin décrémentation ---
 
-            // Create ticket
+            // Correction ici : renseigner le champ parking du ticket
             $ticket = \App\Models\Ticket::create([
                 'user_id' => $user->id,
-                'match_id' => $match_id,
-                'prix' => $request->totalPrice,
+                'match_id' => $request->match_id,
+                'prix' => $totalPrice,
                 'statut' => 'pending',
-                'numero_place' => implode(',', array_map(fn($z) => "{$z['name']}({$z['count']})", $request->selectedZones))
+                'numero_place' => implode(',', array_map(fn($z) => "{$z['name']}({$z['count']})", $request->selectedZones)),
+                'parking' => $hasParking ? 'oui' : 'non', // <-- Correction ici
             ]);
 
             $verificationCode = rand(100000, 999999);

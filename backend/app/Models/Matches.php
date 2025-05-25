@@ -18,6 +18,7 @@ class Matches extends Model
         'date',
         'heure',
         'stade_id',
+        'parking_places',
     ];
 
     public function stade()

@@ -45,7 +45,7 @@ function SectionSelector({ section, selectedCount = 0, onSelect, onHover, onLeav
         </div>
         <div className="section-price-container">
           <div className="section-price-label">Price</div>
-          <div className="section-price">DZD{section.basePrice}</div>
+          <div className="section-price">{section.basePrice}DZD</div>
           <div className="section-availability">{section.available} Available</div>
         </div>
       </div>
