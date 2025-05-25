@@ -1,10 +1,7 @@
 "use client"
-import { useState } from "react"
 import "./SectionSelector.css"
 
-function SectionSelector({ section, onSelect, onHover, onLeave, onCountChange }) {
-  const [ticketCount, setTicketCount] = useState(1)
-
+function SectionSelector({ section, selectedCount = 0, onSelect, onHover, onLeave, onCountChange }) {
   // Get classes based on selection state and section type
   const getSectionClasses = () => {
     let classes = "section-selector "
@@ -22,8 +19,7 @@ function SectionSelector({ section, onSelect, onHover, onLeave, onCountChange })
 
   const handleTicketChange = (e) => {
     const newValue = Number.parseInt(e.target.value)
-    setTicketCount(newValue)
-    onCountChange(section, newValue) // Call the parent function to update the count
+    onCountChange(section, newValue)
   }
 
   return (
@@ -57,18 +53,19 @@ function SectionSelector({ section, onSelect, onHover, onLeave, onCountChange })
       <hr className="section-separator" />
       {section.selected && (
         <div className="ticket-selector">
-          <div className="ticket-selector-label">Number of tickets: {ticketCount}</div>
+          <div className="ticket-selector-label">Number of tickets: {selectedCount}</div>
           <div className="slider-container">
             <input
               type="range"
-              min="1"
+              min="0"
               max="4"
-              value={ticketCount}
+              value={selectedCount}
               onChange={handleTicketChange}
               className="ticket-slider"
               onClick={(e) => e.stopPropagation()}
             />
             <div className="slider-labels">
+              <span>0</span>
               <span>1</span>
               <span>2</span>
               <span>3</span>

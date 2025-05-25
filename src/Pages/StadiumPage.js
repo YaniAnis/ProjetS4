@@ -98,6 +98,13 @@ function StadiumPage() {
         selected: section.id === sectionId,
       })),
     )
+    // Remet à 0 toutes les zones (y compris la sélectionnée)
+    const newCounts = {}
+    sections.forEach((section) => {
+      newCounts[section.id] = 0
+    })
+    setSelectedCounts(newCounts)
+    setSeatError("")
   }
 
   // Ajout : états pour les options additionnelles (parking, food box)
@@ -201,7 +208,7 @@ function StadiumPage() {
                       {index < sections.length - 1 && <div className="separator"></div>}
                     </div>
                   ))
-                )}
+               ) }
               </div>
               {/* Ajout des options additionnelles */}
               <div className="additional-options">

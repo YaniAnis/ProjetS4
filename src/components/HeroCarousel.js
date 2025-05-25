@@ -1,46 +1,76 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useNavigate } from "react-router-dom"
 import "./HeroCarousel.css"
 
-// Données des matchs à la une
-const featuredMatches = [
-  {
-    id: 1,
-    homeTeam: "MC Alger",
-    homeTeamLogo: "/images/teams/mc_alger.png",
-    awayTeam: "CR Belouizdad",
-    awayTeamLogo: "/images/teams/cr_belouizdad.png",
-    date: "15 Mai 2025",
-    stadium: "Stade 5 Juillet",
-    stadiumImage: "/images/stadiums/stade5J.jpg",
-  },
-  {
-    id: 2,
-    homeTeam: "Paradou AC",
-    homeTeamLogo: "/images/teams/paradou_ac.png",
-    awayTeam: "ES Sétif",
-    awayTeamLogo: "/images/teams/es_setif.png",
-    date: "20 Mai 2025",
-    stadium: "Stade Nelson Mandela",
-    stadiumImage: "/images/stadiums/stadeN.jpg",
-  },
-  {
-    id: 3,
-    homeTeam: "JS Kabylie",
-    homeTeamLogo: "/images/teams/js_kabylie.png",
-    awayTeam: "USM Alger",
-    awayTeamLogo: "/images/teams/usm_alger.png",
-    date: "25 Mai 2025",
-    stadium: "Stade Hocine Ait Ahmed",
-    stadiumImage: "/images/stadiums/stadejsk.jpg",
-  },
-]
-
 function HeroCarousel() {
+  const [featuredMatches, setFeaturedMatches] = useState([])
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const intervalRef = useRef(null)
+  const navigate = useNavigate()
+
+  // Fonction utilitaire pour obtenir le logo d'un club
+  const clubLogo = (name) => {
+    if (!name) return "/placeholder.svg"
+    const basePath = "/logos"
+    const l1 = {
+      "USM Alger": `${basePath}/Ligue1/usm_alger.png`,
+      "JS Kabylie": `${basePath}/Ligue1/js_kabylie.png`,
+      "CR Belouizdad": `${basePath}/Ligue1/cr_belouizdad.png`,
+      "Paradou AC": `${basePath}/Ligue1/paradou_ac.png`,
+      "ES Sétif": `${basePath}/Ligue1/es_setif.png`,
+      "MC Alger": `${basePath}/Ligue1/mc_alger.png`,
+      "MC El Bayadh": `${basePath}/Ligue1/mc_elbayadh.png`,
+      "CS Constantine": `${basePath}/Ligue1/cs_constantine.png`,
+      "ASO Chlef": `${basePath}/Ligue1/aso_chlef.png`,
+      "JS Saoura": `${basePath}/Ligue1/js_saoura.png`,
+      "MC Oran": `${basePath}/Ligue1/mc_oran.png`,
+      "Olympique Akbou": `${basePath}/Ligue1/o_akbou.png`,
+      "USM Khenchela": `${basePath}/Ligue1/usm_khenchela.png`,
+      "US Biskra": `${basePath}/Ligue1/us_biskra.png`,
+      "NC Magra": `${basePath}/Ligue1/nc_magra.png`,
+      "ES Mostaganem": `${basePath}/Ligue1/es_mostaganem.png`,
+    }
+    // Ajoute d'autres mappings si besoin
+    return l1[name] || "/placeholder.svg"
+  }
+
+  useEffect(() => {
+    // Récupère les 3 derniers matchs ajoutés par l'admin
+    const fetchMatches = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/matches")
+        const data = await res.json()
+        let matches = Array.isArray(data) ? data : data.data || []
+        // Images à utiliser pour les 3 slides
+        const images = [
+          "/images/stadiums/stade5J.jpg",
+          "/images/stadiums/stadeN.jpg",
+          "/images/stadiums/stadejsk.jpg",
+        ]
+        matches = matches
+          .filter((m) => m.equipe1 && m.equipe2 && m.date)
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 3)
+          .map((m, idx) => ({
+            id: m.id,
+            homeTeam: m.equipe1,
+            homeTeamLogo: clubLogo(m.equipe1),
+            awayTeam: m.equipe2,
+            awayTeamLogo: clubLogo(m.equipe2),
+            date: m.date,
+            stadium: m.stade?.nom || "",
+            stadiumImage: images[idx % images.length], // Associe une image différente à chaque match
+          }))
+        setFeaturedMatches(matches)
+      } catch {
+        setFeaturedMatches([])
+      }
+    }
+    fetchMatches()
+  }, [])
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === featuredMatches.length - 1 ? 0 : prev + 1))
@@ -52,17 +82,31 @@ function HeroCarousel() {
 
   useEffect(() => {
     if (intervalRef.current) clearInterval(intervalRef.current)
-
-    if (!isPaused) {
+    if (!isPaused && featuredMatches.length > 0) {
       intervalRef.current = setInterval(() => {
         nextSlide()
       }, 5000)
     }
-
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [isPaused, currentSlide])
+  }, [isPaused, currentSlide, featuredMatches.length])
+
+  if (featuredMatches.length === 0) {
+    return (
+      <div
+        className="hero-carousel"
+        style={{
+          minHeight: 300,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Aucun match à afficher
+      </div>
+    )
+  }
 
   return (
     <div className="hero-carousel" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
@@ -99,8 +143,12 @@ function HeroCarousel() {
                 <span className="team-name">{match.awayTeam}</span>
               </div>
             </div>
-
-            <button className="buy-button">Acheter des billets</button>
+            <button
+              className="buy-button"
+              onClick={() => navigate("/matches")}
+            >
+              Acheter des billets
+            </button>
           </div>
         </div>
       ))}
