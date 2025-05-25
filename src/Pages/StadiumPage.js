@@ -3,6 +3,7 @@ import StadiumMap from "../components/StadiumMap"
 import SectionSelector from "../components/SectionSelector"
 import { useNavigate, useLocation } from "react-router-dom"
 import MatchInfo from "../components/MatchInfo"
+import AdditionalOption from "../components/AdditionalOption"
 import "./StadiumPage.css"
 
 function StadiumPage() {
@@ -99,6 +100,20 @@ function StadiumPage() {
     )
   }
 
+  // Ajout : états pour les options additionnelles (parking, food box)
+  const [additionalOptions, setAdditionalOptions] = useState({
+    parking: false,
+    foodBox: false,
+  });
+
+  // Ajout : gestion du toggle pour chaque option additionnelle
+  const handleToggleOption = (option) => {
+    setAdditionalOptions((prev) => ({
+      ...prev,
+      [option]: !prev[option],
+    }));
+  };
+
   const handleNextClick = () => {
     if (totalSelected < 1 || totalSelected > 4) {
       setSeatError("Veuillez sélectionner entre 1 et 4 places au total.")
@@ -114,11 +129,14 @@ function StadiumPage() {
         price: section.basePrice,
         category: section.category
       }))
+
+    // Ajoute les options additionnelles au state pour la page suivante
     navigate('/payement', {
       state: {
         ...matchState,
         selectedZones,
-        match_id: matchState.matchId // <-- Ajouté pour garantir l'envoi du bon match_id
+        match_id: matchState.matchId,
+        additionalOptions // <-- Ajouté ici
       }
     })
   }
@@ -184,6 +202,28 @@ function StadiumPage() {
                     </div>
                   ))
                 )}
+              </div>
+              {/* Ajout des options additionnelles */}
+              <div className="additional-options">
+                <h2 className="options-title">Options additionnelles</h2>
+                <AdditionalOption
+                  id="parking"
+                  title="Parking du stade"
+                  description="Place de parking sécurisée près du stade"
+                  price={15}
+                  icon={
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="6" width="18" height="12" rx="2" />
+                      <circle cx="12" cy="12" r="2" />
+                      <path d="M7 17v5" />
+                      <path d="M17 17v5" />
+                    </svg>
+                  }
+                  iconColor="#2563eb"
+                  iconBgColor="rgba(59, 130, 246, 0.1)"
+                  selected={additionalOptions.parking}
+                  onToggle={() => handleToggleOption("parking")}
+                />
               </div>
               <div style={{ margin: "12px 0", color: "#1a472a", fontWeight: 600 }}>
                 Total sélectionné : <b>{totalSelected}</b> / 4

@@ -123,13 +123,13 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
           <div className="section-row section-middle-row">
             {/* Zone H - Left Side */}
             <div
-              className={`section ${getSectionClasses("H")}`}
-              onClick={() => onSectionSelect("H")}
-              onMouseMove={(e) => handleSectionHover("H", e)}
+              className={`section ${getSectionClasses("G")}`}
+              onClick={() => onSectionSelect("G")}
+              onMouseMove={(e) => handleSectionHover("G", e)}
               onMouseLeave={handleSectionLeave}
               style={{ width: "125px" }}
             >
-              <span className="section-label">H</span>
+              <span className="section-label">G</span>
             </div>
 
             {/* Center Space (for field) */}
@@ -205,8 +205,8 @@ function StadiumMap({ sections, hoveredSection, onSectionHover, onSectionSelect 
             </div>
             <div className="tooltip-price">
               {getHoveredSection()?.maxPrice
-                ? `€${getHoveredSection()?.basePrice.toFixed(2)} - €${getHoveredSection()?.maxPrice.toFixed(2)}`
-                : `€${getHoveredSection()?.basePrice}`}
+                ? `DZD${getHoveredSection()?.basePrice.toFixed(2)} - DZD${getHoveredSection()?.maxPrice.toFixed(2)}`
+                : `DZD${getHoveredSection()?.basePrice}`}
             </div>
             <div className="tooltip-availability">{getHoveredSection()?.available || "120"} tickets available</div>
           </div>

@@ -1,0 +1,175 @@
+.additional-option-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.additional-option-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(26, 71, 42, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.additional-option-card:hover::before {
+  left: 100%;
+}
+
+.additional-option-card:hover {
+  border-color: #1a472a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(26, 71, 42, 0.15);
+}
+
+.additional-option-card.option-selected {
+  border-color: #1a472a;
+  background-color: rgba(26, 71, 42, 0.05);
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(26, 71, 42, 0.2);
+}
+
+.additional-option-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.additional-option-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.additional-option-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #1a472a;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.additional-option-checkbox:checked {
+  transform: scale(1.1);
+}
+
+.additional-option-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.additional-option-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.additional-option-card:hover .additional-option-icon {
+  transform: rotate(5deg) scale(1.1);
+}
+
+.additional-option-card:hover .additional-option-icon:nth-child(odd) {
+  transform: rotate(-5deg) scale(1.1);
+}
+
+.additional-option-card.option-selected .additional-option-icon {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.additional-option-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.additional-option-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a472a;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.additional-option-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.additional-option-card:hover .additional-option-name {
+  color: #0d2415;
+}
+
+.additional-option-card:hover .additional-option-description {
+  color: #4b5563;
+}
+
+.additional-option-price {
+  text-align: right;
+}
+
+.additional-option-price-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a472a;
+  transition: all 0.3s ease;
+}
+
+.additional-option-card:hover .additional-option-price-value {
+  color: #0d2415;
+  transform: scale(1.1);
+}
+
+.additional-option-card.option-selected .additional-option-price-value {
+  color: #1a472a;
+  text-shadow: 0 2px 4px rgba(26, 71, 42, 0.2);
+}
+
+/* Animation pour les cartes sélectionnées */
+.additional-option-card.option-selected {
+  animation: selectedPulse 2s infinite;
+}
+
+@keyframes selectedPulse {
+  0%,
+  100% {
+    box-shadow: 0 8px 25px rgba(26, 71, 42, 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(26, 71, 42, 0.3), 0 0 0 4px rgba(26, 71, 42, 0.1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .additional-option-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .additional-option-price {
+    align-self: flex-end;
+  }
+
+  .additional-option-info {
+    width: 100%;
+  }
+}

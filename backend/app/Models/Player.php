@@ -10,9 +10,9 @@ class Player extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id', // use id instead of numero
         'name',
         'poste',
-        'numero',
         'matches',
         'passes',
         'buts',
