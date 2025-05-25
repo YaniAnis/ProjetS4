@@ -21,16 +21,36 @@ function ContactForm() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulation d'envoi
-    setTimeout(() => {
-      alert("Message envoyé avec succès !")
+    try {
+      const response = await fetch("http://localhost:8000/api/send-contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      })
+
+      if (response.ok) {
+        alert("Message envoyé avec succès !")
+        setFormData({ firstName: "", lastName: "", email: "", subject: "", message: "" })
+      } else {
+        alert("Erreur lors de l'envoi du message. Veuillez réessayer.")
+      }
+    } catch (error) {
+      alert("Erreur de connexion. Veuillez réessayer plus tard.")
+    } finally {
       setIsSubmitting(false)
-      setFormData({ firstName: "", lastName: "", email: "", subject: "", message: "" })
-    }, 2000)
+    }
   }
 
   return (
