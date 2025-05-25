@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react"
 import EmailIcon from "./icons/EmailIcon"
 import PhoneIcon from "./icons/PhoneIcon"
 import LockIcon from "./icons/LockIcon"
-import CheckIcon from "./icons/CheckIcon"
+import CheckIcon from "./icons/ArrowRightIcon"
 import ArrowRightIcon from "./icons/ArrowRightIcon"
 import EyeIcon from "./icons/EyeIcon"
 import EyeOffIcon from "./icons/EyeOffIcon"
@@ -291,10 +291,13 @@ function ForgotPasswordPage() {
                 />
                 {emailError && <span className="error-message">{emailError}</span>}
               </div>
-              <button type="submit" className="submit-button" disabled={loading}>
-                {loading && <div className="spinner"></div>}
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={loading}
+              >
                 <span className="button-text">Envoyer le code</span>
-                {!loading && <ArrowRightIcon />}
+                <ArrowRightIcon style={{ marginLeft: 8 }} />
               </button>
             </form>
           </div>
