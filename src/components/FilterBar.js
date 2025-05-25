@@ -2,11 +2,14 @@
 import { useRef, forwardRef } from "react";
 import CategoryFilter from "./CategoryFilter";
 
-const leagueOptions = [
-  "Ligue 1",
-  "Coupe Algérie",
-  "Champions League"
-];
+const leagues = [
+  { value: "", label: "Toutes les ligues" },
+  { value: "Ligue 1 Mobilis", label: "Ligue 1 Mobilis" },
+  { value: "Ligue 2 Mobilis Est", label: "Ligue 2 Mobilis Est" },
+  { value: "Ligue 2 Mobilis Ouest", label: "Ligue 2 Mobilis Ouest" },
+  { value: "Coupe Algérie", label: "Coupe d'Algérie" },
+  { value: "Champions League", label: "Champions League" }
+]
 
 const FilterBar = forwardRef(function FilterBar({ searchTerm, setSearchTerm, leagueFilter, setLeagueFilter }, ref) {
   return (
@@ -26,7 +29,7 @@ const FilterBar = forwardRef(function FilterBar({ searchTerm, setSearchTerm, lea
       </div>
       <div className="filters">
         <CategoryFilter
-          categories={leagueOptions}
+          categories={leagues}
           selectedCategory={leagueFilter}
           onSelectCategory={setLeagueFilter}
         />

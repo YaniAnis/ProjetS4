@@ -10,12 +10,13 @@ return new class extends Migration
     {
         Schema::table('matches', function (Blueprint $table) {
             if (!Schema::hasColumn('matches', 'parking_places')) {
-                $table->integer('parking_places')->default(0)->after('league');
+                $table->integer('parking_places')->default(0);
             }
         });
+        
         Schema::table('tickets', function (Blueprint $table) {
             if (!Schema::hasColumn('tickets', 'parking')) {
-                $table->string('parking')->default('non')->after('numero_place');
+                $table->string('parking')->default('non');
             }
         });
     }
@@ -23,14 +24,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('matches', function (Blueprint $table) {
-            if (Schema::hasColumn('matches', 'parking_places')) {
-                $table->dropColumn('parking_places');
-            }
+            $table->dropColumn('parking_places');
         });
+        
         Schema::table('tickets', function (Blueprint $table) {
-            if (Schema::hasColumn('tickets', 'parking')) {
-                $table->dropColumn('parking');
-            }
+            $table->dropColumn('parking');
         });
     }
 };

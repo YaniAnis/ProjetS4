@@ -11,8 +11,8 @@ function CategoryFilter({ categories, selectedCategory, onSelectCategory }) {
     setIsOpen(!isOpen)
   }
 
-  const handleCategorySelect = (category) => {
-    onSelectCategory(category === selectedCategory ? "" : category)
+  const handleCategorySelect = (categoryValue) => {
+    onSelectCategory(categoryValue === selectedCategory ? "" : categoryValue)
     setIsOpen(false)
   }
 
@@ -33,20 +33,18 @@ function CategoryFilter({ categories, selectedCategory, onSelectCategory }) {
   return (
     <div className={`category-filter ${isOpen ? "open" : ""}`} ref={filterRef}>
       <button className="filter-button" onClick={toggleDropdown}>
-        {selectedCategory || "Toutes les catégories"} <span className="dropdown-arrow">▼</span>
+        {categories.find(cat => cat.value === selectedCategory)?.label || "Toutes les ligues"} 
+        <span className="dropdown-arrow">▼</span>
       </button>
 
       <div className="dropdown-menu">
-        <div className="dropdown-item" onClick={() => handleCategorySelect("")}>
-          Toutes les catégories
-        </div>
         {categories.map((category, index) => (
           <div
             key={index}
-            className={`dropdown-item ${selectedCategory === category ? "active" : ""}`}
-            onClick={() => handleCategorySelect(category)}
+            className={`dropdown-item ${selectedCategory === category.value ? "active" : ""}`}
+            onClick={() => handleCategorySelect(category.value)}
           >
-            {category}
+            {category.label}
           </div>
         ))}
       </div>

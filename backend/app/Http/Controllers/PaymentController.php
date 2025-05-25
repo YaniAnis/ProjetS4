@@ -47,92 +47,76 @@ class PaymentController extends Controller
             ]);
 
             $paiement = \App\Models\Paiement::find($request->paiement_id);
-
+            
             if ($paiement && strval($paiement->verification_code) === strval($request->verification_code)) {
                 $paiement->statut = 'validé';
                 $paiement->save();
 
-                try {
-                    // Charger le ticket avec user ET match (et stade du match)
-                    $ticket = \App\Models\Ticket::with(['user', 'match.stade'])->find($paiement->ticket_id);
+                $ticket = \App\Models\Ticket::with(['user', 'match.stade'])->find($paiement->ticket_id);
+                $match = $ticket->match;
 
-                    if (!$ticket || !$ticket->user || !$ticket->match) {
-                        Log::error('Ticket, user ou match not found', [
-                            'paiement_id' => $paiement->id,
-                            'ticket_id' => $paiement->ticket_id
-                        ]);
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Ticket, utilisateur ou match introuvable. Veuillez contacter le support.'
-                        ], 500);
-                    }
-
-                    $userEmail = $ticket->user->email;
-                    $match = $ticket->match;
-
-                    // --- Correction parking : détection et décrémentation ---
-                    // On récupère le ticket et on vérifie si la colonne parking est bien renseignée
-                    // Si le champ est absent ou "non", on tente de le corriger à partir du paiement (si possible)
-                    if ($ticket->parking !== 'oui') {
-                        // On tente de retrouver l'info parking dans le paiement ou dans la requête (si transmise)
-                        $hasParking = false;
-                        // Si le ticket a un champ parking, on le garde, sinon on regarde dans le paiement ou la requête
-                        if ($request->has('additionalOptions')) {
-                            $additionalOptions = $request->input('additionalOptions', []);
-                            if (is_array($additionalOptions)) {
-                                $hasParking = isset($additionalOptions['parking']) && $additionalOptions['parking'];
-                            } elseif (is_object($additionalOptions)) {
-                                $hasParking = isset($additionalOptions->parking) && $additionalOptions->parking;
-                            }
-                        }
-                        // Si on a détecté parking, on met à jour le ticket
-                        if ($hasParking) {
-                            $ticket->parking = 'oui';
-                            $ticket->save();
-                        }
-                    }
-
-                    // Décrémentation parking_places si le ticket a parking = 'oui'
-                    if ($ticket->parking === 'oui' && $match->parking_places > 0) {
-                        $match->parking_places -= 1;
-                        $match->save();
-                    }
-
-                    // Get team logos
-                    $logos = [
-                        'home' => $this->getTeamLogoPath($match->equipe1),
-                        'away' => $this->getTeamLogoPath($match->equipe2),
-                    ];
-
-                    // Generate PDF with logos
-                    $pdf = Pdf::loadView('ticket_pdf', [
-                        'paiement' => $paiement,
-                        'ticket' => $ticket,
-                        'match' => $match,
-                        'logos' => $logos, // Pass logos to the PDF view
-                    ]);
-                    $pdfContent = $pdf->output();
-
-                    Mail::send([], [], function (Message $message) use ($userEmail, $pdfContent) {
-                        $message->to($userEmail)
-                            ->subject('Votre billet FooTiX - PDF')
-                            ->html("Merci pour votre achat !<br>Vous trouverez en pièce jointe votre ticket au format PDF. Présentez-le le jour du match.")
-                            ->attachData($pdfContent, 'ticket_footiX.pdf', [
-                                'mime' => 'application/pdf',
-                            ]);
-                    });
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Paiement confirmé ! Le ticket PDF a été envoyé par email.',
-                    ]);
-                } catch (\Exception $e) {
-                    Log::error('Erreur lors de l\'envoi du mail', ['error' => $e->getMessage(), 'paiement_id' => $paiement->id]);
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Paiement confirmé, mais une erreur est survenue lors de l\'envoi du mail. Veuillez contacter le support.',
-                    ], 500);
+                // Handle parking if selected
+                if ($ticket->parking === 'oui' && $match->parking_places > 0) {
+                    $match->parking_places -= 1;
+                    $match->save();
                 }
+
+                // --- Correction parking : détection et décrémentation ---
+                // On récupère le ticket et on vérifie si la colonne parking est bien renseignée
+                // Si le champ est absent ou "non", on tente de le corriger à partir du paiement (si possible)
+                if ($ticket->parking !== 'oui') {
+                    // On tente de retrouver l'info parking dans le paiement ou dans la requête (si transmise)
+                    $hasParking = false;
+                    // Si le ticket a un champ parking, on le garde, sinon on regarde dans le paiement ou la requête
+                    if ($request->has('additionalOptions')) {
+                        $additionalOptions = $request->input('additionalOptions', []);
+                        if (is_array($additionalOptions)) {
+                            $hasParking = isset($additionalOptions['parking']) && $additionalOptions['parking'];
+                        } elseif (is_object($additionalOptions)) {
+                            $hasParking = isset($additionalOptions->parking) && $additionalOptions->parking;
+                        }
+                    }
+                    // Si on a détecté parking, on met à jour le ticket
+                    if ($hasParking) {
+                        $ticket->parking = 'oui';
+                        $ticket->save();
+                    }
+                }
+
+                // Décrémentation parking_places si le ticket a parking = 'oui'
+                if ($ticket->parking === 'oui' && $match->parking_places > 0) {
+                    $match->parking_places -= 1;
+                    $match->save();
+                }
+
+                // Get team logos
+                $logos = [
+                    'home' => $this->getTeamLogoPath($match->equipe1),
+                    'away' => $this->getTeamLogoPath($match->equipe2),
+                ];
+
+                // Generate PDF with logos
+                $pdf = Pdf::loadView('ticket_pdf', [
+                    'paiement' => $paiement,
+                    'ticket' => $ticket,
+                    'match' => $match,
+                    'logos' => $logos, // Pass logos to the PDF view
+                ]);
+                $pdfContent = $pdf->output();
+
+                Mail::send([], [], function (Message $message) use ($userEmail, $pdfContent) {
+                    $message->to($userEmail)
+                        ->subject('Votre billet FooTiX - PDF')
+                        ->html("Merci pour votre achat !<br>Vous trouverez en pièce jointe votre ticket au format PDF. Présentez-le le jour du match.")
+                        ->attachData($pdfContent, 'ticket_footiX.pdf', [
+                            'mime' => 'application/pdf',
+                    ]);
+                });
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Paiement confirmé ! Le ticket PDF a été envoyé par email.',
+                ]);
             } else {
                 Log::warning('Code de vérification invalide', [
                     'envoyé' => $request->verification_code,

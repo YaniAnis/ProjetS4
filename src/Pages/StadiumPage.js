@@ -125,7 +125,7 @@ function StadiumPage() {
   const totalPlaces = sections.reduce((sum, section) => sum + (selectedCounts[section.id] || 0), 0)
   let totalPrice = sections.reduce((sum, section) => sum + (selectedCounts[section.id] || 0) * (section.basePrice || 0), 0)
   if (additionalOptions.parking) {
-    totalPrice += 500
+    totalPrice += 500  // Add parking fee
   }
 
   const handleNextClick = () => {
@@ -133,7 +133,6 @@ function StadiumPage() {
       setSeatError("Veuillez sélectionner entre 1 et 4 places au total.")
       return
     }
-    // Préparer la sélection pour la page suivante
     const selectedZones = sections
       .filter(section => (selectedCounts[section.id] || 0) > 0)
       .map(section => ({
@@ -144,13 +143,13 @@ function StadiumPage() {
         category: section.category
       }))
 
-    // Ajoute les options additionnelles au state pour la page suivante
     navigate('/payement', {
       state: {
         ...matchState,
         selectedZones,
         match_id: matchState.matchId,
-        additionalOptions // <-- parking inclus ici
+        additionalOptions,  // Include parking option here
+        totalPrice,        // Include updated total price
       }
     })
   }
