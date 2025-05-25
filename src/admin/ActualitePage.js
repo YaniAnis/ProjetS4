@@ -1,6 +1,6 @@
 import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
-import { Newspaper, CalendarClock } from "lucide-react";
+import { Newspaper, CalendarClock, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import "./Pages.css";
@@ -12,6 +12,7 @@ const ActualitePage = () => {
 	const [stats, setStats] = useState({
 		total: 0,
 		today: 0,
+		playerCount: 0,
 	});
 	const [playerForm, setPlayerForm] = useState({
 		name: "",
@@ -23,6 +24,7 @@ const ActualitePage = () => {
 		maillot: "",
 		image: null,
 	});
+	const [players, setPlayers] = useState([]);
 
 	useEffect(() => {
 		const fetchActualities = async () => {
@@ -46,6 +48,54 @@ const ActualitePage = () => {
 			}
 		};
 		fetchActualities();
+	}, [loading]);
+
+	useEffect(() => {
+		const fetchPlayers = async () => {
+			try {
+				const res = await fetch("http://localhost:8000/api/players");
+				const data = await res.json();
+				setPlayers(Array.isArray(data) ? data : []);
+			} catch (error) {
+				console.error("Failed to fetch players:", error);
+				setPlayers([]);
+			}
+		};
+		fetchPlayers();
+	}, [loading]);
+
+	useEffect(() => {
+		const fetchStats = async () => {
+			try {
+				const [actualitiesRes, playersRes] = await Promise.all([
+					fetch("http://localhost:8000/api/actualities"),
+					fetch("http://localhost:8000/api/players")
+				]);
+				
+				const actualitiesData = await actualitiesRes.json();
+				const playersData = await playersRes.json();
+				
+				const actualitiesArr = Array.isArray(actualitiesData) ? actualitiesData : actualitiesData.data || [];
+				const playersArr = Array.isArray(playersData) ? playersData : [];
+				
+				const total = actualitiesArr.length;
+				const todayStr = new Date().toISOString().slice(0, 10);
+				const today = actualitiesArr.filter(a => {
+					const date = a.created_at ? a.created_at.slice(0, 10) : "";
+					return date === todayStr;
+				}).length;
+				
+				setStats({
+					total,
+					today,
+					playerCount: playersArr.length
+				});
+			} catch (error) {
+				console.error("Error fetching stats:", error);
+				setStats({ total: 0, today: 0, playerCount: 0 });
+			}
+		};
+		fetchStats();
 	}, [loading]);
 
 	const handleSubmit = async (e) => {
@@ -138,19 +188,56 @@ const ActualitePage = () => {
 		}
 	};
 
+	const handlePlayerDelete = async (id) => {
+		if (!window.confirm("Voulez-vous vraiment supprimer ce joueur ?")) return;
+		setLoading(true);
+		try {
+			const res = await fetch(`http://localhost:8000/api/players/${id}`, {
+				method: "DELETE"
+			});
+			if (res.ok) {
+				setPlayers(players.filter(p => p.id !== id));
+				alert("Joueur supprimé avec succès!");
+			} else {
+				alert("Erreur lors de la suppression du joueur.");
+			}
+		} catch (error) {
+			console.error("Failed to delete player:", error);
+			alert("Erreur lors de la suppression du joueur.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	return (
 		<div className='products-page'>
 			<Header title={"Actualité"} />
 			<main className='products-main'>
 				{/* STATS */}
 				<motion.div
-					className='products-stats-grid'
+					className='products-stats-grid px-4 py-5 sm:p-6'
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
 				>
-					<StatCard name='Total Actualite' icon={Newspaper} value={stats.total.toLocaleString("fr-FR")} color='#6366F1' />
-					<StatCard name='New Actualite Today' icon={CalendarClock} value={stats.today.toLocaleString("fr-FR")} color='#F59E0B' />
+					<StatCard 
+    name='Total Actualite' 
+    icon={Newspaper} 
+    value={(stats.total || 0).toLocaleString("fr-FR")} 
+    color='#6366F1' 
+/>
+<StatCard 
+    name='New Actualite Today' 
+    icon={CalendarClock} 
+    value={(stats.today || 0).toLocaleString("fr-FR")} 
+    color='#F59E0B' 
+/>
+<StatCard 
+    name='Total Players' 
+    icon={Users} 
+    value={(stats.playerCount || 0).toLocaleString("fr-FR")} 
+    color='#10B981' 
+/>
 				</motion.div>
 
 				{/* Add Actuality Form */}
@@ -403,6 +490,98 @@ const ActualitePage = () => {
 						))}
 						{actualities.length === 0 && <li className="text-gray-400">Aucune actualité.</li>}
 					</ul>
+				</motion.div>
+
+				{/* Players Table */}
+				<motion.div
+					className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-700 p-6 mt-8"
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.7 }}
+				>
+					<h3 className="text-lg font-semibold text-gray-100 mb-4">Liste des Joueurs</h3>
+					<div className="overflow-x-auto">
+						<table className="min-w-full divide-y divide-gray-700">
+							<thead>
+								<tr>
+									<th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+										Nom
+									</th>
+									<th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+										Poste
+									</th>
+									<th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+										Maillot
+									</th>
+									<th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+										Stats
+									</th>
+									<th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+										Actions
+									</th>
+								</tr>
+							</thead>
+							<tbody className="divide-y divide-gray-700">
+								{players.map((player) => (
+									<tr key={player.id}>
+										<td className="px-6 py-4 whitespace-nowrap">
+											<div className="flex items-center">
+												{player.image_url && (
+													<img
+														src={player.image_url}
+														alt={player.name}
+														className="h-10 w-10 rounded-full object-cover mr-3"
+													/>
+												)}
+												<div className="text-sm font-medium text-gray-200">
+													{player.name}
+												</div>
+											</div>
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+											{player.poste}
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+											#{player.maillot}
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+											<div>Matchs: {player.matches}</div>
+											<div>Buts: {player.buts}</div>
+											<div>Passes: {player.passes}</div>
+											<div>Note: {player.note}</div>
+										</td>
+										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+											<button
+												onClick={() => handlePlayerDelete(player.id)}
+												style={{
+													background: "none",
+													border: "none",
+													color: "#f87171",
+													fontWeight: 400,
+													fontSize: "1rem",
+													cursor: "pointer",
+													padding: 0,
+													marginLeft: "1rem",
+													transition: "color 0.2s"
+												}}
+												onMouseOver={e => (e.currentTarget.style.color = "#dc2626")}
+												onMouseOut={e => (e.currentTarget.style.color = "#f87171")}
+											>
+												Delete
+											</button>
+										</td>
+									</tr>
+								))}
+								{players.length === 0 && (
+									<tr>
+										<td colSpan="5" className="px-6 py-4 text-center text-gray-400">
+											Aucun joueur trouvé.
+										</td>
+									</tr>
+								)}
+							</tbody>
+						</table>
+					</div>
 				</motion.div>
 			</main>
 		</div>
