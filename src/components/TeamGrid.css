@@ -41,7 +41,15 @@
 }
 
 .team-card {
-  /* ...existing code... */
+  /* ...autres styles... */
+  box-shadow: 0 16px 64px #17643b55; /* ombre encore plus grande et foncée */
+  transition: box-shadow 0.2s, border 0.2s, background 0.2s;
+}
+
+.team-card:hover {
+  box-shadow: 0 24px 50px #217a3b88; /* ombre très grande et très visible au hover */
+  border: 2px solid #158443;
+  background: #f7faf7;
 }
 
 .team-card.dark-mode {
