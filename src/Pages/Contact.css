@@ -76,7 +76,7 @@
   
   .search-input:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(26, 71, 42, 0.2);
+    box-shadow: 0 0 0 3px rgba(38, 113, 66, 0.2);
   }
   
   .search-button {
@@ -227,7 +227,7 @@
     position: relative;
     padding-bottom: 0.75rem;
   }
-  
+
   .section-title::after {
     content: "";
     position: absolute;
@@ -341,3 +341,91 @@
       height: 180px;
     }
   }
+  
+  /* --- DARK MODE POUR ContactPage.js --- */
+body.dark-mode .help-page {
+  background-color: #181c1f !important;
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .help-page .container {
+  background: transparent !important;
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .stadium-background .overlay {
+  background: linear-gradient(to bottom, rgba(24,28,31,0) 0%, #181c1f 90%) !important;
+}
+
+body.dark-mode .header-section .main-title {
+  color: #267142 !important;
+  text-shadow: 0 2px 12px #26714233;
+}
+
+body.dark-mode .info-column,
+body.dark-mode .email-column {
+  background-color: #23272a !important;
+  color: #e5e7eb !important;
+  box-shadow: 0 4px 12px #26714211 !important;
+}
+
+body.dark-mode .section-title {
+  color: #267142 !important;
+}
+
+body.dark-mode .section-title::after {
+  background-color: #267142 !important;
+}
+
+body.dark-mode .faq-item.dark {
+  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+body.dark-mode .faq-item.dark:hover {
+  background-color: #233b2e !important;
+}
+
+body.dark-mode .faq-item.open {
+  background: #23262b !important;
+}
+
+body.dark-mode .faq-title {
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .faq-answer {
+  color: #b0ffb0 !important;
+}
+
+body.dark-mode .chevron-icon {
+  color: #267142 !important;
+}
+
+body.dark-mode .email-content {
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .email-icon-container {
+  background-color: #26714222 !important;
+}
+
+body.dark-mode .email-icon {
+  color: #267142 !important;
+}
+
+body.dark-mode .email-title {
+  color: #267142 !important;
+}
+
+body.dark-mode .contact-button {
+  background-color: #23272a !important;
+  color: #267142 !important;
+  border: 1.5px solid #267142;
+  box-shadow: 0 4px 12px #26714222;
+}
+
+body.dark-mode .contact-button:hover {
+  background-color: #267142 !important;
+  color: #23272a !important;
+  box-shadow: 0 6px 16px #26714244;
+}
