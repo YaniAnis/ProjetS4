@@ -173,3 +173,29 @@
     width: 100%;
   }
 }
+body.dark-mode .additional-option-card {
+  background-color: #1e1e1e !important;
+  border-color: #267142 !important;
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .additional-option-card.option-selected {
+  background-color: #23272a !important;
+  border-color: #267142 !important;
+}
+
+body.dark-mode .additional-option-name {
+  color: #267142 !important;
+}
+
+body.dark-mode .additional-option-description {
+  color: #b0b0b0 !important;
+}
+
+body.dark-mode .additional-option-price-value {
+  color: #267142 !important;
+}
+
+body.dark-mode .additional-option-icon {
+  background-color: #23272a !important;
+}

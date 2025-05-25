@@ -63,16 +63,19 @@ function aggregatePaymentsByHourToday(payments) {
 // Agrège les paiements de la semaine courante par jour (YYYY-MM-DD)
 function aggregatePaymentsByDayThisWeek(payments) {
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    // Trouve le lundi de la semaine courante
+    // Correction : utilise UTC pour éviter les décalages de fuseau
+    const today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    const jsDay = today.getUTCDay(); // 0 (dimanche) à 6 (samedi)
+    const diffToMonday = jsDay === 0 ? -6 : 1 - jsDay;
     const firstDayOfWeek = new Date(today);
-    firstDayOfWeek.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    firstDayOfWeek.setUTCDate(today.getUTCDate() + diffToMonday);
+
     // Prépare les jours de la semaine (lundi à dimanche)
     const days = [];
     const dayMap = {};
     for (let i = 0; i < 7; i++) {
         const d = new Date(firstDayOfWeek);
-        d.setDate(firstDayOfWeek.getDate() + i);
+        d.setUTCDate(firstDayOfWeek.getUTCDate() + i);
         const key = d.toISOString().slice(0, 10);
         days.push({ day: key, orders: 0 });
         dayMap[key] = days[days.length - 1];
@@ -80,17 +83,15 @@ function aggregatePaymentsByDayThisWeek(payments) {
     payments.forEach((p) => {
         let date = null;
         if (p.created_at) {
-            if (typeof p.created_at === "string" && /^\d{4}-\d{2}-\d{2}/.test(p.created_at)) {
-                date = p.created_at.slice(0, 10);
-            } else {
-                try {
-                    const d = new Date(p.created_at);
-                    if (!isNaN(d.getTime())) {
-                        date = d.toISOString().slice(0, 10);
-                    }
-                } catch {
-                    // fallback
+            // Correction : toujours parser en UTC pour éviter les décalages
+            try {
+                const d = new Date(p.created_at);
+                if (!isNaN(d.getTime())) {
+                    // Prend la date UTC (YYYY-MM-DD)
+                    date = d.toISOString().slice(0, 10);
                 }
+            } catch {
+                // fallback
             }
         }
         if (!date || !dayMap[date]) return;

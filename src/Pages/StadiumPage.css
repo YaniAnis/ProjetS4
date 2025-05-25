@@ -1,3 +1,4 @@
+
 .app-container {
   display: flex;
   flex-direction: column;
@@ -93,4 +94,71 @@
 
 .selector-container {
   padding: 1.5rem;
+}
+
+/* --- DARK MODE POUR StadiumPage.js --- */
+body.dark-mode .app-container,
+body.dark-mode .stadium-page {
+  background-color: #181c1f !important;
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .booking-container {
+  background-color: #23272a !important;
+  color: #e5e7eb !important;
+  box-shadow: 0 4px 12px #26714211 !important;
+}
+
+body.dark-mode .selector-title {
+  color: #267142 !important;
+}
+
+body.dark-mode .checkout-button {
+  background-color: #267142 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px #26714222;
+}
+
+body.dark-mode .checkout-button:hover {
+  background-color: #1a472a !important;
+  color: #fff !important;
+  box-shadow: 0 6px 16px #26714244;
+}
+
+body.dark-mode .sections-list {
+  /* Optionnel : pour un fond plus foncé sur la liste */
+}
+
+body.dark-mode .additional-options .options-title {
+  color: #267142 !important;
+}
+
+body.dark-mode .separator {
+  border-bottom: 1px solid #26714233 !important;
+}
+
+body.dark-mode .terms-text {
+  color: #b0ffb0 !important;
+}
+
+/* Pour les titres ou boutons personnalisés */
+body.dark-mode .stadium-title,
+body.dark-mode .stadium-header,
+body.dark-mode .stadium-section-title {
+  color: #267142 !important;
+}
+
+body.dark-mode .stadium-btn,
+body.dark-mode .stadium-action-btn {
+  background-color: #23272a !important;
+  color: #267142 !important;
+  border: 1.5px solid #267142;
+  box-shadow: 0 4px 12px #26714222;
+}
+
+body.dark-mode .stadium-btn:hover,
+body.dark-mode .stadium-action-btn:hover {
+  background-color: #267142 !important;
+  color: #23272a !important;
+  box-shadow: 0 6px 16px #26714244;
 }

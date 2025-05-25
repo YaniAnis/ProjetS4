@@ -707,3 +707,8 @@ body.dark-mode .active-filters .remove-filter:hover {
   0% { opacity: 0.2; box-shadow: 0 0 0 0 #00ff80; }
   100% { opacity: 0.5; box-shadow: 0 0 12px 2px #00ff80; }
 }
+.dark-mode .match-card {
+  background-color: #1e1e1e !important;
+  color: #e5e7eb;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}

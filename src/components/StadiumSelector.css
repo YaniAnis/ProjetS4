@@ -313,3 +313,65 @@ body.dark-mode .stadium-container {
   border-color: #232323 !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.18);
 }
+
+/* Uniformisation des zones du SectionSelector en dark mode */
+body.dark-mode .section-default,
+body.dark-mode .section-hovered,
+body.dark-mode .section-selected {
+  background-color: #23272a !important;
+  border: 2px solid #267142 !important;
+  color: #e5e7eb !important;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+body.dark-mode .section-selected {
+  background-color: #267142 !important;
+  color: #23272a !important;
+  box-shadow: 0 0 0 2px #26714244;
+}
+body.dark-mode .section-label {
+  color: #e5e7eb !important;
+}
+body.dark-mode .vip-default,
+body.dark-mode .vip-hovered,
+body.dark-mode .vip-selected {
+  background-color: #23272a !important;
+  color: #ffd700 !important;
+  border: 2px solid #ffd700 !important;
+}
+body.dark-mode .vip-selected {
+  background-color: #ffd700 !important;
+  color: #23272a !important;
+}
+
+/* Uniformisation du tooltip */
+body.dark-mode .tooltip {
+  background-color: #23272a !important;
+  border-color: #267142 !important;
+  color: #e5e7eb !important;
+}
+body.dark-mode .tooltip-title {
+  color: #267142 !important;
+}
+body.dark-mode .tooltip-availability {
+  color: #267142 !important;
+}
+
+/* Bouton AdditionalOption (exemple de classe .additional-option-btn) */
+.additional-option-btn {
+  background-color: #23272a;
+  color: #e5e7eb;
+  border: 1.5px solid #267142;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: 0 2px 8px #26714222;
+}
+.additional-option-btn:hover,
+.additional-option-btn:focus {
+  background-color: #267142;
+  color: #23272a;
+  border-color: #267142;
+  box-shadow: 0 4px 16px #26714244;
+}

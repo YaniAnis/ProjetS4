@@ -467,6 +467,18 @@ const ActualitePage = () => {
 											{a.description.length > 120 ? a.description.slice(0, 120) + "..." : a.description}
 										</div>
 									)}
+									{/* Affiche l'image si présente */}
+									{a.image_url && (
+										<img
+											src={
+												a.image_url.startsWith("http")
+													? a.image_url
+													: `http://localhost:8000/storage/${a.image_url.replace(/^public[\\/]/, "")}`
+											}
+											alt={a.title}
+											style={{ maxWidth: 120, maxHeight: 80, marginTop: 8, borderRadius: 8 }}
+										/>
+									)}
 								</div>
 								<button
 									onClick={() => handleDelete(a.id)}

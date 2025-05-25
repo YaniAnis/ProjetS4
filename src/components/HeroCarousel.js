@@ -32,13 +32,49 @@ function HeroCarousel() {
       "US Biskra": `${basePath}/Ligue1/us_biskra.png`,
       "NC Magra": `${basePath}/Ligue1/nc_magra.png`,
       "ES Mostaganem": `${basePath}/Ligue1/es_mostaganem.png`,
-    }
-    // Ajoute d'autres mappings si besoin
-    return l1[name] || "/placeholder.svg"
+    };
+    const l2e = {
+      "AS Khroub": `${basePath}/Ligue2_Est/as_khroub.png`,
+      "CA Batna": `${basePath}/Ligue2_Est/ca_batna.png`,
+      "HB Chelghoum Laïd": `${basePath}/Ligue2_Est/hb_chelghoumlaid.png`,
+      "IB Khémis El Khechna": `${basePath}/Ligue2_Est/ib_khemiselkhechna.png`,
+      "IRB Ouargla": `${basePath}/Ligue2_Est/irb_ouargla.png`,
+      "JS Bordj Ménaïel": `${basePath}/Ligue2_Est/js_bordjmenaiel.png`,
+      "JS Djijel": `${basePath}/Ligue2_Est/js_djijel.png`,
+      "MO Constantine": `${basePath}/Ligue2_Est/mo_constantine.png`,
+      "MSP Batna": `${basePath}/Ligue2_Est/msp_batna.png`,
+      "NRB Teleghma": `${basePath}/Ligue2_Est/nrb_teleghma.png`,
+      "US Chaouia": `${basePath}/Ligue2_Est/us_chaouia.png`,
+      "US Souf": `${basePath}/Ligue2_Est/us_souf.png`,
+      "USM Annaba": `${basePath}/Ligue2_Est/usm_annaba.png`,
+      "USM El Harrach": `${basePath}/Ligue2_Est/usm_elharrach.png`,
+      "MB Rouissat": `${basePath}/Ligue2_Est/mb_rouissat.png`,
+      "Olympique Magrane": `${basePath}/Ligue2_Est/olympique_magrane.png`,
+    };
+    const l2o = {
+      "ASM Oran": `${basePath}/Ligue2_Ouest/asm_oran.png`,
+      "CR Témouchent": `${basePath}/Ligue2_Ouest/cr_temouchent.png`,
+      "ES Ben Aknoun": `${basePath}/Ligue2_Ouest/es_benaknoun.png`,
+      "ESM Koléa": `${basePath}/Ligue2_Ouest/esm_kolea.png`,
+      "GC Mascara": `${basePath}/Ligue2_Ouest/gc_mascara.png`,
+      "JS El Biar": `${basePath}/Ligue2_Ouest/js_elbiar.png`,
+      "JSM Tiaret": `${basePath}/Ligue2_Ouest/jsm_tiaret.png`,
+      "MC Saïda": `${basePath}/Ligue2_Ouest/mc_saida.png`,
+      "MCB Oued Sly": `${basePath}/Ligue2_Ouest/mcb_ouedsly.png`,
+      "NA Hussein Dey": `${basePath}/Ligue2_Ouest/na_husseindey.png`,
+      "RC Arbaâ": `${basePath}/Ligue2_Ouest/rc_arbaa.png`,
+      "RC Kouba": `${basePath}/Ligue2_Ouest/rc_kouba.png`,
+      "SC Mécheria": `${basePath}/Ligue2_Ouest/sc_mecheria.png`,
+      "SKAF Khemis Miliana": `${basePath}/Ligue2_Ouest/skaf_khemismiliana.png`,
+      "US Béchar Djedid": `${basePath}/Ligue2_Ouest/us_bechardjedid.png`,
+      "WA Mostaganem": `${basePath}/Ligue2_Ouest/wa_mostaganem.png`,
+    };
+    // Correction : cherche dans toutes les ligues
+    return l1[name] || l2e[name] || l2o[name] || "/placeholder.svg";
   }
 
   useEffect(() => {
-    // Récupère les 3 derniers matchs ajoutés par l'admin
+    // Récupère les 3 derniers matchs ajoutés par l'admin (triés par created_at ou id décroissant)
     const fetchMatches = async () => {
       try {
         const res = await fetch("http://localhost:8000/api/matches")
@@ -50,9 +86,15 @@ function HeroCarousel() {
           "/images/stadiums/stadeN.jpg",
           "/images/stadiums/stadejsk.jpg",
         ]
+        // Trie par date de création (created_at) ou id décroissant
         matches = matches
           .filter((m) => m.equipe1 && m.equipe2 && m.date)
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .sort((a, b) => {
+            if (a.created_at && b.created_at) {
+              return new Date(b.created_at) - new Date(a.created_at)
+            }
+            return (b.id || 0) - (a.id || 0)
+          })
           .slice(0, 3)
           .map((m, idx) => ({
             id: m.id,
@@ -62,7 +104,7 @@ function HeroCarousel() {
             awayTeamLogo: clubLogo(m.equipe2),
             date: m.date,
             stadium: m.stade?.nom || "",
-            stadiumImage: images[idx % images.length], // Associe une image différente à chaque match
+            stadiumImage: images[idx % images.length], // Utilise une image différente pour chaque match
           }))
         setFeaturedMatches(matches)
       } catch {
