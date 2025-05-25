@@ -97,6 +97,7 @@
   .team-name {
     font-size: 1.25rem;
     font-weight: 700;
+    
   }
   
   .vs {
@@ -191,6 +192,7 @@
   
     .team-name {
       font-size: 1.5rem;
+      
     }
   
     .vs {
@@ -200,6 +202,7 @@
   
     .carousel-teams {
       gap: 2rem;
+      
     }
   }
   

@@ -131,6 +131,10 @@
                 <span class="label">Acheteur:</span>
                 <span class="value"><?php echo e($ticket->user->name ?? '-'); ?></span>
             </div>
+            <div class="info-item">
+                <span class="label">Place de parking:</span>
+                <span class="value"><?php echo e($ticket->parking === 'oui' ? 'Oui' : 'Non'); ?></span>
+            </div>
         </div>
 
         <div class="footer">

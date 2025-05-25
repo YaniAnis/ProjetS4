@@ -31,7 +31,7 @@ function AdditionalOption({ id, title, description, price, icon, iconColor, icon
           </div>
         </div>
         <div className="additional-option-price">
-          <span className="additional-option-price-value">€{price}</span>
+          <span className="additional-option-price-value">{price}DZD</span>
         </div>
       </div>
     </div>

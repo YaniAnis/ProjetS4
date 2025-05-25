@@ -121,6 +121,13 @@ function StadiumPage() {
     }));
   };
 
+  // Calcul du total des places et du prix total
+  const totalPlaces = sections.reduce((sum, section) => sum + (selectedCounts[section.id] || 0), 0)
+  let totalPrice = sections.reduce((sum, section) => sum + (selectedCounts[section.id] || 0) * (section.basePrice || 0), 0)
+  if (additionalOptions.parking) {
+    totalPrice += 500
+  }
+
   const handleNextClick = () => {
     if (totalSelected < 1 || totalSelected > 4) {
       setSeatError("Veuillez sélectionner entre 1 et 4 places au total.")
@@ -143,7 +150,7 @@ function StadiumPage() {
         ...matchState,
         selectedZones,
         match_id: matchState.matchId,
-        additionalOptions // <-- Ajouté ici
+        additionalOptions // <-- parking inclus ici
       }
     })
   }
@@ -217,7 +224,7 @@ function StadiumPage() {
                   id="parking"
                   title="Parking du stade"
                   description="Place de parking sécurisée près du stade"
-                  price={15}
+                  price={500}
                   icon={
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <rect x="3" y="6" width="18" height="12" rx="2" />
