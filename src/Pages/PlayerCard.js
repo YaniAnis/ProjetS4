@@ -6,7 +6,10 @@ const PlayerCard = ({ player }) => {
   const rating = player.note;
   const matches = player.matches;
   const position = player.poste;
-  const photo = player.image ? `/storage/${player.image}` : "/placeholder.svg";
+  // Update photo path construction
+  const photo = player.image_url 
+    ? player.image_url 
+    : "/placeholder.svg";
 
   return (
     <div className="player-card">

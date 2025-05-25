@@ -12,11 +12,29 @@ class Player extends Model
     protected $fillable = [
         'name',
         'poste',
-        'matches',
-        'passes',
-        'buts',
-        'note',
         'maillot',
-        'image',
+        'matches',
+        'buts',
+        'passes',
+        'note',
+        'image'
     ];
+
+    protected $casts = [
+        'matches' => 'integer',
+        'buts' => 'integer',
+        'passes' => 'integer',
+        'note' => 'decimal:1',
+        'maillot' => 'integer'
+    ];
+
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image) {
+            return null;
+        }
+        return env('APP_URL', 'http://localhost:8000') . '/storage/' . $this->image;
+    }
 }

@@ -11,10 +11,13 @@ class ActualityController extends Controller
     public function index()
     {
         $actualities = \App\Models\Actuality::orderBy('created_at', 'desc')->get();
-        // Ajoute le champ image_url complet pour chaque actualité
         $actualities->transform(function ($a) {
             if ($a->image_url && !str_starts_with($a->image_url, '/storage/')) {
                 $a->image_url = '/storage/' . ltrim($a->image_url, '/');
+            }
+            // Ensure the URL is never null
+            if (!$a->image_url) {
+                $a->image_url = null;
             }
             return $a;
         });
@@ -53,6 +56,9 @@ class ActualityController extends Controller
     public function show($id)
     {
         $actuality = Actuality::findOrFail($id);
+        if ($actuality->image_url && !str_starts_with($actuality->image_url, '/storage/')) {
+            $actuality->image_url = '/storage/' . ltrim($actuality->image_url, '/');
+        }
         return response()->json($actuality);
     }
 
@@ -69,25 +75,26 @@ class ActualityController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($actuality->image) {
-                Storage::disk('public')->delete($actuality->image);
+            // Delete old image if exists
+            if ($actuality->image_url) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $actuality->image_url));
             }
-            $data['image'] = $request->file('image')->store('actualities', 'public');
+            // Store new image
+            $path = $request->file('image')->store('actualities', 'public');
+            $data['image_url'] = '/storage/' . $path; // Use image_url instead of image
         }
 
         $actuality->update($data);
-
         return response()->json($actuality);
     }
 
     public function destroy($id)
     {
         $actuality = Actuality::findOrFail($id);
-        if ($actuality->image) {
-            Storage::disk('public')->delete($actuality->image);
+        if ($actuality->image_url) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $actuality->image_url));
         }
         $actuality->delete();
-
         return response()->json(['message' => 'Actuality deleted']);
     }
 }
