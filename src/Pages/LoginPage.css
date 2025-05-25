@@ -159,20 +159,66 @@ body.dark-mode textarea {
 .form-checkbox {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
-  justify-content: flex-start; /* Aligne à gauche */
-  gap: 8px; /* Espace entre la case et le texte */
+  gap: 8px;
+  margin: 18px 0 10px 0;
 }
 
-/* Checkbox label couleur grise foncée en day mode */
-.form-checkbox label {
-  color: rgba(59, 58, 58, 0.7);
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 400;
+.form-check-input {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #05f297;
+  border-radius: 6px;
+  background: #fff;
+  transition: background 0.2s, border 0.2s;
   cursor: pointer;
-  text-align: left;
-  margin-left: 0;
+  position: relative;
+  outline: none;
+}
+
+.form-check-input:checked {
+  background: linear-gradient(120deg, #05f297 60%, #00ff7f 100%);
+  border-color: #05f297;
+}
+
+.form-check-input:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+.form-check-label {
+  color: #222;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+}
+
+/* Case à cocher moderne - dark mode */
+body.dark-mode .form-check-input {
+  background: #23272a;
+  border: 2px solid #1de782;
+}
+
+body.dark-mode .form-check-input:checked {
+  background: linear-gradient(120deg, #1de782 60%, #158443 100%);
+  border-color: #1de782;
+}
+
+body.dark-mode .form-check-input:checked::after {
+  border-color: #23272a;
+}
+
+body.dark-mode .form-check-label {
+  color: #e5e7eb;
 }
 
 /* Buttons */
