@@ -1,15 +1,19 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import CalendarNavigation from "./CalendarNavigation"
 import FilterBar from "./FilterBar"
 import MatchCard from "./MatchCard"
 import ActiveFilters from "./ActiveFilters"
 
 function Matches({ darkMode }) {
+  const location = useLocation()
   const [matches, setMatches] = useState([])
   const [filteredMatches, setFilteredMatches] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState(() =>
+    location.state && location.state.searchTeam ? location.state.searchTeam : ""
+  )
   const [leagueFilter, setLeagueFilter] = useState("")
   const [selectedDate, setSelectedDate] = useState("all")
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
@@ -24,62 +28,60 @@ function Matches({ darkMode }) {
       // Club name to logo mapping
       const clubLogo = (name) => {
         if (!name) return "";
-        // Ligue 1
+        const basePath = "/logos";
         const l1 = {
-          "USM Alger": "/logos/Ligue1/usm_alger.png",
-          "JS Kabylie": "/logos/Ligue1/js_kabylie.png",
-          "CR Belouizdad": "/logos/Ligue1/cr_belouizdad.png",
-          "Paradou AC": "/logos/Ligue1/paradou_ac.png",
-          "ES Sétif": "/logos/Ligue1/es_setif.png",
-          "MC Alger": "/logos/Ligue1/mc_alger.png",
-          "MC El Bayadh": "/logos/Ligue1/mc_el_bayadh.png",
-          "CS Constantine": "/logos/Ligue1/cs_constantine.png",
-          "ASO Chlef": "/logos/Ligue1/aso_chlef.png",
-          "JS Saoura": "/logos/Ligue1/js_saoura.png",
-          "MC Oran": "/logos/Ligue1/mc_oran.png",
-          "Olympique Akbou": "/logos/Ligue1/o_akbou.png",
-          "USM Khenchela": "/logos/Ligue1/usm_khenchela.png",
-          "US Biskra": "/logos/Ligue1/us_biskra.png",
-          "NC Magra": "/logos/Ligue1/nc_magra.png",
-          "ES Mostaganem": "/logos/Ligue1/es_mostaganem.png",
+          "USM Alger": `${basePath}/Ligue1/usm_alger.png`,
+          "JS Kabylie": `${basePath}/Ligue1/js_kabylie.png`,
+          "CR Belouizdad": `${basePath}/Ligue1/cr_belouizdad.png`,
+          "Paradou AC": `${basePath}/Ligue1/paradou_ac.png`,
+          "ES Sétif": `${basePath}/Ligue1/es_setif.png`,
+          "MC Alger": `${basePath}/Ligue1/mc_alger.png`,
+          "MC El Bayadh": `${basePath}/Ligue1/mc_elbayadh.png`,
+          "CS Constantine": `${basePath}/Ligue1/cs_constantine.png`,
+          "ASO Chlef": `${basePath}/Ligue1/aso_chlef.png`,
+          "JS Saoura": `${basePath}/Ligue1/js_saoura.png`,
+          "MC Oran": `${basePath}/Ligue1/mc_oran.png`,
+          "Olympique Akbou": `${basePath}/Ligue1/o_akbou.png`,
+          "USM Khenchela": `${basePath}/Ligue1/usm_khenchela.png`,
+          "US Biskra": `${basePath}/Ligue1/us_biskra.png`,
+          "NC Magra": `${basePath}/Ligue1/nc_magra.png`,
+          "ES Mostaganem": `${basePath}/Ligue1/es_mostaganem.png`,
         };
-        // Ligue 2 Est
         const l2e = {
-          "AS Khroub": "/logos/Ligue2_Est/as_khroub.png",
-          "CA Batna": "/logos/Ligue2_Est/ca_batna.png",
-          "HB Chelghoum Laïd": "/logos/Ligue2_Est/hb_chelghoum_laid.png",
-          "IB Khémis El Khechna": "/logos/Ligue2_Est/ib_khemis_el_khechna.png",
-          "IRB Ouargla": "/logos/Ligue2_Est/irb_ouargla.png",
-          "JS Bordj Ménaïel": "/logos/Ligue2_Est/js_bordj_menaiel.png",
-          "JS Djijel": "/logos/Ligue2_Est/js_djijel.png",
-          "MO Constantine": "/logos/Ligue2_Est/mo_constantine.png",
-          "MSP Batna": "/logos/Ligue2_Est/msp_batna.png",
-          "NRB Teleghma": "/logos/Ligue2_Est/nrb_teleghma.png",
-          "US Chaouia": "/logos/Ligue2_Est/us_chaouia.png",
-          "US Souf": "/logos/Ligue2_Est/us_souf.png",
-          "USM Annaba": "/logos/Ligue2_Est/usm_annaba.png",
-          "USM El Harrach": "/logos/Ligue2_Est/usm_el_harrach.png",
-          "MB Rouissat": "/logos/Ligue2_Est/mb_rouissat.png",
-          "Olympique Magrane": "/logos/Ligue2_Est/olympique_magrane.png",
+          "AS Khroub": `${basePath}/Ligue2_Est/as_khroub.png`,
+          "CA Batna": `${basePath}/Ligue2_Est/ca_batna.png`,
+          "HB Chelghoum Laïd": `${basePath}/Ligue2_Est/hb_chelghoumlaid.png`,
+          "IB Khémis El Khechna": `${basePath}/Ligue2_Est/ib_khemiselkhechna.png`,
+          "IRB Ouargla": `${basePath}/Ligue2_Est/irb_ouargla.png`,
+          "JS Bordj Ménaïel": `${basePath}/Ligue2_Est/js_bordjmenaiel.png`,
+          "JS Djijel": `${basePath}/Ligue2_Est/js_djijel.png`,
+          "MO Constantine": `${basePath}/Ligue2_Est/mo_constantine.png`,
+          "MSP Batna": `${basePath}/Ligue2_Est/msp_batna.png`,
+          "NRB Teleghma": `${basePath}/Ligue2_Est/nrb_teleghma.png`,
+          "US Chaouia": `${basePath}/Ligue2_Est/us_chaouia.png`,
+          "US Souf": `${basePath}/Ligue2_Est/us_souf.png`,
+          "USM Annaba": `${basePath}/Ligue2_Est/usm_annaba.png`,
+          "USM El Harrach": `${basePath}/Ligue2_Est/usm_elharrach.png`,
+          "MB Rouissat": `${basePath}/Ligue2_Est/mb_rouissat.png`,
+          "Olympique Magrane": `${basePath}/Ligue2_Est/olympique_magrane.png`,
         };
-        // Ligue 2 Ouest
         const l2o = {
-          "ASM Oran": "/logos/Ligue2_Ouest/asm_oran.png",
-          "CR Témouchent": "/logos/Ligue2_Ouest/cr_temouchent.png",
-          "ES Ben Aknoun": "/logos/Ligue2_Ouest/es_ben_aknoun.png",
-          "ESM Koléa": "/logos/Ligue2_Ouest/esm_kolea.png",
-          "GC Mascara": "/logos/Ligue2_Ouest/gc_mascara.png",
-          "JS El Biar": "/logos/Ligue2_Ouest/js_el_biar.png",
-          "JSM Tiaret": "/logos/Ligue2_Ouest/jsm_tiaret.png",
-          "MC Saïda": "/logos/Ligue2_Ouest/mc_saida.png",
-          "MCB Oued Sly": "/logos/Ligue2_Ouest/mcb_oued_sly.png",
-          "NA Hussein Dey": "/logos/Ligue2_Ouest/na_hussein_dey.png",
-          "RC Arbaâ": "/logos/Ligue2_Ouest/rc_arbaa.png",
-          "RC Kouba": "/logos/Ligue2_Ouest/rc_kouba.png",
-          "SC Mécheria": "/logos/Ligue2_Ouest/sc_mecheria.png",
-          "SKAF Khemis Miliana": "/logos/Ligue2_Ouest/skaf_khemis_miliana.png",
-          "US Béchar Djedid": "/logos/Ligue2_Ouest/us_bechar_djedid.png",
-          "WA Mostaganem": "/logos/Ligue2_Ouest/wa_mostaganem.png",
+          "ASM Oran": `${basePath}/Ligue2_Ouest/asm_oran.png`,
+          "CR Témouchent": `${basePath}/Ligue2_Ouest/cr_temouchent.png`,
+          "ES Ben Aknoun": `${basePath}/Ligue2_Ouest/es_benaknoun.png`,
+          "ESM Koléa": `${basePath}/Ligue2_Ouest/esm_kolea.png`,
+          "GC Mascara": `${basePath}/Ligue2_Ouest/gc_mascara.png`,
+          "JS El Biar": `${basePath}/Ligue2_Ouest/js_elbiar.png`,
+          "JSM Tiaret": `${basePath}/Ligue2_Ouest/jsm_tiaret.png`,
+          "MC Saïda": `${basePath}/Ligue2_Ouest/mc_saida.png`,
+          "MCB Oued Sly": `${basePath}/Ligue2_Ouest/mcb_ouedsly.png`,
+          "NA Hussein Dey": `${basePath}/Ligue2_Ouest/na_husseindey.png`,
+          "RC Arbaâ": `${basePath}/Ligue2_Ouest/rc_arbaa.png`,
+          "RC Kouba": `${basePath}/Ligue2_Ouest/rc_kouba.png`,
+          "SC Mécheria": `${basePath}/Ligue2_Ouest/sc_mecheria.png`,
+          "SKAF Khemis Miliana": `${basePath}/Ligue2_Ouest/skaf_khemismiliana.png`,
+          "US Béchar Djedid": `${basePath}/Ligue2_Ouest/us_bechardjedid.png`,
+          "WA Mostaganem": `${basePath}/Ligue2_Ouest/wa_mostaganem.png`,
         };
         return l1[name] || l2e[name] || l2o[name] || "/placeholder.svg";
       };
@@ -92,16 +94,15 @@ function Matches({ darkMode }) {
         time: m.heure,
         homeTeam: {
           name: m.equipe1,
-          logo: m.homeTeam?.logo || m.equipe1_logo || m.equipe1Logo || m.logo_equipe1 || "" // essaie plusieurs clés
+          logo: clubLogo(m.equipe1) // Ensure logo is mapped correctly
         },
         awayTeam: {
           name: m.equipe2,
-          logo: m.awayTeam?.logo || m.equipe2_logo || m.equipe2Logo || m.logo_equipe2 || ""
+          logo: clubLogo(m.equipe2) // Ensure logo is mapped correctly
         },
         stadium: m.stade?.nom || "",
         price: m.zones && m.zones.length > 0 ? Math.min(...m.zones.map(z => z.prix)) : "",
         zones: m.zones || [],
-        // ...add more fields as needed
       }))
       // Filtrer les matchs dont la date est passée
       .filter(match => {
@@ -143,6 +144,13 @@ function Matches({ darkMode }) {
   useEffect(() => {
     fetchMatches();
   }, []);
+
+  // Update searchTerm if redirected from TeamsPage (on mount or location.state change)
+  useEffect(() => {
+    if (location.state && location.state.searchTeam) {
+      setSearchTerm(location.state.searchTeam)
+    }
+  }, [location.state])
 
   // Filtrer les matchs lorsque les filtres changent
   useEffect(() => {

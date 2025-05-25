@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ZoneController;
+use App\Http\Controllers\PlayerController;
 
 Route::middleware('auth:sanctum')->get('/user', function (\Illuminate\Http\Request $request) {
     return $request->user();
@@ -180,3 +181,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/payments', [PaymentController::class, 'index']);
 
 Route::post('/zones/{id}/update', [ZoneController::class, 'updateSelectedCount']);
+
+Route::post('/players', [PlayerController::class, 'store']);
+Route::get('/players', [PlayerController::class, 'index']);

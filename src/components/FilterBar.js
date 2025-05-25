@@ -1,5 +1,5 @@
 "use client"
-import { useState, useRef, useEffect } from "react";
+import { useRef, forwardRef } from "react";
 import CategoryFilter from "./CategoryFilter";
 
 const leagueOptions = [
@@ -8,7 +8,7 @@ const leagueOptions = [
   "Champions League"
 ];
 
-function FilterBar({ searchTerm, setSearchTerm, leagueFilter, setLeagueFilter }) {
+const FilterBar = forwardRef(function FilterBar({ searchTerm, setSearchTerm, leagueFilter, setLeagueFilter }, ref) {
   return (
     <div className="filter-bar">
       <div className="search">
@@ -18,6 +18,7 @@ function FilterBar({ searchTerm, setSearchTerm, leagueFilter, setLeagueFilter })
           placeholder="Rechercher un match..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          ref={ref}
         />
         <button>
           <i className="fas fa-search"></i>
@@ -32,6 +33,6 @@ function FilterBar({ searchTerm, setSearchTerm, leagueFilter, setLeagueFilter })
       </div>
     </div>
   );
-}
+});
 
 export default FilterBar;

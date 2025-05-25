@@ -11,10 +11,10 @@ function MatchInfo({ homeTeam, awayTeam, date, time, stadium, homeTeamLogo, away
               <div className="team-info">
                 <div className="team-logo-container">
                   {homeTeamLogo ? (
-                    <img src={homeTeamLogo || "/placeholder.svg"} alt={`${homeTeam} logo`} className="team-logo" />
+                    <img src={homeTeamLogo} alt={`${homeTeam} logo`} className="team-logo" />
                   ) : (
                     <img
-                      src={`/placeholder.svg?height=60&width=60&text=${homeTeam.substring(0, 2)}`}
+                      src="/placeholder.svg"
                       alt={`${homeTeam} logo`}
                       className="team-logo-placeholder"
                     />
@@ -90,10 +90,10 @@ function MatchInfo({ homeTeam, awayTeam, date, time, stadium, homeTeamLogo, away
               <div className="team-info">
                 <div className="team-logo-container">
                   {awayTeamLogo ? (
-                    <img src={awayTeamLogo || "/placeholder.svg"} alt={`${awayTeam} logo`} className="team-logo" />
+                    <img src={awayTeamLogo} alt={`${awayTeam} logo`} className="team-logo" />
                   ) : (
                     <img
-                      src={`/placeholder.svg?height=60&width=60&text=${awayTeam.substring(0, 2)}`}
+                      src="/placeholder.svg"
                       alt={`${awayTeam} logo`}
                       className="team-logo-placeholder"
                     />

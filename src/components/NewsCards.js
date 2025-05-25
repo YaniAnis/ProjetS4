@@ -4,45 +4,7 @@ import { useState, useEffect } from "react"
 import "./NewsCards.css"
 import { Link } from "react-router-dom"
 
-// Données des actualités
-const newsData = [
-  {
-    id: 1,
-    title: "Le MC Alger remporte une victoire éclatante contre le NC",
-    excerpt: "Les joueurs du Mouloudia ont livré une prestation remarquable lors de leur dernier match de championnat.",
-    image: "/images/news/MCANC.jpg",
-    date: "10 Avril 2025",
-    readTime: "5 min",
-  },
-  {
-    id: 2,
-    title: "Youcef Belaïli élu joueur du mois pour la troisième fois consécutive",
-    excerpt: "Le prodige algérien continue d'impressionner avec ses performances exceptionnelles sur le terrain.",
-    image: "/images/news/Youcef-Belaili-2-1.jpg",
-    date: "5 Avril 2025",
-    readTime: "3 min",
-  },
-  {
-    id: 3,
-    title: "Le Stade 5 Juillet se prépare pour accueillir la finale de la Coupe d'Algérie",
-    excerpt:
-      "Les préparatifs battent leur plein pour l'événement qui aura lieu le mois prochain au stade emblématique d'Alger.",
-    image: "/images/news/Stade-5-Juillet.jpg",
-    date: "2 Avril 2025",
-    readTime: "4 min",
-  },
-  {
-    id: 4,
-    title: "Nouveau record d'affluence pour la Ligue 1 Mobilis cette saison",
-    excerpt:
-      "Les stades algériens n'ont jamais été aussi remplis, témoignant de l'engouement croissant pour le championnat national.",
-    image: "/images/news/ligue1mobilis.jpg",
-    date: "28 Mars 2025",
-    readTime: "6 min",
-  },
-]
-
-function NewsCards() {
+function NewsCards({ limit }) {
   const [hoveredCard, setHoveredCard] = useState(null)
   const [news, setNews] = useState([])
 
@@ -64,13 +26,13 @@ function NewsCards() {
           readTime: a.readTime ? `${a.readTime} min` : "3 min",
           type: "actuality"
         }));
-        setNews(actualities)
+        setNews(limit ? actualities.slice(0, limit) : actualities) // Apply the limit
       } catch {
         setNews([])
       }
     }
     fetchNews()
-  }, [])
+  }, [limit])
 
   return (
     <div className={`news-cards ${isDarkMode ? "dark-mode" : ""}`}>
