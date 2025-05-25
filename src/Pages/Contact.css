@@ -1,343 +1,364 @@
 /* Main page styles */
 .help-page {
-    min-height: 100vh;
-    background-color: #ffffff;
-    color: #333;
-    padding: 0 0 2rem 0;
-    position: relative;
-  }
-  
-  .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    position: relative;
-    z-index: 2;
-  }
-  
-  /* Stadium background */
-  .stadium-background {
-    position: relative;
-    height: 350px;
-    width: 100%;
-    overflow: hidden;
-    margin-bottom: 2rem;
-  }
-  
-  .stadium-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-  
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 90%);
-  }
-  
-  /* Header section */
-  .header-section {
-    text-align: center;
-    margin-bottom: 3rem;
-    padding-top: 1rem; /* Ajouté pour donner un peu d'espace en haut */
-  }
-  
-  .main-title {
-    font-size: 3.5rem;
-    font-weight: 700;
-    margin-bottom: 2.5rem;
-    color: #1a472a; /* Dark green from logo */
-  }
-  
-  /* Search bar */
-  .search-container {
-    position: relative;
-    max-width: 768px;
-    margin: 0 auto 1.5rem;
-  }
-  
-  .search-input {
-    width: 100%;
-    height: 56px;
-    padding: 0 3rem 0 1rem;
-    border-radius: 8px;
-    border: 2px solid #1a472a;
-    font-size: 1rem;
-    background-color: white;
-    color: #333;
-    transition: box-shadow 0.3s;
-  }
-  
-  .search-input:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(26, 71, 42, 0.2);
-  }
-  
-  .search-button {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .search-icon {
-    width: 24px;
-    height: 24px;
-    color: #1a472a;
-  }
-  
-  /* Search examples */
-  .search-examples {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  
-  .examples-label {
-    font-size: 0.875rem;
-    margin-right: 0.5rem;
-    color: #555;
-    font-weight: 500;
-  }
-  
-  .example-button {
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
-    background-color: #e8f5e9;
-    border: 1px solid #1a472a;
-    color: #1a472a;
-    border-radius: 20px;
-    transition: all 0.2s;
-    font-weight: 500;
-  }
-  
-  .example-button:hover {
-    background-color: #1a472a;
-    color: white;
-  }
-  
-  /* Content grid */
+  min-height: 100vh;
+  background-color: #fff;
+  color: #333;
+  padding: 0 0 2rem 0;
+  position: relative;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Stadium background */
+.stadium-background {
+  position: relative;
+  height: 350px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.stadium-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #fff 90%);
+}
+
+/* Header section */
+.header-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-top: 1rem;
+}
+.main-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: #1a472a;
+}
+
+/* Search bar */
+.search-container {
+  position: relative;
+  max-width: 768px;
+  margin: 0 auto 1.5rem;
+}
+.search-input {
+  width: 100%;
+  height: 56px;
+  padding: 0 3rem 0 1rem;
+  border-radius: 8px;
+  border: 2px solid #1a472a;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #333;
+  transition: box-shadow 0.3s;
+}
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26,71,42,0.2);
+}
+.search-button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.search-icon {
+  width: 24px;
+  height: 24px;
+  color: #1a472a;
+}
+
+/* Search examples */
+.search-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.examples-label {
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+  color: #555;
+  font-weight: 500;
+}
+.example-button {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  background-color: #e8f5e9;
+  border: 1px solid #1a472a;
+  color: #1a472a;
+  border-radius: 20px;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.example-button:hover {
+  background-color: #1a472a;
+  color: #fff;
+}
+
+/* Content grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 4rem;
+}
+@media (min-width: 768px) {
   .content-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-top: 4rem;
+    grid-template-columns: 1fr 1fr;
   }
-  
-  @media (min-width: 768px) {
-    .content-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  
-  /* Info column */
-  .info-column {
-    background-color: #1a472a; /* Dark green from logo */
-    padding: 1.5rem;
-    border-radius: 12px;
-    color: white;
-    box-shadow: 0 4px 12px rgba(26, 71, 42, 0.15);
-  }
-  
-  /* Email column */
-  .email-column {
-    background-color: #1a472a; /* Dark green from logo */
-    padding: 1.5rem;
-    border-radius: 12px;
-    color: white;
-    box-shadow: 0 4px 12px rgba(26, 71, 42, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .email-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 1.5rem;
-  }
-  
-  .email-icon-container {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  .email-icon {
-    width: 40px;
-    height: 40px;
-    color: white;
-  }
-  
-  .email-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-  
-  .email-description {
-    margin-bottom: 2rem;
-    font-size: 1rem;
-    line-height: 1.6;
-    max-width: 80%;
-  }
-  
-  .contact-button {
-    background-color: white;
-    color: #1a472a;
-    border: none;
-    border-radius: 30px;
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .contact-button:hover {
-    background-color: #f0f0f0;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Section titles */
-  .section-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    position: relative;
-    padding-bottom: 0.75rem;
-  }
-  
-  .section-title::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background-color: white;
-    border-radius: 3px;
-  }
-  
-  /* FAQ items */
-  .faq-list {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .faq-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-radius: 8px;
-    margin-bottom: 4px;
-  }
-  
-  .faq-item.dark {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .faq-item.dark:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .faq-item.open {
-    background: #23262b;
-    border-radius: 8px;
-    transition: background 0.2s;
-  }
-  
-  .faq-title-row {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    padding-right: 0.5rem; /* pour coller la flèche au bord */
-  }
-  
-  .faq-title {
-    flex: 1;
-    font-weight: 500;
-    font-size: 1rem;
-    /* pas de margin-right ici */
-  }
-  
-  .chevron-icon {
-    margin-left: 1rem;
-    /* pas de margin-right */
-  }
-  
-  .faq-answer {
-    font-size: 1rem;
-    padding-left: 8px;
-    padding-bottom: 8px;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .main-title {
-      font-size: 2.5rem;
-    }
-  
-    .stadium-background {
-      height: 250px;
-    }
-  
-    .email-icon-container {
-      width: 60px;
-      height: 60px;
-    }
-  
-    .email-icon {
-      width: 30px;
-      height: 30px;
-    }
-  
-    .email-description {
-      max-width: 100%;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .main-title {
-      font-size: 2rem;
-    }
-  
-    .search-examples {
-      flex-direction: column;
-      align-items: stretch;
-    }
-  
-    .example-button {
-      width: 100%;
-    }
-  
-    .stadium-background {
-      height: 180px;
-    }
-  }
+}
+
+/* Info & Email columns */
+.info-column,
+.email-column {
+  background-color: #1a472a;
+  padding: 1.5rem;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(26,71,42,0.15);
+}
+.email-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.email-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+}
+.email-icon-container {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.email-icon {
+  width: 40px;
+  height: 40px;
+  color: #fff;
+}
+.email-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.email-description {
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 80%;
+}
+.contact-button {
+  background-color: #fff;
+  color: #1a472a;
+  border: none;
+  border-radius: 30px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.contact-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Section titles */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+/* FAQ items */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+}
+.faq-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+.faq-item.dark {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.faq-item.dark:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+.faq-item.open {
+  background: #23262b;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.faq-title-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding-right: 0.5rem;
+}
+.faq-title {
+  flex: 1;
+  font-weight: 500;
+  font-size: 1rem;
+}
+.chevron-icon {
+  margin-left: 1rem;
+}
+.faq-answer {
+  font-size: 1rem;
+  padding-left: 8px;
+  padding-bottom: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-title { font-size: 2.5rem; }
+  .stadium-background { height: 250px; }
+  .email-icon-container { width: 60px; height: 60px; }
+  .email-icon { width: 30px; height: 30px; }
+  .email-description { max-width: 100%; }
+}
+@media (max-width: 480px) {
+  .main-title { font-size: 2rem; }
+  .search-examples { flex-direction: column; align-items: stretch; }
+  .example-button { width: 100%; }
+  .stadium-background { height: 180px; }
+}
+
+/* ----------------- DARK MODE ----------------- */
+body.dark-mode .help-page {
+  background: #181c1f !important;
+  color: #e5e7eb !important;
+}
+
+/* Ne PAS appliquer le dark mode sur .stadium-background ou .stadium-image */
+body.dark-mode .stadium-background .overlay {
+  background: linear-gradient(180deg, #181c1f 60%, #23272a 100%);
+  opacity: 0.75;
+}
+
+body.dark-mode .container {
+  background: rgba(30,34,38,0.92);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px #000a;
+  padding: 32px 24px;
+}
+
+body.dark-mode .header-section .main-title {
+  color: #1d7448;
+  text-shadow: 0 2px 12px #1d744833;
+}
+
+body.dark-mode .section-title {
+  color: #1d7448;
+  border-left: 4px solid #1d7448;
+  padding-left: 10px;
+  margin-bottom: 18px;
+  background: none;
+}
+
+body.dark-mode .info-column,
+body.dark-mode .email-column {
+  background: #23272a !important;
+  color: #e5e7eb !important;
+  box-shadow: 0 4px 24px #1de78211;
+}
+
+body.dark-mode .email-title {
+  color: #1d7448;
+}
+body.dark-mode .email-description {
+  color: #e7e7eb;
+}
+body.dark-mode .contact-button {
+  background: #1d7448;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px #0004;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+body.dark-mode .contact-button:hover {
+  background: #158443;
+  color: #fff;
+  box-shadow: 0 4px 16px #15844388;
+}
+body.dark-mode .email-icon-container .email-icon {
+  color: #1d7448;
+  filter: none;
+}
+
+body.dark-mode .faq-item.dark {
+  background: #23272a;
+  border-radius: 12px;
+  border-bottom: 1px solid #1de78222;
+  box-shadow: 0 2px 8px #1de78211;
+}
+body.dark-mode .faq-item.dark.open {
+  border: 2px solid #1de782;
+  background: #1a2320;
+}
+body.dark-mode .faq-title-row {
+  color: #e5e7eb;
+}
+body.dark-mode .faq-title-row:hover {
+  color: #1de782;
+  cursor: pointer;
+}
+body.dark-mode .faq-answer {
+  color: #b0ffb0;
+}

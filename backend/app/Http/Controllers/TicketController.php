@@ -37,6 +37,7 @@ class TicketController extends Controller
             'prix' => $validated['prix'],
             'statut' => 'valide',
             'numero_place' => $validated['numero_place'] ?? null,
+            
         ]);
 
         return response()->json($ticket, 201);

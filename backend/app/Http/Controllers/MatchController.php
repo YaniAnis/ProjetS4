@@ -47,6 +47,13 @@ class MatchController extends Controller
             'zones.*.name' => 'required|string',
             'zones.*.price' => 'required|numeric|min:0',
             'zones.*.places' => 'required|integer|min:0',
+            'parking_places' => 'nullable|integer|min:0', // <-- Correction ici
+        ]);
+
+        // Ajoute ce log pour vérifier la valeur reçue
+        \Log::info('Valeur parking_places reçue dans MatchController@store', [
+            'parking_places' => $validated['parking_places'] ?? null,
+            'requete' => $request->all()
         ]);
 
         // Determine stadium capacity
@@ -76,13 +83,25 @@ class MatchController extends Controller
             $stade_id = $validated['stade_id'];
         }
 
+        // Correction : toujours définir la valeur, même si 0 ou chaîne vide
+        $parkingPlaces = 0;
+        if (
+            array_key_exists('parking_places', $validated)
+            && $validated['parking_places'] !== ''
+            && $validated['parking_places'] !== null
+            && is_numeric($validated['parking_places'])
+        ) {
+            $parkingPlaces = intval($validated['parking_places']);
+        }
+
         $match = Matches::create([
             'equipe1' => $validated['equipe1'],
             'equipe2' => $validated['equipe2'],
             'league' => $validated['league'],
             'date' => $validated['date'],
             'heure' => $validated['heure'],
-            'stade_id' => $stade_id,
+            'stade_id' => $validated['stade_id'],
+            'parking_places' => $validated['parking_places'] ?? 0, // <-- doit être présent
         ]);
 
         foreach ($validated['zones'] as $zone) {
