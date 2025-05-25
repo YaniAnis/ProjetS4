@@ -95,62 +95,47 @@ const ActualitePage = () => {
 		setLoading(true);
 
 		try {
-			let res;
-			// If image is present, use FormData
+			const formData = new FormData();
+			formData.append("name", playerForm.name);
+			formData.append("poste", playerForm.poste);
+			formData.append("matches", parseInt(playerForm.matches));
+			formData.append("passes", parseInt(playerForm.passes));
+			formData.append("buts", parseInt(playerForm.buts));
+			formData.append("note", parseFloat(playerForm.note));
+			formData.append("maillot", parseInt(playerForm.maillot));
+			
 			if (playerForm.image) {
-				const formData = new FormData();
-				formData.append("name", playerForm.name);
-				formData.append("poste", playerForm.poste);
-				formData.append("matches", playerForm.matches);
-				formData.append("passes", playerForm.passes);
-				formData.append("buts", playerForm.buts);
-				formData.append("note", playerForm.note);
-				formData.append("maillot", playerForm.maillot);
 				formData.append("image", playerForm.image);
-
-				res = await fetch("http://localhost:8000/api/players", {
-					method: "POST",
-					body: formData,
-				});
-			} else {
-				res = await fetch("http://localhost:8000/api/players", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						name: playerForm.name,
-						poste: playerForm.poste,
-						matches: playerForm.matches,
-						passes: playerForm.passes,
-						buts: playerForm.buts,
-						note: playerForm.note,
-						maillot: playerForm.maillot,
-					}),
-				});
 			}
+
+			const res = await fetch("http://localhost:8000/api/players", {
+				method: "POST",
+				body: formData,
+				// Remove headers when using FormData
+			});
 
 			if (!res.ok) {
-				const data = await res.json().catch(() => ({}));
-				alert(data.message || "Erreur lors de l'ajout du joueur.");
-			} else {
-				alert("Joueur ajouté avec succès !");
+				const data = await res.json();
+				throw new Error(data.message || "Erreur lors de l'ajout du joueur");
 			}
-		} catch (err) {
-			alert("Erreur réseau lors de l'ajout du joueur.");
-		}
 
-		setPlayerForm({
-			name: "",
-			poste: "",
-			matches: "",
-			passes: "",
-			buts: "",
-			note: "",
-			maillot: "",
-			image: null,
-		});
-		setLoading(false);
+			alert("Joueur ajouté avec succès!");
+			setPlayerForm({
+				name: "",
+				poste: "",
+				matches: "",
+				passes: "",
+				buts: "",
+				note: "",
+				maillot: "",
+				image: null,
+			});
+		} catch (err) {
+			console.error("Error details:", err);
+			alert(err.message || "Erreur lors de l'ajout du joueur");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (

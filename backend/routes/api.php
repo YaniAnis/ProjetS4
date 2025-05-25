@@ -182,5 +182,5 @@ Route::get('/payments', [PaymentController::class, 'index']);
 
 Route::post('/zones/{id}/update', [ZoneController::class, 'updateSelectedCount']);
 
-Route::post('/players', [PlayerController::class, 'store']);
-Route::get('/players', [PlayerController::class, 'index']);
+Route::post('/players', [App\Http\Controllers\PlayerController::class, 'store']);
+Route::get('/players', [App\Http\Controllers\PlayerController::class, 'index']);
