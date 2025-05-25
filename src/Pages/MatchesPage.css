@@ -244,6 +244,15 @@
   background-color: rgba(26, 71, 42, 0.05);
 }
 
+.dark-mode .day-item.active {
+  background: #1a472a!important;      /* Vert foncé de fond */
+  color: #fff !important;              /* Texte blanc */
+  border: 2px solid #1a472a !important;/* Bordure vert vif */
+  box-shadow: 0 2px 8px 0 #1a472a;  /* Légère lueur verte */
+  z-index: 2;
+  transition: background 0.2s, border 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
 .day-item.active {
   background-color: var(--primary-color);
   color: white;
@@ -584,6 +593,48 @@ body.dark-mode .day-item {
   color: #CCCCCC !important;
   background: transparent !important;
   transition: background 0.2s;
+  position: relative;
+  overflow: hidden;
+  /* garde les coins arrondis pour l'effet */
+  border-radius: 10px;
+}
+
+body.dark-mode .day-item:hover {
+  border: 2px solid #158443; /* vert plus foncé */
+  box-shadow: none;
+  background: transparent;
+  z-index: 1;
+}
+
+body.dark-mode .day-item:hover::before,
+body.dark-mode .day-item:hover::after {
+  content: none !important;
+  animation: none !important;
+}
+
+body.dark-mode .day-item:hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 60%, #00ff80 80%, transparent 100%);
+  opacity: 0.7;
+  animation: slideGreen 0.5s;
+  pointer-events: none;
+  border-radius: 10px;
+}
+
+@keyframes slideGreen {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0.2;
+  }
+  60% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0.7;
+  }
 }
 
 /* Filtres : input et texte plus foncé en dark mode */
@@ -630,4 +681,29 @@ body.dark-mode .active-filters .remove-filter {
 body.dark-mode .active-filters .remove-filter:hover {
   color: #ff6b6b !important;
   opacity: 1;
+}
+
+/* Ajoute ceci à ton CSS global */
+.dark-mode .day-item:hover {
+  position: relative;
+  z-index: 1;
+  /* Animation verte sur le fond */
+  box-shadow: 0 0 0 4px rgba(0, 255, 128, 0.25), 0 2px 8px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s cubic-bezier(.4,2,.6,1);
+}
+
+.dark-mode .day-item:hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 6px 1px #05e876;
+  opacity: 0.5;
+  animation: greenPulse 0.4s;
+}
+
+@keyframes greenPulse {
+  0% { opacity: 0.2; box-shadow: 0 0 0 0 #00ff80; }
+  100% { opacity: 0.5; box-shadow: 0 0 12px 2px #00ff80; }
 }
