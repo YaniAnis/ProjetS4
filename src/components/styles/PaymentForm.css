@@ -112,3 +112,46 @@
   .secure-payment svg {
     margin-right: 8px;
   }
+
+/* Dark mode: payment form input, textarea, select en bleu foncé */
+body.dark-mode .payment-form input,
+body.dark-mode .payment-form textarea,
+body.dark-mode .payment-form select {
+  background-color: #23272A !important;
+  color: #e5e7eb !important;
+  border: 2px solid #374151 !important;
+}
+
+body.dark-mode .payment-form input::placeholder,
+body.dark-mode .payment-form textarea::placeholder {
+  color: #b0b0b0 !important;
+  opacity: 1;
+}
+
+body.dark-mode .form-input label {
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .payment-details {
+  background-color: #23272A !important;
+  color: #e5e7eb !important;
+  border: 1.5px solid #374151 !important;
+}
+
+body.dark-mode .payment-detail,
+body.dark-mode .payment-detail.total {
+  color: #e5e7eb !important;
+}
+
+body.dark-mode .payment-button {
+  background-color: #1a472a !important;
+  color: #fff !important;
+}
+
+body.dark-mode .payment-button:hover {
+  background-color: #217a3b !important;
+}
+
+body.dark-mode .secure-payment {
+  color: #b0b0b0 !important;
+}

@@ -53,6 +53,11 @@ function App() {
     localStorage.setItem("darkMode", darkMode)
   }, [darkMode])
 
+  // Ajout : scroll en haut à chaque changement de route
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
+
   // Vérifier si nous sommes sur une page admin
   const isAdminPage = location.pathname.startsWith("/admin")
 

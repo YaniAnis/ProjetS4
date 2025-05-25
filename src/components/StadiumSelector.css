@@ -302,3 +302,14 @@
 .zoom-button:hover {
   background-color: #f7fafc;
 }
+
+/* Dark mode: fond noir pour StadiumPage et selector en #1E1E1E */
+body.dark-mode .stadium-page {
+  background: #121212 !important;
+}
+
+body.dark-mode .stadium-container {
+  background-color: #1e1e1e !important;
+  border-color: #232323 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+}

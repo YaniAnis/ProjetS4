@@ -3,3 +3,9 @@
     display: flex;
     flex-direction: column;
 }
+
+/* Fond noir pour toute la page ContactMessage en dark mode */
+body.dark-mode .contact-page,
+body.dark-mode .contact-container {
+  background: #121212 !important;
+}

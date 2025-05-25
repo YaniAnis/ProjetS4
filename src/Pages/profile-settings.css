@@ -744,3 +744,109 @@
     }
   }
   
+  /* Dark mode: fond général noir */
+body.dark-mode {
+  background: #121212 !important;
+}
+
+/* Dark mode: container principal en #1E1E1E */
+body.dark-mode .profile-settings-container {
+  background-color: #1e1e1e !important;
+  color: #e5e7eb !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+/* Dark mode: profile-header et profile-info */
+body.dark-mode .profile-header,
+body.dark-mode .profile-info {
+  background-color: #23272A !important;
+  color: #e5e7eb !important;
+}
+
+/* Dark mode: sidebar */
+body.dark-mode .profile-settings-sidebar {
+  background-color: #181a1b !important;
+  border-right: 1px solid #232323 !important;
+}
+
+body.dark-mode .profile-settings-tab {
+  color: #b0b0b0 !important;
+  background: transparent !important;
+}
+
+body.dark-mode .profile-settings-tab.active,
+body.dark-mode .profile-settings-tab:hover {
+  background-color: #23272A !important;
+  color: #fff !important;
+}
+
+/* Dark mode: main content area */
+body.dark-mode .profile-settings-main {
+  background: transparent !important;
+  color: #e5e7eb !important;
+}
+
+/* Dark mode: sections (SecurityTab, NotificationsTab, PrivacyTab, TwoFactorModal) */
+body.dark-mode .settings-section,
+body.dark-mode .security-section,
+body.dark-mode .notification-section,
+body.dark-mode .privacy-section,
+body.dark-mode .two-factor-modal {
+  background-color: #1e1e1e !important;
+  color: #e5e7eb !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+}
+
+/* Dark mode: input, textarea, select dans les tabs */
+body.dark-mode .settings-section input,
+body.dark-mode .settings-section textarea,
+body.dark-mode .settings-section select,
+body.dark-mode .security-section input,
+body.dark-mode .security-section textarea,
+body.dark-mode .security-section select,
+body.dark-mode .notification-section input,
+body.dark-mode .notification-section textarea,
+body.dark-mode .notification-section select,
+body.dark-mode .privacy-section input,
+body.dark-mode .privacy-section textarea,
+body.dark-mode .privacy-section select,
+body.dark-mode .two-factor-modal input,
+body.dark-mode .two-factor-modal textarea,
+body.dark-mode .two-factor-modal select {
+  background-color: #23272A !important;
+  color: #e5e7eb !important;
+  border: 2px solid #374151 !important;
+}
+
+/* Placeholder color in dark mode */
+body.dark-mode .settings-section input::placeholder,
+body.dark-mode .settings-section textarea::placeholder,
+body.dark-mode .security-section input::placeholder,
+body.dark-mode .security-section textarea::placeholder,
+body.dark-mode .notification-section input::placeholder,
+body.dark-mode .notification-section textarea::placeholder,
+body.dark-mode .privacy-section input::placeholder,
+body.dark-mode .privacy-section textarea::placeholder,
+body.dark-mode .two-factor-modal input::placeholder,
+body.dark-mode .two-factor-modal textarea::placeholder {
+  color: #b0b0b0 !important;
+  opacity: 1;
+}
+
+/* Label color in dark mode */
+body.dark-mode .settings-section label,
+body.dark-mode .security-section label,
+body.dark-mode .notification-section label,
+body.dark-mode .privacy-section label,
+body.dark-mode .two-factor-modal label {
+  color: #e5e7eb !important;
+}
+
+/* Switch/toggle backgrounds in dark mode (if custom) */
+body.dark-mode .switch,
+body.dark-mode .toggle-switch,
+body.dark-mode .toggle-switch-button {
+  background-color: #23272A !important;
+}
