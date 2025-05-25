@@ -90,11 +90,16 @@ class PlayerController extends Controller
 
     public function destroy($id)
     {
-        $player = Player::findOrFail($id);
-        if ($player->image) {
-            Storage::disk('public')->delete($player->image);
+        try {
+            $player = Player::findOrFail($id);
+            // Delete image if exists
+            if ($player->image) {
+                Storage::disk('public')->delete($player->image);
+            }
+            $player->delete();
+            return response()->json(['message' => 'Player deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Player not found'], 404);
         }
-        $player->delete();
-        return response()->json(['message' => 'Player deleted']);
     }
 }

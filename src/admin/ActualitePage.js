@@ -193,13 +193,18 @@ const ActualitePage = () => {
 		setLoading(true);
 		try {
 			const res = await fetch(`http://localhost:8000/api/players/${id}`, {
-				method: "DELETE"
+				method: "DELETE",
+				headers: {
+					"Accept": "application/json"
+				}
 			});
 			if (res.ok) {
+				// Recharge la liste après suppression
 				setPlayers(players.filter(p => p.id !== id));
 				alert("Joueur supprimé avec succès!");
 			} else {
-				alert("Erreur lors de la suppression du joueur.");
+				const data = await res.json().catch(() => ({}));
+				alert(data.message || "Erreur lors de la suppression du joueur.");
 			}
 		} catch (error) {
 			console.error("Failed to delete player:", error);
