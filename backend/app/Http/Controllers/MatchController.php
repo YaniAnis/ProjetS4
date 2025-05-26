@@ -6,6 +6,7 @@ use App\Models\Matches;
 use App\Models\Zone;
 use App\Models\Stade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MatchController extends Controller
 {
