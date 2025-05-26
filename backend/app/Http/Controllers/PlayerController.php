@@ -11,7 +11,15 @@ class PlayerController extends Controller
 {
     public function index()
     {
-        return response()->json(Player::all());
+        // Ajout du champ image_url pour chaque joueur
+        $players = Player::all()->map(function($player) {
+            $playerArr = $player->toArray();
+            $playerArr['image_url'] = $player->image
+                ? url('/storage/' . ltrim($player->image, '/'))
+                : null;
+            return $playerArr;
+        });
+        return response()->json($players);
     }
 
     public function store(Request $request)
@@ -57,7 +65,12 @@ class PlayerController extends Controller
 
     public function show($id)
     {
-        return response()->json(Player::findOrFail($id));
+        $player = Player::findOrFail($id);
+        $playerArr = $player->toArray();
+        $playerArr['image_url'] = $player->image
+            ? url('/storage/' . ltrim($player->image, '/'))
+            : null;
+        return response()->json($playerArr);
     }
 
     public function update(Request $request, $id)

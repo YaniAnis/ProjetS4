@@ -478,7 +478,7 @@ const ActualitePage = () => {
 											src={
 												a.image_url.startsWith("http")
 													? a.image_url
-													: `http://localhost:8000/storage/${a.image_url.replace(/^public[\\/]/, "")}`
+													: `http://localhost:8000${a.image_url}`
 											}
 											alt={a.title}
 											style={{ maxWidth: 120, maxHeight: 80, marginTop: 8, borderRadius: 8 }}
@@ -545,7 +545,7 @@ const ActualitePage = () => {
 											<div className="flex items-center">
 												{player.image_url && (
 													<img
-														src={player.image_url}
+														src={player.image_url.startsWith("http") ? player.image_url : `http://localhost:8000${player.image_url}`}
 														alt={player.name}
 														className="h-10 w-10 rounded-full object-cover mr-3"
 													/>

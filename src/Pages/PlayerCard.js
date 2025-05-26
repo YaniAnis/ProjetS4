@@ -6,7 +6,7 @@ const PlayerCard = ({ player }) => {
   const rating = player.note;
   const matches = player.matches;
   const position = player.poste;
-  // Update photo path construction
+  // Utilise image_url pour la photo
   const photo = player.image_url 
     ? player.image_url 
     : "/placeholder.svg";

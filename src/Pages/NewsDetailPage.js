@@ -87,7 +87,7 @@ function NewsDetailPage() {
             src={
               actuality.image_url.startsWith("http")
                 ? actuality.image_url
-                : `http://localhost:8000${actuality.image_url}` // Ensure full URL
+                : `http://localhost:8000${actuality.image_url}`
             }
             alt={actuality.title}
             className="news-detail-image"
