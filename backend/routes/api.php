@@ -9,6 +9,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ZoneController;
@@ -182,7 +183,7 @@ Route::get('/payments', [PaymentController::class, 'index']);
 
 Route::post('/zones/{id}/update', [ZoneController::class, 'updateSelectedCount']);
 
-<<<<<<< Updated upstream
+
 // Players routes
 Route::apiResource('players', PlayerController::class);
 // Cette ligne va créer toutes les routes CRUD nécessaires :
@@ -192,10 +193,7 @@ Route::apiResource('players', PlayerController::class);
 // PUT/PATCH /players/{id} - update
 // DELETE /players/{id} - destroy
 
-=======
-Route::post('/players', [App\Http\Controllers\PlayerController::class, 'store']);
-Route::get('/players', [App\Http\Controllers\PlayerController::class, 'index']);
->>>>>>> Stashed changes
+
 Route::post('/send-contact', function (Request $request) {
     try {
         $validated = $request->validate([
@@ -223,8 +221,5 @@ Route::post('/send-contact', function (Request $request) {
         Log::error('Contact form error', ['error' => $e->getMessage()]);
         return response()->json(['message' => 'Failed to send email'], 500);
     }
-<<<<<<< Updated upstream
+
 });
-=======
-});
->>>>>>> Stashed changes
