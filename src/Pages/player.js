@@ -7,10 +7,12 @@ export const usePlayers = () => {
         fetch("http://localhost:8000/api/players")
             .then((res) => res.json())
             .then((data) => {
-                // Map image path if present
+                // Utilise image_url si présent, sinon construit à partir de image
                 const mapped = (data || []).map(p => ({
                     ...p,
-                    image: p.image ? `/storage/${p.image}` : null
+                    image_url: p.image_url
+                        ? p.image_url
+                        : (p.image ? `/storage/${p.image}` : null)
                 }));
                 setPlayers(mapped);
             })

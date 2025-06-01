@@ -21,11 +21,9 @@ function NewsCards({ limit }) {
           id: `actuality-${a.id}`,
           title: a.title,
           excerpt: a.content,
-          image: a.image_url ? (
-            a.image_url.startsWith('http') 
-              ? a.image_url 
-              : `http://localhost:8000${a.image_url}`
-          ) : "/images/news/default.jpg",
+          image: a.image_url
+            ? (a.image_url.startsWith('http') ? a.image_url : `http://localhost:8000${a.image_url}`)
+            : (a.image ? `/storage/${a.image}` : "/images/news/default.jpg"),
           date: a.created_at ? new Date(a.created_at).toLocaleDateString("fr-FR") : "",
           readTime: a.readTime ? `${a.readTime} min` : "3 min",
           type: "actuality"

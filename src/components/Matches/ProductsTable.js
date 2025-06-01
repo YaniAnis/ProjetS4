@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { Edit, Search, Trash2 } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import "./Product.css";
 
-const ProductsTable = ({ matches = [], loading, onMatchDeleted, onMatchEdit }) => {
+const ProductsTable = ({ matches = [], loading, onMatchDeleted }) => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filteredMatches, setFilteredMatches] = useState(matches);
 
@@ -40,15 +40,6 @@ const ProductsTable = ({ matches = [], loading, onMatchDeleted, onMatchEdit }) =
 			}
 		} catch {
 			alert("Erreur lors de la suppression.");
-		}
-	};
-
-	// Handler for editing a match (redirect or open modal)
-	const handleEdit = (id) => {
-		if (onMatchEdit) {
-			onMatchEdit(id);
-		} else {
-			alert("Fonction d'édition non implémentée.");
 		}
 	};
 
@@ -112,13 +103,6 @@ const ProductsTable = ({ matches = [], loading, onMatchDeleted, onMatchEdit }) =
 										{match.date} {match.heure}
 									</td>
 									<td className='products-table-cell'>
-										<button
-											className='products-table-action-edit'
-											onClick={() => handleEdit(match.id)}
-											title="Modifier"
-										>
-											<Edit size={18} />
-										</button>
 										<button
 											className='products-table-action-delete'
 											onClick={() => handleDelete(match.id)}

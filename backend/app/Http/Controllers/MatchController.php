@@ -6,6 +6,7 @@ use App\Models\Matches;
 use App\Models\Zone;
 use App\Models\Stade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MatchController extends Controller
 {
@@ -38,41 +39,21 @@ class MatchController extends Controller
             'league' => 'required|string|max:255',
             'date' => 'required|date',
             'heure' => 'required|string|max:10',
-            // Accept either stade_id or new stadium data
+            // Allow either stade_id or stade object
             'stade_id' => 'nullable|exists:stades,id',
-            'stade.nom' => 'required_without:stade_id|string|max:255',
-            'stade.lieu' => 'required_without:stade_id|string|max:255',
-            'stade.capacite' => 'required_without:stade_id|integer|min:1',
+            'stade' => 'required_without:stade_id|array',
+            'stade.nom' => 'required_with:stade|string|max:255',
+            'stade.lieu' => 'required_with:stade|string|max:255',
+            'stade.capacite' => 'required_with:stade|integer|min:1',
             'zones' => 'required|array|size:8',
             'zones.*.name' => 'required|string',
             'zones.*.price' => 'required|numeric|min:0',
             'zones.*.places' => 'required|integer|min:0',
-            'parking_places' => 'nullable|integer|min:0', // <-- Correction ici
+            'parking_places' => 'nullable|integer|min:0',
         ]);
 
-        // Ajoute ce log pour vérifier la valeur reçue
-        \Log::info('Valeur parking_places reçue dans MatchController@store', [
-            'parking_places' => $validated['parking_places'] ?? null,
-            'requete' => $request->all()
-        ]);
-
-        // Determine stadium capacity
-        $stade = null;
-        if (!empty($validated['stade_id'])) {
-            $stade = \App\Models\Stade::find($validated['stade_id']);
-        } elseif (!empty($validated['stade'])) {
-            $stade = new \App\Models\Stade($validated['stade']);
-        }
-
-        $zonesTotal = array_sum(array_column($validated['zones'], 'places'));
-        if ($stade && $zonesTotal > $stade->capacite) {
-            return response()->json([
-                'message' => 'La somme des places des zones dépasse la capacité du stade sélectionné.'
-            ], 422);
-        }
-
-        // Create stadium if not provided
-        if (empty($validated['stade_id'])) {
+        // Create new stadium if provided
+        if (isset($validated['stade'])) {
             $stade = Stade::create([
                 'nom' => $validated['stade']['nom'],
                 'lieu' => $validated['stade']['lieu'],
@@ -83,32 +64,32 @@ class MatchController extends Controller
             $stade_id = $validated['stade_id'];
         }
 
-        // Correction : toujours définir la valeur, même si 0 ou chaîne vide
-        $parkingPlaces = 0;
-        if (
-            array_key_exists('parking_places', $validated)
-            && $validated['parking_places'] !== ''
-            && $validated['parking_places'] !== null
-            && is_numeric($validated['parking_places'])
-        ) {
-            $parkingPlaces = intval($validated['parking_places']);
+        // Verify total capacity matches stadium capacity
+        $zonesTotal = array_sum(array_column($validated['zones'], 'places'));
+        $stade = Stade::find($stade_id);
+        if ($stade && $zonesTotal > $stade->capacite) {
+            return response()->json([
+                'message' => 'La somme des places des zones dépasse la capacité du stade sélectionné.'
+            ], 422);
         }
 
+        // Create the match
         $match = Matches::create([
             'equipe1' => $validated['equipe1'],
             'equipe2' => $validated['equipe2'],
             'league' => $validated['league'],
             'date' => $validated['date'],
             'heure' => $validated['heure'],
-            'stade_id' => $validated['stade_id'],
-            'parking_places' => $validated['parking_places'] ?? 0, // <-- doit être présent
+            'stade_id' => $stade_id,
+            'parking_places' => $validated['parking_places'] ?? 0,
         ]);
 
+        // Create zones for the match
         foreach ($validated['zones'] as $zone) {
-            \App\Models\Zone::create([
+            Zone::create([
                 'match_id' => $match->id,
                 'name' => $zone['name'],
-                'price' => $zone['price'], // must be 'price', not 'prix'
+                'price' => $zone['price'],
                 'places' => $zone['places'],
             ]);
         }

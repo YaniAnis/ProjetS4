@@ -7,7 +7,6 @@ import StatCard from "../components/common/StatCard";
 import UsersTable from "../components/users/UsersTable";
 import UserGrowthChart from "../components/users/UserGrowthChart";
 import UserActivityHeatmap from "../components/users/UserActivityHeatmap";
-import UserDemographicsChart from "../components/users/UserDemographicsChart";
 import "./Pages.css";
 
 const UtilisateurPage = () => {
@@ -82,7 +81,7 @@ const UtilisateurPage = () => {
 				<div className='users-charts-grid'>
 					<UserGrowthChart latestUserCount={userStats.totalUsers} />
 					<UserActivityHeatmap />
-					<UserDemographicsChart />
+					{/* <UserDemographicsChart /> */}
 				</div>
 			</main>
 		</div>

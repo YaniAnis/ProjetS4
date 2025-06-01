@@ -5,7 +5,6 @@ import Header from "../components/common/Header";
 import StatCard from "../components/common/StatCard";
 import { CreditCard, DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
 import SalesOverviewChart from "../components/Ventes/SalesOverviewChart";
-import SalesByCategoryChart from "../components/Ventes/SalesByCategoryChart";
 import DailySalesTrend from "../components/Ventes/DailySalesTrend";
 import "./Pages.css";
 
@@ -127,7 +126,6 @@ const VentesPage = () => {
 				<SalesOverviewChart />
 
 				<div className='sales-charts-grid'>
-					<SalesByCategoryChart />
 					<DailySalesTrend />
 				</div>
 			</main>

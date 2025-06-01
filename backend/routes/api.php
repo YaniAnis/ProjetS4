@@ -9,6 +9,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ZoneController;
@@ -182,5 +183,43 @@ Route::get('/payments', [PaymentController::class, 'index']);
 
 Route::post('/zones/{id}/update', [ZoneController::class, 'updateSelectedCount']);
 
-Route::post('/players', [App\Http\Controllers\PlayerController::class, 'store']);
-Route::get('/players', [App\Http\Controllers\PlayerController::class, 'index']);
+
+// Players routes
+Route::apiResource('players', PlayerController::class);
+// Cette ligne va créer toutes les routes CRUD nécessaires :
+// GET /players - index
+// POST /players - store
+// GET /players/{id} - show
+// PUT/PATCH /players/{id} - update
+// DELETE /players/{id} - destroy
+
+
+Route::post('/send-contact', function (Request $request) {
+    try {
+        $validated = $request->validate([
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'email' => 'required|email',
+            'subject' => 'required|string',
+            'message' => 'required|string'
+        ]);
+
+        Mail::raw(
+            "Message de: {$validated['firstName']} {$validated['lastName']}\n" .
+            "Email: {$validated['email']}\n\n" .
+            "Sujet: {$validated['subject']}\n\n" .
+            "Message:\n{$validated['message']}",
+            function($msg) use ($validated) {
+                $msg->to('contactfootixxx@gmail.com')
+                    ->subject("Contact Form: {$validated['subject']}")
+                    ->from($validated['email'], "{$validated['firstName']} {$validated['lastName']}");
+            }
+        );
+
+        return response()->json(['message' => 'Email sent successfully']);
+    } catch (\Exception $e) {
+        Log::error('Contact form error', ['error' => $e->getMessage()]);
+        return response()->json(['message' => 'Failed to send email'], 500);
+    }
+
+});

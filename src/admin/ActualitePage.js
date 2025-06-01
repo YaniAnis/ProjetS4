@@ -193,13 +193,18 @@ const ActualitePage = () => {
 		setLoading(true);
 		try {
 			const res = await fetch(`http://localhost:8000/api/players/${id}`, {
-				method: "DELETE"
+				method: "DELETE",
+				headers: {
+					"Accept": "application/json"
+				}
 			});
 			if (res.ok) {
+				// Recharge la liste après suppression
 				setPlayers(players.filter(p => p.id !== id));
 				alert("Joueur supprimé avec succès!");
 			} else {
-				alert("Erreur lors de la suppression du joueur.");
+				const data = await res.json().catch(() => ({}));
+				alert(data.message || "Erreur lors de la suppression du joueur.");
 			}
 		} catch (error) {
 			console.error("Failed to delete player:", error);
@@ -467,6 +472,18 @@ const ActualitePage = () => {
 											{a.description.length > 120 ? a.description.slice(0, 120) + "..." : a.description}
 										</div>
 									)}
+									{/* Affiche l'image si présente */}
+									{a.image_url && (
+										<img
+											src={
+												a.image_url.startsWith("http")
+													? a.image_url
+													: `http://localhost:8000${a.image_url}`
+											}
+											alt={a.title}
+											style={{ maxWidth: 120, maxHeight: 80, marginTop: 8, borderRadius: 8 }}
+										/>
+									)}
 								</div>
 								<button
 									onClick={() => handleDelete(a.id)}
@@ -528,7 +545,7 @@ const ActualitePage = () => {
 											<div className="flex items-center">
 												{player.image_url && (
 													<img
-														src={player.image_url}
+														src={player.image_url.startsWith("http") ? player.image_url : `http://localhost:8000${player.image_url}`}
 														alt={player.name}
 														className="h-10 w-10 rounded-full object-cover mr-3"
 													/>

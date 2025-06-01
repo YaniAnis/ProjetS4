@@ -74,14 +74,14 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/help" element={<HelpPage />} />
-        <Route path="/contact" element={<ContactPage />} /> {/* Page avec le bouton */}
-        <Route path="/contact-message" element={<ContactMessage />} /> {/* Page de message */}
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/contact-message" element={<ContactMessage />} /> 
         <Route path="/Payement" element={<PaymentPage />} />     
         <Route path="/tickets" element={<StadiumPage />} />  
-        <Route path="/stadiums" element={<StadiumPage />} /> {/* <-- Ajout du lien vers StadiumPage */}
-        <Route path="/profilesettings" element={<ProfileSettings />} /> {/* <-- Add this line */}
+        <Route path="/stadiums" element={<StadiumPage />} /> 
+        <Route path="/profilesettings" element={<ProfileSettings />} /> 
 
-        {/* Routes Admin protégées */}
+        
         <Route
           path="/admin/*"
           element={
